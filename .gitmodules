@@ -1,0 +1,3 @@
+[submodule "thirdparty/libADLMIDI"]
+	path = thirdparty/libADLMIDI
+	url = https://github.com/Wohlstand/libADLMIDI
