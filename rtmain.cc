@@ -94,7 +94,8 @@ static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudio
     float *lr = (float *)outputbuffer;
     for (unsigned i = 0; i < 2 * nframes; ++i) {
         constexpr double outputgain = 1.0; // 3.5;
-        lr[i] = dclf.process(pcm[i] * (outputgain / 32768));
+        DcFilter &dcf = (i & 1) ? dcrf : dclf;
+        lr[i] = dcf.process(pcm[i] * (outputgain / 32768));
     }
 
     return 0;
