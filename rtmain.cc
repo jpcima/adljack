@@ -113,7 +113,7 @@ static void midi_event(double, std::vector<uint8_t> *message, void *)
 
 static void usage()
 {
-    fprintf(stderr, "Usage: adljack [-n num-chips] [-b bank.wopl]\n");
+    fprintf(stderr, "Usage: adlrt [-n num-chips] [-b bank.wopl]\n");
 }
 
 int main(int argc, char *argv[])
