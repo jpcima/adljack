@@ -107,8 +107,10 @@ static void midi_event(double, std::vector<uint8_t> *message, void *)
     if (size > midi_message_max_size)
         return;
     Ring_Buffer &midi_rb = *::midi_rb;
-    midi_rb.put<uint8_t>(size);
-    midi_rb.put(message->data(), size);
+    if (midi_rb.size_free() >= 1 + size) {
+        midi_rb.put<uint8_t>(size);
+        midi_rb.put(message->data(), size);
+    }
 }
 
 static void usage()
