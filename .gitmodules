@@ -1,3 +1,6 @@
 [submodule "thirdparty/libADLMIDI"]
 	path = thirdparty/libADLMIDI
 	url = https://github.com/Wohlstand/libADLMIDI
+[submodule "thirdparty/ring-buffer"]
+	path = thirdparty/ring-buffer
+	url = git@github.com:jpcima/ring-buffer.git
