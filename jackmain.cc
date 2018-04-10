@@ -84,28 +84,11 @@ int main(int argc, char *argv[])
 
     buffer = new int16_t[2 * bufsize];
 
+    initialize_player(samplerate, nchip, bankfile);
+
     fprintf(stderr, "DC filter @ %f Hz\n", dccutoff);
     dcfilter[0].cutoff(dccutoff / samplerate);
     dcfilter[1].cutoff(dccutoff / samplerate);
-
-    fprintf(stderr, "ADLMIDI version %s\n", adl_linkedLibraryVersion());
-
-    ADL_MIDIPlayer *player = ::player = adl_init(samplerate);
-    if (!player)
-        throw std::runtime_error("error instantiating ADLMIDI");
-
-    if (!bankfile) {
-        fprintf(stderr, "Using default banks.\n");
-    }
-    else {
-        if (adl_openBankFile(player, bankfile) < 0)
-            throw std::runtime_error("error loading bank file");
-        fprintf(stderr, "Using banks from WOPL file.\n");
-        adl_reset(player);  // not sure if necessary
-    }
-
-    if (adl_setNumChips(player, nchip) < 0)
-        throw std::runtime_error("error setting the number of chips");
 
     jack_set_process_callback(client, process, nullptr);
     jack_activate(client);
