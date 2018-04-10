@@ -46,15 +46,16 @@ static void midi_event(double, std::vector<uint8_t> *message, void *)
 
 static void usage()
 {
-    fprintf(stderr, "Usage: adlrt [-n num-chips] [-b bank.wopl]\n");
+    fprintf(stderr, "Usage: adlrt [-n num-chips] [-b bank.wopl] [-L latency-ms]\n");
 }
 
 int main(int argc, char *argv[])
 {
     unsigned nchip = default_nchip;
     const char *bankfile = nullptr;
+    double latency = 20e-3;  // audio latency, 20ms default
 
-    for (int c; (c = getopt(argc, argv, "hn:b:")) != -1;) {
+    for (int c; (c = getopt(argc, argv, "hn:b:L:")) != -1;) {
         switch (c) {
         case 'n':
             nchip = std::stoi(optarg);
@@ -65,6 +66,13 @@ int main(int argc, char *argv[])
             break;
         case 'b':
             bankfile = optarg;
+            break;
+        case 'L':
+            latency = std::stod(optarg) * 1e-3;
+            if (latency <= 0) {
+                fprintf(stderr, "invalid latency\n");
+                return 1;
+            }
             break;
         case 'h':
             usage();
@@ -94,10 +102,13 @@ int main(int argc, char *argv[])
     stream_param.nChannels = 2;
 
     RtAudio::StreamOptions stream_opts;
-    stream_opts.flags = RTAUDIO_MINIMIZE_LATENCY|RTAUDIO_ALSA_USE_DEFAULT;
+    stream_opts.flags = RTAUDIO_ALSA_USE_DEFAULT;
     stream_opts.streamName = "adlrt";
 
-    unsigned buffer_size = 0;
+    unsigned buffer_size = ceil(latency * sample_rate);
+    fprintf(stderr, "Desired latency %f ms = buffer size %u\n",
+            latency * 1e3, buffer_size);
+
     audio_client->openStream(
         &stream_param, nullptr, RTAUDIO_FLOAT32, sample_rate, &buffer_size,
         &process, nullptr, &stream_opts);
@@ -108,8 +119,9 @@ int main(int argc, char *argv[])
     midi_client->openVirtualPort("midi");
     midi_client->setCallback(&midi_event);
 
-    fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u\n",
-            device_info.name.c_str(), sample_rate, buffer_size);
+    latency = buffer_size / (double)sample_rate;
+    fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
+            device_info.name.c_str(), sample_rate, buffer_size, latency);
 
     buffer = new int16_t[2 * buffer_size];
 
