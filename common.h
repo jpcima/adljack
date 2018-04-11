@@ -13,12 +13,12 @@
 #include <stdint.h>
 
 // TESTING 32bitmix branch of ADLMIDI
-//#define TEST_PCM16_TO32 1
+#define TEST_PCM16_TO32 1
 //#define TEST_PCM8_TO8 1
 //#define TEST_PCM8_TO16 1
 //#define TEST_PCM8_TO32 1
 //#define TEST_PCM_F32 1
-#define TEST_PCM_F64 1
+//#define TEST_PCM_F64 1
 
 extern void *player;
 extern Player_Type player_type;

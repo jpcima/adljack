@@ -218,6 +218,12 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
         double left_sample = pcm[2 * i] * outputgain;
         double right_sample = pcm[2 * i + 1] * outputgain;
 #else
+
+#if 0  // to test absence of clipping
+        if (std::abs(pcm[2 * i]) > 32768)
+            fprintf(stderr, "----NOT CLIPPED----\n");
+#endif
+
         double left_sample = pcm[2 * i] * (outputgain / 32768);
         double right_sample = pcm[2 * i + 1] * (outputgain / 32768);
 #endif
