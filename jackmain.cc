@@ -92,11 +92,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Jack client \"%s\" fs=%u bs=%u\n",
             jack_get_client_name(client), samplerate, bufsize);
 
-#ifdef TEST_PCM16_TO32
-    buffer = new int32_t[2 * bufsize];
-#else
-    buffer = new int16_t[2 * bufsize];
-#endif
+    buffer = new std::decay_t<decltype(*buffer)>[2 * bufsize];
 
     initialize_player(samplerate, nchip, bankfile, emulator);
 

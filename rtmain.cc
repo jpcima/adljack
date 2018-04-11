@@ -133,11 +133,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
             device_info.name.c_str(), sample_rate, buffer_size, latency);
 
-#ifdef TEST_PCM16_TO32
-    buffer = new int32_t[2 * buffer_size];
-#else
-    buffer = new int16_t[2 * buffer_size];
-#endif
+    buffer = new std::decay_t<decltype(*buffer)>[2 * buffer_size];
 
     initialize_player(sample_rate, nchip, bankfile, emulator);
 

@@ -14,8 +14,10 @@ namespace stc = std::chrono;
 
 void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
-#ifdef TEST_PCM16_TO32
+#if defined(TEST_PCM16_TO32)
 int32_t *buffer = nullptr;
+#elif defined(TEST_PCM8_TO8)
+int8_t *buffer = nullptr;
 #else
 int16_t *buffer = nullptr;
 #endif
@@ -152,12 +154,26 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
     if (nframes <= 0)
         return;
 
-#ifdef TEST_PCM16_TO32
+#if defined(TEST_PCM16_TO32)
     int32_t *pcm = ::buffer;
     ADLMIDI_AudioFormat fmt;
     fmt.type = ADLMIDI_SampleType_S16;
     fmt.containerSize = sizeof(int32_t);
     fmt.sampleOffset = 2 * sizeof(int32_t);
+    Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
+#elif defined(TEST_PCM8_TO8)
+    int8_t *pcm = ::buffer;
+    ADLMIDI_AudioFormat fmt;
+    fmt.type = ADLMIDI_SampleType_S8;
+    fmt.containerSize = sizeof(int8_t);
+    fmt.sampleOffset = 2 * sizeof(int8_t);
+    Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
+#elif defined(TEST_PCM8_TO16)
+    int16_t *pcm = ::buffer;
+    ADLMIDI_AudioFormat fmt;
+    fmt.type = ADLMIDI_SampleType_S8;
+    fmt.containerSize = sizeof(int16_t);
+    fmt.sampleOffset = 2 * sizeof(int16_t);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #else
     int16_t *pcm = ::buffer;
@@ -170,8 +186,13 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 
     for (unsigned i = 0; i < nframes; ++i) {
         constexpr double outputgain = 1.0; // 3.5;
+#if defined(TEST_PCM8_TO8) || defined(TEST_PCM8_TO16)
+        double left_sample = pcm[2 * i] * (outputgain / 256);
+        double right_sample = pcm[2 * i + 1] * (outputgain / 256);
+#else
         double left_sample = pcm[2 * i] * (outputgain / 32768);
         double right_sample = pcm[2 * i + 1] * (outputgain / 32768);
+#endif
         left_sample = dclf.process(left_sample);
         right_sample = dcrf.process(right_sample);
         lvcurrent[0] = lvmonitor[0].process(left_sample);
