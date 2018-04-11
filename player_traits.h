@@ -5,7 +5,7 @@
 
 #define EACH_PLAYER_TYPE(F, ...)                \
     F(OPL3, ##__VA_ARGS__)                      \
-    F(OPN2, ##__VA_ARGS__)
+    /* F(OPN2, ##__VA_ARGS__) */
 
 enum class Player_Type {
     #define ENUMVAL(x) x,
@@ -40,6 +40,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &set_num_chips = adl_setNumChips;
     static constexpr auto &open_bank_file = adl_openBankFile;
     static constexpr auto &generate = adl_generate;
+    static constexpr auto &generate_format = adl_generateFormat;
     static constexpr auto &rt_note_on = adl_rt_noteOn;
     static constexpr auto &rt_note_off = adl_rt_noteOff;
     static constexpr auto &rt_note_aftertouch = adl_rt_noteAfterTouch;
@@ -49,6 +50,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &rt_pitchbend_ml = adl_rt_pitchBendML;
 };
 
+/*
 #include <opnmidi.h>
 
 template <>
@@ -75,3 +77,4 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &rt_program_change = opn2_rt_patchChange;
     static constexpr auto &rt_pitchbend_ml = opn2_rt_pitchBendML;
 };
+*/
