@@ -68,7 +68,7 @@ void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char 
     if (Traits::set_num_chips(player, nchip) < 0)
         throw std::runtime_error("error setting the number of chips");
 
-    fprintf(stderr, "DC filter @ %f Hz, LV monitor @%f ms\n", dccutoff, lvrelease * 1e3);
+    fprintf(stderr, "DC filter @ %f Hz, LV monitor @ %f ms\n", dccutoff, lvrelease * 1e3);
     for (unsigned i = 0; i < 2; ++i) {
         dcfilter[i].cutoff(dccutoff / sample_rate);
         lvmonitor[i].release(lvrelease * sample_rate);
@@ -263,11 +263,11 @@ void interface_exec()
 
         fprintf(stderr, " L ");
         print_volume_bar(stderr, 30, vol_left);
-        fprintf(stderr, (vol_left > 1.0) ? " \033[7mCLIP\033[0m   " : "        ");
+        fprintf(stderr, (vol_left > 1.0) ? " \033[7mCLIP\033[0m" : "     ");
 
         fprintf(stderr, " R ");
         print_volume_bar(stderr, 30, vol_right);
-        fprintf(stderr, (vol_right > 1.0) ? " \033[7mCLIP\033[0m   " : "        ");
+        fprintf(stderr, (vol_right > 1.0) ? " \033[7mCLIP\033[0m" : "     ");
 
         fprintf(stderr, "\r");
         fflush(stderr);
