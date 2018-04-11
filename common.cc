@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include <stdexcept>
+#include <string.h>
 #include <stdio.h>
 #include <assert.h>
 
@@ -12,6 +13,24 @@ void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
 int16_t *buffer = nullptr;
 DcFilter dcfilter[2];
+
+void generic_usage(const char *progname, const char *more_options)
+{
+    fprintf(stderr, "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]%s\n", progname, more_options);
+
+    fprintf(stderr, "Available players:\n");
+    for (Player_Type pt : all_player_types) {
+        fprintf(stderr, "   * %s\n", player_name(pt));
+    }
+
+    for (Player_Type pt : all_player_types) {
+        std::vector<std::string> emus = enumerate_emulators(pt);
+        size_t emu_count = emus.size();
+        fprintf(stderr, "Available emulators for %s:\n", player_name(pt));
+        for (size_t i = 0; i < emu_count; ++i)
+            fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
+    }
+}
 
 template <Player_Type Pt>
 void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
@@ -188,6 +207,14 @@ std::vector<std::string> enumerate_emulators()
 const char *player_name(Player_Type pt)
 {
     PLAYER_DISPATCH(pt, player_name);
+}
+
+Player_Type player_by_name(const char *name)
+{
+    for (Player_Type pt : all_player_types)
+        if (!strcmp(name, player_name(pt)))
+            return pt;
+    return (Player_Type)-1;
 }
 
 std::vector<std::string> enumerate_emulators(Player_Type pt)

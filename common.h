@@ -21,10 +21,13 @@ static constexpr unsigned default_nchip = 4;
 static constexpr unsigned midi_message_max_size = 64;
 static constexpr unsigned midi_buffer_size = 1024;
 
+void generic_usage(const char *progname, const char *more_options);
+
 void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator);
 void player_ready();
 void play_midi(const uint8_t *msg, unsigned len);
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride);
 
 const char *player_name(Player_Type pt);
+Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);

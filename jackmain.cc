@@ -34,15 +34,7 @@ static int process(jack_nframes_t nframes, void *)
 
 static void usage()
 {
-    fprintf(stderr, "Usage: adljack [-n num-chips] [-b bank.wopl] [-e emulator]\n");
-
-    for (Player_Type pt : all_player_types) {
-        std::vector<std::string> emus = enumerate_emulators(pt);
-        size_t emu_count = emus.size();
-        fprintf(stderr, "Available emulators for %s:\n", player_name(pt));
-        for (size_t i = 0; i < emu_count; ++i)
-            fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
-    }
+    generic_usage("adljack", "");
 }
 
 int main(int argc, char *argv[])
@@ -51,8 +43,15 @@ int main(int argc, char *argv[])
     const char *bankfile = nullptr;
     int emulator = -1;
 
-    for (int c; (c = getopt(argc, argv, "hn:b:e:")) != -1;) {
+    for (int c; (c = getopt(argc, argv, "hp:n:b:e:")) != -1;) {
         switch (c) {
+        case 'p':
+            ::player_type = player_by_name(optarg);
+            if ((int)::player_type == -1) {
+                fprintf(stderr, "invalid player name\n");
+                return 1;
+            }
+            break;
         case 'n':
             nchip = std::stoi(optarg);
             if ((int)nchip < 1) {
