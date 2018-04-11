@@ -18,6 +18,10 @@ Player_Type player_type = Player_Type::OPL3;
 int32_t *buffer = nullptr;
 #elif defined(TEST_PCM8_TO8)
 int8_t *buffer = nullptr;
+#elif defined(TEST_PCM_F32)
+float *buffer = nullptr;
+#elif defined(TEST_PCM_F64)
+double *buffer = nullptr;
 #else
 int16_t *buffer = nullptr;
 #endif
@@ -182,6 +186,20 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
     fmt.containerSize = sizeof(int32_t);
     fmt.sampleOffset = 2 * sizeof(int32_t);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
+#elif defined(TEST_PCM_F32)
+    float *pcm = ::buffer;
+    ADLMIDI_AudioFormat fmt;
+    fmt.type = ADLMIDI_SampleType_F32;
+    fmt.containerSize = sizeof(float);
+    fmt.sampleOffset = 2 * sizeof(float);
+    Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
+#elif defined(TEST_PCM_F64)
+    double *pcm = ::buffer;
+    ADLMIDI_AudioFormat fmt;
+    fmt.type = ADLMIDI_SampleType_F64;
+    fmt.containerSize = sizeof(double);
+    fmt.sampleOffset = 2 * sizeof(double);
+    Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #else
     int16_t *pcm = ::buffer;
     Traits::generate(player, 2 * nframes, pcm);
@@ -196,6 +214,9 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 #if defined(TEST_PCM8_TO8) || defined(TEST_PCM8_TO16) || defined(TEST_PCM8_TO32)
         double left_sample = pcm[2 * i] * (outputgain / 256);
         double right_sample = pcm[2 * i + 1] * (outputgain / 256);
+#elif defined(TEST_PCM_F32) || defined(TEST_PCM_F64)
+        double left_sample = pcm[2 * i] * outputgain;
+        double right_sample = pcm[2 * i + 1] * outputgain;
 #else
         double left_sample = pcm[2 * i] * (outputgain / 32768);
         double right_sample = pcm[2 * i + 1] * (outputgain / 32768);
