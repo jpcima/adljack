@@ -6,6 +6,7 @@
 #pragma once
 #include "player_traits.h"
 #include "dcfilter.h"
+#include "vumonitor.h"
 #include <string>
 #include <vector>
 #include <adlmidi.h>
@@ -15,7 +16,10 @@ extern void *player;
 extern Player_Type player_type;
 extern int16_t *buffer;
 extern DcFilter dcfilter[2];
+extern VuMonitor lvmonitor[2];
+extern double lvcurrent[2];
 static constexpr double dccutoff = 5.0;
+static constexpr double lvrelease = 20e-3;
 
 static constexpr unsigned default_nchip = 4;
 static constexpr unsigned midi_message_max_size = 64;
@@ -31,3 +35,5 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
 const char *player_name(Player_Type pt);
 Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);
+
+void interface_exec();

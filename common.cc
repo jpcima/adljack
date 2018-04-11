@@ -4,15 +4,20 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "common.h"
+#include <thread>
+#include <chrono>
 #include <stdexcept>
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
+namespace stc = std::chrono;
 
 void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
 int16_t *buffer = nullptr;
 DcFilter dcfilter[2];
+VuMonitor lvmonitor[2];
+double lvcurrent[2] = {};
 
 void generic_usage(const char *progname, const char *more_options)
 {
@@ -62,6 +67,12 @@ void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char 
 
     if (Traits::set_num_chips(player, nchip) < 0)
         throw std::runtime_error("error setting the number of chips");
+
+    fprintf(stderr, "DC filter @ %f Hz, LV monitor @%f ms\n", dccutoff, lvrelease * 1e3);
+    for (unsigned i = 0; i < 2; ++i) {
+        dcfilter[i].cutoff(dccutoff / sample_rate);
+        lvmonitor[i].release(lvrelease * sample_rate);
+    }
 }
 
 template <Player_Type Pt>
@@ -134,17 +145,28 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 
     Player *player = reinterpret_cast<Player *>(::player);
 
+    if (nframes <= 0)
+        return;
+
     int16_t *pcm = ::buffer;
     Traits::generate(player, 2 * nframes, pcm);
 
     DcFilter &dclf = dcfilter[0];
     DcFilter &dcrf = dcfilter[1];
+    double lvcurrent[2];
 
     for (unsigned i = 0; i < nframes; ++i) {
         constexpr double outputgain = 1.0; // 3.5;
-        left[i * stride] = dclf.process(pcm[2 * i] * (outputgain / 32768));
-        right[i * stride] = dcrf.process(pcm[2 * i + 1] * (outputgain / 32768));
+        double left_sample = dclf.process(pcm[2 * i] * (outputgain / 32768));
+        double right_sample = dcrf.process(pcm[2 * i + 1] * (outputgain / 32768));
+        lvcurrent[0] = lvmonitor[0].process(left_sample);
+        lvcurrent[1] = lvmonitor[1].process(right_sample);
+        left[i * stride] = left_sample;
+        right[i * stride] = right_sample;
     }
+
+    ::lvcurrent[0] = lvcurrent[0];
+    ::lvcurrent[1] = lvcurrent[1];
 }
 
 template <Player_Type Pt>
@@ -220,4 +242,36 @@ Player_Type player_by_name(const char *name)
 std::vector<std::string> enumerate_emulators(Player_Type pt)
 {
     PLAYER_DISPATCH(pt, enumerate_emulators);
+}
+
+static void print_volume_bar(FILE *out, unsigned size, double vol)
+{
+    if (size < 2)
+        return;
+    fprintf(out, "[");
+    for (unsigned i = 0; i < size; ++i)
+        fprintf(out, "%c", (vol > (double)i / size) ? '*' : '-');
+    fprintf(out, "]");
+}
+
+void interface_exec()
+{
+    while (1) {
+        fprintf(stderr, "\033[2K");
+        double vol_left = lvcurrent[0];
+        double vol_right = lvcurrent[1];
+
+        fprintf(stderr, " L ");
+        print_volume_bar(stderr, 30, vol_left);
+        fprintf(stderr, (vol_left > 1.0) ? " \033[7mCLIP\033[0m   " : "        ");
+
+        fprintf(stderr, " R ");
+        print_volume_bar(stderr, 30, vol_right);
+        fprintf(stderr, (vol_right > 1.0) ? " \033[7mCLIP\033[0m   " : "        ");
+
+        fprintf(stderr, "\r");
+        fflush(stderr);
+
+        std::this_thread::sleep_for(stc::milliseconds(50));
+    }
 }

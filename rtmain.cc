@@ -11,7 +11,6 @@
 #include <stdexcept>
 #include <system_error>
 #include <stdio.h>
-#include <unistd.h>
 
 static RtAudio *audio_client;
 static RtMidiIn *midi_client;
@@ -138,19 +137,11 @@ int main(int argc, char *argv[])
 
     initialize_player(sample_rate, nchip, bankfile, emulator);
 
-    fprintf(stderr, "DC filter @ %f Hz\n", dccutoff);
-    dcfilter[0].cutoff(dccutoff / sample_rate);
-    dcfilter[1].cutoff(dccutoff / sample_rate);
-
     audio_client->startStream();
     player_ready();
 
     //
-    int p[2];
-    if (pipe(p) == -1)
-        throw std::system_error(errno, std::generic_category(), "pipe");
-    for (char c;;)
-        read(p[0], &c, 1);
+    interface_exec();
 
     return 0;
 }

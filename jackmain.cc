@@ -10,7 +10,6 @@
 #include <stdexcept>
 #include <system_error>
 #include <stdio.h>
-#include <unistd.h>
 
 static jack_client_t *client;
 static jack_port_t *midiport;
@@ -97,20 +96,12 @@ int main(int argc, char *argv[])
 
     initialize_player(samplerate, nchip, bankfile, emulator);
 
-    fprintf(stderr, "DC filter @ %f Hz\n", dccutoff);
-    dcfilter[0].cutoff(dccutoff / samplerate);
-    dcfilter[1].cutoff(dccutoff / samplerate);
-
     jack_set_process_callback(client, process, nullptr);
     jack_activate(client);
     player_ready();
 
     //
-    int p[2];
-    if (pipe(p) == -1)
-        throw std::system_error(errno, std::generic_category(), "pipe");
-    for (char c;;)
-        read(p[0], &c, 1);
+    interface_exec();
 
     return 0;
 }
