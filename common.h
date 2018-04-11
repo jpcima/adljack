@@ -15,11 +15,12 @@
 // TESTING 32bitmix branch of ADLMIDI
 //#define TEST_PCM16_TO32 1
 //#define TEST_PCM8_TO8 1
-#define TEST_PCM8_TO16 1
+//#define TEST_PCM8_TO16 1
+#define TEST_PCM8_TO32 1
 
 extern void *player;
 extern Player_Type player_type;
-#if defined(TEST_PCM16_TO32)
+#if defined(TEST_PCM16_TO32) || defined(TEST_PCM8_TO32)
 extern int32_t *buffer;
 #elif defined(TEST_PCM8_TO8)
 extern int8_t *buffer;
