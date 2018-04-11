@@ -36,11 +36,13 @@ static void usage()
 {
     fprintf(stderr, "Usage: adljack [-n num-chips] [-b bank.wopl] [-e emulator]\n");
 
-    std::vector<std::string> emus = enumerate_emulators();
-    size_t emu_count = emus.size();
-    fprintf(stderr, "Available emulators:\n");
-    for (size_t i = 0; i < emu_count; ++i)
-        fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
+    for (Player_Type pt : all_player_types) {
+        std::vector<std::string> emus = enumerate_emulators(pt);
+        size_t emu_count = emus.size();
+        fprintf(stderr, "Available emulators for %s:\n", player_name(pt));
+        for (size_t i = 0; i < emu_count; ++i)
+            fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
+    }
 }
 
 int main(int argc, char *argv[])
@@ -102,8 +104,7 @@ int main(int argc, char *argv[])
 
     jack_set_process_callback(client, process, nullptr);
     jack_activate(client);
-
-    fprintf(stderr, "OPL3 ready with %u chips.\n", adl_getNumChips(player));
+    player_ready();
 
     //
     int p[2];

@@ -6,41 +6,64 @@
 #include "common.h"
 #include <stdexcept>
 #include <stdio.h>
+#include <assert.h>
 
-ADL_MIDIPlayer *player;
-int16_t *buffer;
+void *player = nullptr;
+Player_Type player_type = Player_Type::OPL3;
+int16_t *buffer = nullptr;
 DcFilter dcfilter[2];
 
-void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
+template <Player_Type Pt>
+void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
 {
-    fprintf(stderr, "ADLMIDI version %s\n", adl_linkedLibraryVersion());
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
 
-    ADL_MIDIPlayer *player = ::player = adl_init(sample_rate);
+    fprintf(stderr, "%s version %s\n", Traits::name(), Traits::version());
+
+    Player *player = Traits::init(sample_rate);
+    ::player = player;
     if (!player)
         throw std::runtime_error("error instantiating ADLMIDI");
 
     if (emulator >= 0)
-        adl_switchEmulator(player, emulator);
+        Traits::switch_emulator(player, emulator);
 
-    fprintf(stderr, "Using emulator \"%s\"\n", adl_chipEmulatorName(player));
+    fprintf(stderr, "Using emulator \"%s\"\n", Traits::emulator_name(player));
 
     if (!bankfile) {
         fprintf(stderr, "Using default banks.\n");
     }
     else {
-        if (adl_openBankFile(player, bankfile) < 0)
+        if (Traits::open_bank_file(player, bankfile) < 0)
             throw std::runtime_error("error loading bank file");
         fprintf(stderr, "Using banks from WOPL file.\n");
-        adl_reset(player);  // not sure if necessary
+        Traits::reset(player);  // not sure if necessary
     }
 
-    if (adl_setNumChips(player, nchip) < 0)
+    if (Traits::set_num_chips(player, nchip) < 0)
         throw std::runtime_error("error setting the number of chips");
 }
 
-void play_midi(const uint8_t *msg, unsigned len)
+template <Player_Type Pt>
+void generic_player_ready()
 {
-    ADL_MIDIPlayer &player = *::player;
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    fprintf(stderr, "%s ready with %u chips.\n",
+            Traits::name(), Traits::get_num_chips(player));
+}
+
+template <Player_Type Pt>
+void generic_play_midi(const uint8_t *msg, unsigned len)
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
 
     if (len <= 0)
         return;
@@ -54,42 +77,46 @@ void play_midi(const uint8_t *msg, unsigned len)
     case 0b1001:
         if (len < 3) break;
         if (msg[2] != 0) {
-            adl_rt_noteOn(&player, channel, msg[1], msg[2]);
+            Traits::rt_note_on(player, channel, msg[1], msg[2]);
             break;
         }
     case 0b1000:
         if (len < 3) break;
-        adl_rt_noteOff(&player, channel, msg[1]);
+        Traits::rt_note_off(player, channel, msg[1]);
         break;
     case 0b1010:
         if (len < 3) break;
-        adl_rt_noteAfterTouch(&player, channel, msg[1], msg[2]);
+        Traits::rt_note_aftertouch(player, channel, msg[1], msg[2]);
         break;
     case 0b1101:
         if (len < 2) break;
-        adl_rt_channelAfterTouch(&player, channel, msg[1]);
+        Traits::rt_channel_aftertouch(player, channel, msg[1]);
         break;
     case 0b1011:
         if (len < 3) break;
-        adl_rt_controllerChange(&player, channel, msg[1], msg[2]);
+        Traits::rt_controller_change(player, channel, msg[1], msg[2]);
         break;
     case 0b1100:
         if (len < 2) break;
-        adl_rt_patchChange(&player, channel, msg[1]);
+        Traits::rt_program_change(player, channel, msg[1]);
         break;
     case 0b1110:
         if (len < 3) break;
-        adl_rt_pitchBendML(&player, channel, msg[2], msg[1]);
+        Traits::rt_pitchbend_ml(player, channel, msg[2], msg[1]);
         break;
     }
 }
 
-void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)
+template <Player_Type Pt>
+void generic_generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)
 {
-    ADL_MIDIPlayer &player = *::player;
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
 
     int16_t *pcm = ::buffer;
-    adl_generate(&player, 2 * nframes, pcm);
+    Traits::generate(player, 2 * nframes, pcm);
 
     DcFilter &dclf = dcfilter[0];
     DcFilter &dcrf = dcfilter[1];
@@ -101,12 +128,69 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
     }
 }
 
+template <Player_Type Pt>
+const char *generic_player_name()
+{
+    typedef Player_Traits<Pt> Traits;
+
+    return Traits::name();
+}
+
+template <Player_Type Pt>
+std::vector<std::string> generic_enumerate_emulators()
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = Traits::init(44100);
+    std::vector<std::string> names;
+    for (unsigned i = 0; Traits::switch_emulator(player, i) == 0; ++i)
+        names.push_back(Traits::emulator_name(player));
+    Traits::close(player);
+    return names;
+}
+
+#define PLAYER_DISPATCH_CASE(x, fn, ...)                \
+    case Player_Type::x:                                \
+    return generic_##fn<Player_Type::x>(__VA_ARGS__);   \
+
+#define PLAYER_DISPATCH(type, fn, ...)                                  \
+    switch ((type)) {                                                   \
+    EACH_PLAYER_TYPE(PLAYER_DISPATCH_CASE, fn, ##__VA_ARGS__)           \
+    default: assert(false);                                             \
+    }
+
+void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
+{
+    PLAYER_DISPATCH(::player_type, initialize_player, sample_rate, nchip, bankfile, emulator);
+}
+
+void player_ready()
+{
+    PLAYER_DISPATCH(::player_type, player_ready);
+}
+
+void play_midi(const uint8_t *msg, unsigned len)
+{
+    PLAYER_DISPATCH(::player_type, play_midi, msg, len);
+}
+
+void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)
+{
+    PLAYER_DISPATCH(::player_type, generate_outputs, left, right, nframes, stride);
+}
+
 std::vector<std::string> enumerate_emulators()
 {
-    ADL_MIDIPlayer *player = adl_init(44100);
-    std::vector<std::string> names;
-    for (unsigned i = 0; adl_switchEmulator(player, i) == 0; ++i)
-        names.push_back(adl_chipEmulatorName(player));
-    adl_close(player);
-    return names;
+    PLAYER_DISPATCH(::player_type, enumerate_emulators);
+}
+
+const char *player_name(Player_Type pt)
+{
+    PLAYER_DISPATCH(pt, player_name);
+}
+
+std::vector<std::string> enumerate_emulators(Player_Type pt)
+{
+    PLAYER_DISPATCH(pt, enumerate_emulators);
 }

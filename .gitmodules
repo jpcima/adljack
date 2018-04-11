@@ -4,3 +4,6 @@
 [submodule "thirdparty/ring-buffer"]
 	path = thirdparty/ring-buffer
 	url = git@github.com:jpcima/ring-buffer.git
+[submodule "thirdparty/libOPNMIDI"]
+	path = thirdparty/libOPNMIDI
+	url = https://github.com/Wohlstand/libOPNMIDI.git
