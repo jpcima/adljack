@@ -34,15 +34,22 @@ static int process(jack_nframes_t nframes, void *)
 
 static void usage()
 {
-    fprintf(stderr, "Usage: adljack [-n num-chips] [-b bank.wopl]\n");
+    fprintf(stderr, "Usage: adljack [-n num-chips] [-b bank.wopl] [-e emulator]\n");
+
+    std::vector<std::string> emus = enumerate_emulators();
+    size_t emu_count = emus.size();
+    fprintf(stderr, "Available emulators:\n");
+    for (size_t i = 0; i < emu_count; ++i)
+        fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
 }
 
 int main(int argc, char *argv[])
 {
     unsigned nchip = default_nchip;
     const char *bankfile = nullptr;
+    int emulator = -1;
 
-    for (int c; (c = getopt(argc, argv, "hn:b:")) != -1;) {
+    for (int c; (c = getopt(argc, argv, "hn:b:e:")) != -1;) {
         switch (c) {
         case 'n':
             nchip = std::stoi(optarg);
@@ -53,6 +60,9 @@ int main(int argc, char *argv[])
             break;
         case 'b':
             bankfile = optarg;
+            break;
+        case 'e':
+            emulator = std::stoi(optarg);
             break;
         case 'h':
             usage();
@@ -84,7 +94,7 @@ int main(int argc, char *argv[])
 
     buffer = new int16_t[2 * bufsize];
 
-    initialize_player(samplerate, nchip, bankfile);
+    initialize_player(samplerate, nchip, bankfile, emulator);
 
     fprintf(stderr, "DC filter @ %f Hz\n", dccutoff);
     dcfilter[0].cutoff(dccutoff / samplerate);

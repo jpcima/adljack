@@ -46,7 +46,13 @@ static void midi_event(double, std::vector<uint8_t> *message, void *)
 
 static void usage()
 {
-    fprintf(stderr, "Usage: adlrt [-n num-chips] [-b bank.wopl] [-L latency-ms]\n");
+    fprintf(stderr, "Usage: adlrt [-n num-chips] [-b bank.wopl] [-e emulator] [-L latency-ms]\n");
+
+    std::vector<std::string> emus = enumerate_emulators();
+    size_t emu_count = emus.size();
+    fprintf(stderr, "Available emulators:\n");
+    for (size_t i = 0; i < emu_count; ++i)
+        fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
 }
 
 int main(int argc, char *argv[])
@@ -54,8 +60,9 @@ int main(int argc, char *argv[])
     unsigned nchip = default_nchip;
     const char *bankfile = nullptr;
     double latency = 20e-3;  // audio latency, 20ms default
+    int emulator = -1;
 
-    for (int c; (c = getopt(argc, argv, "hn:b:L:")) != -1;) {
+    for (int c; (c = getopt(argc, argv, "hn:b:e:L:")) != -1;) {
         switch (c) {
         case 'n':
             nchip = std::stoi(optarg);
@@ -66,6 +73,9 @@ int main(int argc, char *argv[])
             break;
         case 'b':
             bankfile = optarg;
+            break;
+        case 'e':
+            emulator = std::stoi(optarg);
             break;
         case 'L':
             latency = std::stod(optarg) * 1e-3;
@@ -125,7 +135,7 @@ int main(int argc, char *argv[])
 
     buffer = new int16_t[2 * buffer_size];
 
-    initialize_player(sample_rate, nchip, bankfile);
+    initialize_player(sample_rate, nchip, bankfile, emulator);
 
     fprintf(stderr, "DC filter @ %f Hz\n", dccutoff);
     dcfilter[0].cutoff(dccutoff / sample_rate);

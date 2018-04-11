@@ -11,13 +11,16 @@ ADL_MIDIPlayer *player;
 int16_t *buffer;
 DcFilter dcfilter[2];
 
-void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile)
+void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
 {
     fprintf(stderr, "ADLMIDI version %s\n", adl_linkedLibraryVersion());
 
     ADL_MIDIPlayer *player = ::player = adl_init(sample_rate);
     if (!player)
         throw std::runtime_error("error instantiating ADLMIDI");
+
+    if (emulator >= 0)
+        adl_switchEmulator(player, emulator);
 
     fprintf(stderr, "Using emulator \"%s\"\n", adl_chipEmulatorName(player));
 
@@ -96,4 +99,14 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
         left[i * stride] = dclf.process(pcm[2 * i] * (outputgain / 32768));
         right[i * stride] = dcrf.process(pcm[2 * i + 1] * (outputgain / 32768));
     }
+}
+
+std::vector<std::string> enumerate_emulators()
+{
+    ADL_MIDIPlayer *player = adl_init(44100);
+    std::vector<std::string> names;
+    for (unsigned i = 0; adl_switchEmulator(player, i) == 0; ++i)
+        names.push_back(adl_chipEmulatorName(player));
+    adl_close(player);
+    return names;
 }
