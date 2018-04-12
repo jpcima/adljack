@@ -258,16 +258,24 @@ void interface_exec()
 {
     while (1) {
         fprintf(stderr, "\033[2K");
-        double vol_left = lvcurrent[0];
-        double vol_right = lvcurrent[1];
+        double volumes[2] = {lvcurrent[0], lvcurrent[1]};
+        const char *names[2] = {"Left", "Right"};
 
-        fprintf(stderr, " L ");
-        print_volume_bar(stderr, 30, vol_left);
-        fprintf(stderr, (vol_left > 1.0) ? " \033[7mCLIP\033[0m" : "     ");
+        // enables logarithmic view for perceptual volume, otherwise linear.
+        //  (better use linear to watch output for clipping)
+        const bool logarithmic = false;
 
-        fprintf(stderr, " R ");
-        print_volume_bar(stderr, 30, vol_right);
-        fprintf(stderr, (vol_right > 1.0) ? " \033[7mCLIP\033[0m" : "     ");
+        for (unsigned channel = 0; channel < 2; ++channel) {
+            double vol = volumes[channel];
+            if (logarithmic && vol > 0) {
+                double db = 20 * log10(vol);
+                const double dbmin = -60.0;
+                vol = (db - dbmin) / (0 - dbmin);
+            }
+            fprintf(stderr, " %c ", names[channel][0]);
+            print_volume_bar(stderr, 30, vol);
+            fprintf(stderr, (vol > 1.0) ? " \033[7mCLIP\033[0m" : "     ");
+        }
 
         fprintf(stderr, "\r");
         fflush(stderr);
