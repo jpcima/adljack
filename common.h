@@ -14,7 +14,6 @@
 
 extern void *player;
 extern Player_Type player_type;
-extern int16_t *buffer;
 extern DcFilter dcfilter[2];
 extern VuMonitor lvmonitor[2];
 extern double lvcurrent[2];

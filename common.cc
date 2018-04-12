@@ -14,7 +14,6 @@ namespace stc = std::chrono;
 
 void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
-int16_t *buffer = nullptr;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
@@ -142,14 +141,19 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 {
     typedef Player_Traits<Pt> Traits;
     typedef typename Traits::player Player;
+    typedef typename Traits::audio_format AudioFormat;
+    typedef typename Traits::sample_type SampleType;
 
     Player *player = reinterpret_cast<Player *>(::player);
 
     if (nframes <= 0)
         return;
 
-    int16_t *pcm = ::buffer;
-    Traits::generate(player, 2 * nframes, pcm);
+    AudioFormat format;
+    format.type = (SampleType)ADLMIDI_SampleType_F32;
+    format.containerSize = sizeof(float);
+    format.sampleOffset = stride * sizeof(float);
+    Traits::generate_format(player, 2 * nframes, (uint8_t *)left, (uint8_t *)right, &format);
 
     DcFilter &dclf = dcfilter[0];
     DcFilter &dcrf = dcfilter[1];
@@ -157,12 +161,14 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 
     for (unsigned i = 0; i < nframes; ++i) {
         constexpr double outputgain = 1.0; // 3.5;
-        double left_sample = dclf.process(pcm[2 * i] * (outputgain / 32768));
-        double right_sample = dcrf.process(pcm[2 * i + 1] * (outputgain / 32768));
+        float *leftp = &left[i * stride];
+        float *rightp = &right[i * stride];
+        double left_sample = dclf.process(outputgain * *leftp);
+        double right_sample = dcrf.process(outputgain * *rightp);
         lvcurrent[0] = lvmonitor[0].process(left_sample);
         lvcurrent[1] = lvmonitor[1].process(right_sample);
-        left[i * stride] = left_sample;
-        right[i * stride] = right_sample;
+        *leftp = left_sample;
+        *rightp = right_sample;
     }
 
     ::lvcurrent[0] = lvcurrent[0];

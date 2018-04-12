@@ -133,8 +133,6 @@ int main(int argc, char *argv[])
     fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
             device_info.name.c_str(), sample_rate, buffer_size, latency);
 
-    buffer = new int16_t[2 * buffer_size];
-
     initialize_player(sample_rate, nchip, bankfile, emulator);
 
     audio_client->startStream();

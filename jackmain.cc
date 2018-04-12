@@ -92,8 +92,6 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Jack client \"%s\" fs=%u bs=%u\n",
             jack_get_client_name(client), samplerate, bufsize);
 
-    buffer = new int16_t[2 * bufsize];
-
     initialize_player(samplerate, nchip, bankfile, emulator);
 
     jack_set_process_callback(client, process, nullptr);
