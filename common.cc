@@ -152,6 +152,8 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 {
     typedef Player_Traits<Pt> Traits;
     typedef typename Traits::player Player;
+    typedef typename Traits::audio_format AudioFormat;
+    typedef typename Traits::sample_type SampleType;
 
     Player *player = reinterpret_cast<Player *>(::player);
 
@@ -160,43 +162,43 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 
 #if defined(TEST_PCM16_TO32)
     int32_t *pcm = ::buffer;
-    ADLMIDI_AudioFormat fmt;
-    fmt.type = ADLMIDI_SampleType_S16;
+    AudioFormat fmt;
+    fmt.type = (SampleType)ADLMIDI_SampleType_S16;
     fmt.containerSize = sizeof(int32_t);
     fmt.sampleOffset = 2 * sizeof(int32_t);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #elif defined(TEST_PCM8_TO8)
     int8_t *pcm = ::buffer;
-    ADLMIDI_AudioFormat fmt;
-    fmt.type = ADLMIDI_SampleType_S8;
+    AudioFormat fmt;
+    fmt.type = (SampleType)ADLMIDI_SampleType_S8;
     fmt.containerSize = sizeof(int8_t);
     fmt.sampleOffset = 2 * sizeof(int8_t);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #elif defined(TEST_PCM8_TO16)
     int16_t *pcm = ::buffer;
-    ADLMIDI_AudioFormat fmt;
-    fmt.type = ADLMIDI_SampleType_S8;
+    AudioFormat fmt;
+    fmt.type = (SampleType)ADLMIDI_SampleType_S8;
     fmt.containerSize = sizeof(int16_t);
     fmt.sampleOffset = 2 * sizeof(int16_t);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #elif defined(TEST_PCM8_TO32)
     int32_t *pcm = ::buffer;
-    ADLMIDI_AudioFormat fmt;
-    fmt.type = ADLMIDI_SampleType_S8;
+    AudioFormat fmt;
+    fmt.type = (SampleType)ADLMIDI_SampleType_S8;
     fmt.containerSize = sizeof(int32_t);
     fmt.sampleOffset = 2 * sizeof(int32_t);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #elif defined(TEST_PCM_F32)
     float *pcm = ::buffer;
-    ADLMIDI_AudioFormat fmt;
-    fmt.type = ADLMIDI_SampleType_F32;
+    AudioFormat fmt;
+    fmt.type = (SampleType)ADLMIDI_SampleType_F32;
     fmt.containerSize = sizeof(float);
     fmt.sampleOffset = 2 * sizeof(float);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);
 #elif defined(TEST_PCM_F64)
     double *pcm = ::buffer;
-    ADLMIDI_AudioFormat fmt;
-    fmt.type = ADLMIDI_SampleType_F64;
+    AudioFormat fmt;
+    fmt.type = (SampleType)ADLMIDI_SampleType_F64;
     fmt.containerSize = sizeof(double);
     fmt.sampleOffset = 2 * sizeof(double);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)pcm, (uint8_t *)(pcm + 1), &fmt);

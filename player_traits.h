@@ -5,7 +5,7 @@
 
 #define EACH_PLAYER_TYPE(F, ...)                \
     F(OPL3, ##__VA_ARGS__)                      \
-    /* F(OPN2, ##__VA_ARGS__) */
+    F(OPN2, ##__VA_ARGS__)
 
 enum class Player_Type {
     #define ENUMVAL(x) x,
@@ -28,6 +28,8 @@ template <>
 struct Player_Traits<Player_Type::OPL3>
 {
     typedef ADL_MIDIPlayer player;
+    typedef ADLMIDI_AudioFormat audio_format;
+    typedef ADLMIDI_SampleType sample_type;
 
     static const char *name() { return "ADLMIDI"; }
     static constexpr auto &version = adl_linkedLibraryVersion;
@@ -50,13 +52,14 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &rt_pitchbend_ml = adl_rt_pitchBendML;
 };
 
-/*
 #include <opnmidi.h>
 
 template <>
 struct Player_Traits<Player_Type::OPN2>
 {
     typedef OPN2_MIDIPlayer player;
+    typedef OPNMIDI_AudioFormat audio_format;
+    typedef OPNMIDI_SampleType sample_type;
 
     static const char *name() { return "OPNMIDI"; }
     static constexpr auto &version = opn2_linkedLibraryVersion;
@@ -69,6 +72,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &set_num_chips = opn2_setNumChips;
     static constexpr auto &open_bank_file = opn2_openBankFile;
     static constexpr auto &generate = opn2_generate;
+    static constexpr auto &generate_format = opn2_generateFormat;
     static constexpr auto &rt_note_on = opn2_rt_noteOn;
     static constexpr auto &rt_note_off = opn2_rt_noteOff;
     static constexpr auto &rt_note_aftertouch = opn2_rt_noteAfterTouch;
@@ -77,4 +81,3 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &rt_program_change = opn2_rt_patchChange;
     static constexpr auto &rt_pitchbend_ml = opn2_rt_pitchBendML;
 };
-*/
