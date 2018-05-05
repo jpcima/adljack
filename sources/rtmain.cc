@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 static RtAudio *audio_client;
+static RtAudio::DeviceInfo audio_device_info;
 static RtMidiIn *midi_client;
 static Ring_Buffer *midi_rb;
 
@@ -49,7 +50,15 @@ static void usage()
 
 std::string get_program_title()
 {
-    return "ADLrt";
+    std::string name = "ADLrt";
+    const std::string &device_name = ::audio_device_info.name;
+    if (!device_name.empty()) {
+        name.push_back(' ');
+        name.push_back('[');
+        name.append(device_name);
+        name.push_back(']');
+    }
+    return name;
 }
 
 int main(int argc, char *argv[])
@@ -100,6 +109,8 @@ int main(int argc, char *argv[])
     audio_client->openStream(
         &stream_param, nullptr, RTAUDIO_FLOAT32, sample_rate, &buffer_size,
         &process, nullptr, &stream_opts);
+
+    ::audio_device_info = device_info;
 
     RtMidiIn *midi_client = ::midi_client = new RtMidiIn(
         RtMidi::Api::UNSPECIFIED, "adlrt", midi_buffer_size);

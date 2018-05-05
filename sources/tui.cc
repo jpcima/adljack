@@ -174,7 +174,7 @@ static void update_display(TUI_context &ctx)
 
         mvwaddstr(w, 0, 0, channel_names[channel]);
 
-        WINDOW_u barw(subwin(w, 1, getcols(w) - 6, getbegy(w), getbegx(w) + 6));
+        WINDOW_u barw(derwin(w, 1, getcols(w) - 6, 0, 6));
         if (barw)
             print_volume_bar(barw.get(), vol);
 
@@ -205,7 +205,7 @@ int getcols(WINDOW *w)
 
 WINDOW_u linewin(WINDOW *w, int row, int col)
 {
-    return WINDOW_u(subwin(w, 1, getcols(w) - col, getbegy(w) + row, getbegx(w) + col));
+    return WINDOW_u(derwin(w, 1, getcols(w) - col, row, col));
 }
 
 #endif  // defined(ADLJACK_USE_CURSES)
