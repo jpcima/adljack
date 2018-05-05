@@ -21,6 +21,12 @@ extern double lvcurrent[2];
 static constexpr double dccutoff = 5.0;
 static constexpr double lvrelease = 20e-3;
 
+struct Program {
+    unsigned gm = 0;
+    /* TODO bank msb lsb */
+};
+extern Program channel_map[16];
+
 static constexpr unsigned default_nchip = 4;
 static constexpr unsigned midi_message_max_size = 64;
 static constexpr unsigned midi_buffer_size = 1024;

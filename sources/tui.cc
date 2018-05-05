@@ -5,7 +5,10 @@
 
 #if defined(ADLJACK_USE_CURSES)
 #include "tui.h"
+#include "insnames.h"
 #include "common.h"
+
+extern std::string get_program_title();
 
 struct TUI_context
 {
@@ -13,13 +16,16 @@ struct TUI_context
     WINDOW_u win_playertitle;
     WINDOW_u win_emutitle;
     WINDOW_u win_volume[2];
+    WINDOW_u win_instrument[16];
 };
 
 static void setup_display(TUI_context &ctx);
 static void update_display(TUI_context &ctx);
 
 enum {
-    Colors_ActiveVolume = 1,
+    Colors_Highlight = 1,
+    Colors_Frame,
+    Colors_ActiveVolume,
 };
 
 void curses_interface_exec()
@@ -67,9 +73,11 @@ static void setup_display(TUI_context &ctx)
     ctx = TUI_context();
 
     start_color();
+    init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
     init_pair(Colors_ActiveVolume, COLOR_GREEN, COLOR_BLACK);
 
-    WINDOW *inner = subwin(stdscr, LINES - 2, COLS - 2, 1, 1);
+    WINDOW *inner = subwin(stdscr, LINES - 3, COLS - 2, 2, 1);
     if (!inner) return;
     ctx.win_inner.reset(inner);
     int row = 0;
@@ -80,6 +88,15 @@ static void setup_display(TUI_context &ctx)
 
     for (unsigned channel = 0; channel < 2; ++channel)
         ctx.win_volume[channel] = linewin(inner, row++, 0);
+    ++row;
+
+    for (unsigned midichannel = 0; midichannel < 16; ++midichannel) {
+        unsigned width = getcols(inner) / 2;
+        unsigned row2 = row + midichannel % 8;
+        unsigned col = (midichannel < 8) ? 0 : width;
+        ctx.win_instrument[midichannel].reset(derwin(inner, 1, width, row2, col));
+    }
+    row += 8;
 }
 
 static void print_volume_bar(WINDOW *w, double vol)
@@ -102,13 +119,38 @@ static void update_display(TUI_context &ctx)
 {
     Player_Type pt = ::player_type;
 
+    {
+        std::string title = get_program_title();
+        size_t titlesize = title.size();
+
+        attron(A_BOLD|COLOR_PAIR(Colors_Frame));
+        border(' ', ' ', '-', ' ', '-', '-', ' ', ' ');
+        attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
+
+        unsigned cols = getcols(stdscr);
+        if (cols >= titlesize + 2) {
+            unsigned x = (cols - (titlesize + 2)) / 2;
+            attron(A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvaddch(0, x, '(');
+            mvaddch(0, x + titlesize + 1, ')');
+            attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvaddstr(0, x + 1, title.c_str());
+        }
+    }
+
     if (WINDOW *w = ctx.win_playertitle.get()) {
         wclear(w);
-        mvwprintw(w, 0, 0, "%s %s", player_name(pt), player_version(pt));
+        mvwaddstr(w, 0, 0, "Player");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
+        mvwprintw(w, 0, 10, "%s %s", player_name(pt), player_version(pt));
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
     if (WINDOW *w = ctx.win_emutitle.get()) {
         wclear(w);
-        mvwprintw(w, 0, 0, "%s", player_emulator_name(pt));
+        mvwaddstr(w, 0, 0, "Emulator");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
+        mvwaddstr(w, 0, 10, player_emulator_name(pt));
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
 
 
@@ -130,13 +172,23 @@ static void update_display(TUI_context &ctx)
             vol = (db - dbmin) / (0 - dbmin);
         }
 
-        mvwprintw(w, 0, 0, "%s", channel_names[channel]);
+        mvwaddstr(w, 0, 0, channel_names[channel]);
 
         WINDOW_u barw(subwin(w, 1, getcols(w) - 6, getbegy(w), getbegx(w) + 6));
         if (barw)
             print_volume_bar(barw.get(), vol);
 
         wrefresh(w);
+    }
+
+    for (unsigned midichannel = 0; midichannel < 16; ++midichannel) {
+        WINDOW *w = ctx.win_instrument[midichannel].get();
+        if (!w) continue;
+        wclear(w);
+        const Program &pgm = channel_map[midichannel];
+        mvwprintw(w, 0, 0, "%2u: [%3u]", midichannel + 1, pgm.gm);
+        // mvwaddstr(w, 0, 4, "Instrument");
+        mvwaddstr(w, 0, 12, midi_instrument_name[pgm.gm]);
     }
 }
 

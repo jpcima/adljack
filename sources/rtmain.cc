@@ -47,6 +47,11 @@ static void usage()
     generic_usage("adlrt", " [-L latency-ms]");
 }
 
+std::string get_program_title()
+{
+    return "ADLrt";
+}
+
 int main(int argc, char *argv[])
 {
     double latency = 20e-3;  // audio latency, 20ms default

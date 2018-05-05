@@ -35,6 +35,18 @@ static void usage()
     generic_usage("adljack", "");
 }
 
+std::string get_program_title()
+{
+    std::string name = "ADLjack";
+    if (client) {
+        name.push_back(' ');
+        name.push_back('[');
+        name.append(jack_get_client_name(client));
+        name.push_back(']');
+    }
+    return name;
+}
+
 int main(int argc, char *argv[])
 {
     for (int c; (c = generic_getopt(argc, argv, "", usage)) != -1;) {

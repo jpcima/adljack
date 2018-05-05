@@ -18,6 +18,7 @@ Player_Type player_type = Player_Type::OPL3;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
+Program channel_map[16];
 
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
@@ -188,10 +189,13 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
         if (len < 3) break;
         Traits::rt_controller_change(player, channel, msg[1], msg[2]);
         break;
-    case 0b1100:
+    case 0b1100: {
         if (len < 2) break;
-        Traits::rt_program_change(player, channel, msg[1]);
+        unsigned pgm = msg[1] & 0x7f;
+        Traits::rt_program_change(player, channel, pgm);
+        channel_map[channel].gm = pgm;
         break;
+    }
     case 0b1110:
         if (len < 3) break;
         Traits::rt_pitchbend_ml(player, channel, msg[2], msg[1]);
