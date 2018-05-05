@@ -18,6 +18,7 @@ extern Player_Type player_type;
 extern DcFilter dcfilter[2];
 extern VuMonitor lvmonitor[2];
 extern double lvcurrent[2];
+extern double cpuratio;
 static constexpr double dccutoff = 5.0;
 static constexpr double lvrelease = 20e-3;
 
@@ -46,6 +47,7 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
 const char *player_name(Player_Type pt);
 const char *player_version(Player_Type pt);
 const char *player_emulator_name(Player_Type pt);
+unsigned player_chip_count(Player_Type pt);
 Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);
 

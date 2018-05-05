@@ -19,8 +19,10 @@ Player_Type player_type = Player_Type::OPL3;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
+double cpuratio = 0;
 Program channel_map[16];
 
+static unsigned player_sample_rate;
 static std::mutex player_mutex;
 
 unsigned arg_nchip = default_nchip;
@@ -112,9 +114,10 @@ void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char 
     fprintf(stderr, "%s version %s\n", Traits::name(), Traits::version());
 
     Player *player = Traits::init(sample_rate);
-    ::player = player;
     if (!player)
         throw std::runtime_error("error instantiating ADLMIDI");
+    ::player = player;
+    ::player_sample_rate = sample_rate;
 
     if (emulator >= 0)
         Traits::switch_emulator(player, emulator);
@@ -236,7 +239,9 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
     format.type = (SampleType)ADLMIDI_SampleType_F32;
     format.containerSize = sizeof(float);
     format.sampleOffset = stride * sizeof(float);
+    stc::steady_clock::time_point t_before_gen = stc::steady_clock::now();
     Traits::generate_format(player, 2 * nframes, (uint8_t *)left, (uint8_t *)right, &format);
+    stc::steady_clock::time_point t_after_gen = stc::steady_clock::now();
     lock.unlock();
 
     DcFilter &dclf = dcfilter[0];
@@ -257,6 +262,10 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 
     ::lvcurrent[0] = lvcurrent[0];
     ::lvcurrent[1] = lvcurrent[1];
+
+    stc::steady_clock::duration d_gen = t_after_gen - t_before_gen;
+    double d_sec = 1e-6 * stc::duration_cast<stc::microseconds>(d_gen).count();
+    ::cpuratio = d_sec / ((double)nframes / ::player_sample_rate);
 }
 
 template <Player_Type Pt>
@@ -284,6 +293,17 @@ const char *generic_player_emulator_name()
     Player *player = reinterpret_cast<Player *>(::player);
 
     return Traits::emulator_name(player);
+}
+
+template <Player_Type Pt>
+unsigned generic_player_chip_count()
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    return Traits::get_num_chips(player);
 }
 
 template <Player_Type Pt>
@@ -356,6 +376,11 @@ const char *player_version(Player_Type pt)
 const char *player_emulator_name(Player_Type pt)
 {
     PLAYER_DISPATCH(pt, player_emulator_name);
+}
+
+unsigned player_chip_count(Player_Type pt)
+{
+    PLAYER_DISPATCH(pt, player_chip_count);
 }
 
 std::vector<std::string> enumerate_emulators(Player_Type pt)

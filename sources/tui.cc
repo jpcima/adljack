@@ -7,6 +7,7 @@
 #include "tui.h"
 #include "insnames.h"
 #include "common.h"
+#include <cmath>
 
 extern std::string get_program_title();
 
@@ -15,6 +16,8 @@ struct TUI_context
     WINDOW_u win_inner;
     WINDOW_u win_playertitle;
     WINDOW_u win_emutitle;
+    WINDOW_u win_chipcount;
+    WINDOW_u win_cpuratio;
     WINDOW_u win_volume[2];
     WINDOW_u win_instrument[16];
 };
@@ -84,6 +87,8 @@ static void setup_display(TUI_context &ctx)
 
     ctx.win_playertitle = linewin(inner, row++, 0);
     ctx.win_emutitle = linewin(inner, row++, 0);
+    ctx.win_chipcount = linewin(inner, row++, 0);
+    ctx.win_cpuratio = linewin(inner, row++, 0);
     ++row;
 
     for (unsigned channel = 0; channel < 2; ++channel)
@@ -99,7 +104,7 @@ static void setup_display(TUI_context &ctx)
     row += 8;
 }
 
-static void print_volume_bar(WINDOW *w, double vol)
+static void print_bar(WINDOW *w, double vol, char ch_on, char ch_off, int attr_on)
 {
     unsigned size = getcols(w);
     if (size < 2)
@@ -108,9 +113,9 @@ static void print_volume_bar(WINDOW *w, double vol)
     for (unsigned i = 0; i < size - 2; ++i) {
         double ref = (double)i / (size - 2);
         bool gt = vol > ref;
-        if (gt) wattron(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
-        mvwaddch(w, 0, i + 1, gt ? '*' : '-');
-        if (gt) wattroff(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
+        if (gt) wattron(w, attr_on);
+        mvwaddch(w, 0, i + 1, gt ? ch_on : ch_off);
+        if (gt) wattroff(w, attr_on);
     }
     mvwaddch(w, 0, size - 1, ']');
 }
@@ -152,7 +157,25 @@ static void update_display(TUI_context &ctx)
         mvwaddstr(w, 0, 10, player_emulator_name(pt));
         wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
+    if (WINDOW *w = ctx.win_chipcount.get()) {
+        wclear(w);
+        mvwaddstr(w, 0, 0, "Chips");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
+        mvwprintw(w, 0, 10, "%u", player_chip_count(pt));
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
+    }
+    if (WINDOW *w = ctx.win_cpuratio.get()) {
+        wclear(w);
+        mvwaddstr(w, 0, 0, "CPU");
 
+        WINDOW_u barw(derwin(w, 1, 25, 0, 10));
+        if (barw)
+            print_bar(barw.get(), cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
+
+        // wattron(w, COLOR_PAIR(Colors_Highlight));
+        // mvwprintw(w, 0, 10, "%ld%%", std::lround(::cpuratio * 100));
+        // wattroff(w, COLOR_PAIR(Colors_Highlight));
+    }
 
     double channel_volumes[2] = {lvcurrent[0], lvcurrent[1]};
     const char *channel_names[2] = {"Left", "Right"};
@@ -176,7 +199,7 @@ static void update_display(TUI_context &ctx)
 
         WINDOW_u barw(derwin(w, 1, getcols(w) - 6, 0, 6));
         if (barw)
-            print_volume_bar(barw.get(), vol);
+            print_bar(barw.get(), vol, '*', '-', A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
 
         wrefresh(w);
     }
