@@ -38,6 +38,8 @@ void play_midi(const uint8_t *msg, unsigned len);
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride);
 
 const char *player_name(Player_Type pt);
+const char *player_version(Player_Type pt);
+const char *player_emulator_name(Player_Type pt);
 Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);
 

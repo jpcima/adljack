@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "common.h"
+#include "tui.h"
 #include <thread>
 #include <chrono>
 #include <stdexcept>
@@ -21,10 +22,20 @@ double lvcurrent[2] = {};
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
 int arg_emulator = -1;
+#if defined(ADLJACK_USE_CURSES)
+static bool arg_simple_interface = false;
+#endif
 
 void generic_usage(const char *progname, const char *more_options)
 {
-    fprintf(stderr, "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]%s\n", progname, more_options);
+    const char *usage_string =
+        "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]"
+#if defined(ADLJACK_USE_CURSES)
+        " [-t]"
+#endif
+        "%s\n";
+
+    fprintf(stderr, usage_string, progname, more_options);
 
     fprintf(stderr, "Available players:\n");
     for (Player_Type pt : all_player_types) {
@@ -42,7 +53,13 @@ void generic_usage(const char *progname, const char *more_options)
 
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)())
 {
-    std::string optstr = std::string("hp:n:b:e:") + more_options;
+    const char *basic_optstr = "hp:n:b:e:"
+#if defined(ADLJACK_USE_CURSES)
+        "t"
+#endif
+        ;
+
+    std::string optstr = std::string(basic_optstr) + more_options;
 
     for (int c; (c = getopt(argc, argv, optstr.c_str())) != -1;) {
         switch (c) {
@@ -69,6 +86,11 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
         case 'h':
             usagefn();
             exit(0);
+#if defined(ADLJACK_USE_CURSES)
+        case 't':
+            arg_simple_interface = true;
+            break;
+#endif
         default:
             return c;
         }
@@ -225,6 +247,25 @@ const char *generic_player_name()
 }
 
 template <Player_Type Pt>
+const char *generic_player_version()
+{
+    typedef Player_Traits<Pt> Traits;
+
+    return Traits::version();
+}
+
+template <Player_Type Pt>
+const char *generic_player_emulator_name()
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    return Traits::emulator_name(player);
+}
+
+template <Player_Type Pt>
 std::vector<std::string> generic_enumerate_emulators()
 {
     typedef Player_Traits<Pt> Traits;
@@ -286,6 +327,16 @@ Player_Type player_by_name(const char *name)
     return (Player_Type)-1;
 }
 
+const char *player_version(Player_Type pt)
+{
+    PLAYER_DISPATCH(pt, player_version);
+}
+
+const char *player_emulator_name(Player_Type pt)
+{
+    PLAYER_DISPATCH(pt, player_emulator_name);
+}
+
 std::vector<std::string> enumerate_emulators(Player_Type pt)
 {
     PLAYER_DISPATCH(pt, enumerate_emulators);
@@ -296,12 +347,14 @@ static void print_volume_bar(FILE *out, unsigned size, double vol)
     if (size < 2)
         return;
     fprintf(out, "[");
-    for (unsigned i = 0; i < size; ++i)
-        fprintf(out, "%c", (vol > (double)i / size) ? '*' : '-');
+    for (unsigned i = 0; i < size; ++i) {
+        double ref = (double)i / size;
+        fprintf(out, "%c", (vol > ref) ? '*' : '-');
+    }
     fprintf(out, "]");
 }
 
-void interface_exec()
+static void simple_interface_exec()
 {
     while (1) {
         fprintf(stderr, "\033[2K");
@@ -329,4 +382,16 @@ void interface_exec()
 
         std::this_thread::sleep_for(stc::milliseconds(50));
     }
+}
+
+void interface_exec()
+{
+#if defined(ADLJACK_USE_CURSES)
+    if (arg_simple_interface)
+        simple_interface_exec();
+    else
+        curses_interface_exec();
+#else
+    simple_interface_exec();
+#endif
 }
