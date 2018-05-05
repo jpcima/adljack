@@ -187,8 +187,9 @@ static void update_display(TUI_context &ctx)
         wclear(w);
         const Program &pgm = channel_map[midichannel];
         mvwprintw(w, 0, 0, "%2u: [%3u]", midichannel + 1, pgm.gm);
-        // mvwaddstr(w, 0, 4, "Instrument");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
         mvwaddstr(w, 0, 12, midi_instrument_name[pgm.gm]);
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
 }
 
