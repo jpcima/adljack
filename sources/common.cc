@@ -7,6 +7,7 @@
 #include "tui.h"
 #include <thread>
 #include <chrono>
+#include <mutex>
 #include <stdexcept>
 #include <string.h>
 #include <stdio.h>
@@ -19,6 +20,8 @@ DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
 Program channel_map[16];
+
+static std::mutex player_mutex;
 
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
@@ -157,6 +160,9 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
     typedef typename Traits::player Player;
 
     Player *player = reinterpret_cast<Player *>(::player);
+    std::unique_lock<std::mutex> lock(player_mutex, std::try_to_lock);
+    if (!lock.owns_lock())
+        return;
 
     if (len <= 0)
         return;
@@ -211,16 +217,27 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
     typedef typename Traits::audio_format AudioFormat;
     typedef typename Traits::sample_type SampleType;
 
-    Player *player = reinterpret_cast<Player *>(::player);
-
     if (nframes <= 0)
         return;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+    std::unique_lock<std::mutex> lock(player_mutex, std::try_to_lock);
+    if (!lock.owns_lock()) {
+        for (unsigned i = 0; i < nframes; ++i) {
+            float *leftp = &left[i * stride];
+            float *rightp = &right[i * stride];
+            *leftp = 0;
+            *rightp = 0;
+        }
+        return;
+    }
 
     AudioFormat format;
     format.type = (SampleType)ADLMIDI_SampleType_F32;
     format.containerSize = sizeof(float);
     format.sampleOffset = stride * sizeof(float);
     Traits::generate_format(player, 2 * nframes, (uint8_t *)left, (uint8_t *)right, &format);
+    lock.unlock();
 
     DcFilter &dclf = dcfilter[0];
     DcFilter &dcrf = dcfilter[1];
