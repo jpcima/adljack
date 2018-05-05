@@ -7,6 +7,7 @@
 #include "player_traits.h"
 #include "dcfilter.h"
 #include "vumonitor.h"
+#include <getopt.h>
 #include <string>
 #include <vector>
 #include <adlmidi.h>
@@ -24,7 +25,12 @@ static constexpr unsigned default_nchip = 4;
 static constexpr unsigned midi_message_max_size = 64;
 static constexpr unsigned midi_buffer_size = 1024;
 
+extern unsigned arg_nchip;
+extern const char *arg_bankfile;
+extern int arg_emulator;
+
 void generic_usage(const char *progname, const char *more_options);
+int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)());
 
 void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator);
 void player_ready();

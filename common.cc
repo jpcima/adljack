@@ -18,6 +18,10 @@ DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
 
+unsigned arg_nchip = default_nchip;
+const char *arg_bankfile = nullptr;
+int arg_emulator = -1;
+
 void generic_usage(const char *progname, const char *more_options)
 {
     fprintf(stderr, "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]%s\n", progname, more_options);
@@ -34,6 +38,43 @@ void generic_usage(const char *progname, const char *more_options)
         for (size_t i = 0; i < emu_count; ++i)
             fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
     }
+}
+
+int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)())
+{
+    std::string optstr = std::string("hp:n:b:e:") + more_options;
+
+    for (int c; (c = getopt(argc, argv, optstr.c_str())) != -1;) {
+        switch (c) {
+        case 'p':
+            ::player_type = player_by_name(optarg);
+            if ((int)::player_type == -1) {
+                fprintf(stderr, "invalid player name\n");
+                exit(1);
+            }
+            break;
+        case 'n':
+            arg_nchip = std::stoi(optarg);
+            if ((int)arg_nchip < 1) {
+                fprintf(stderr, "invalid number of chips\n");
+                exit(1);
+            }
+            break;
+        case 'b':
+            arg_bankfile = optarg;
+            break;
+        case 'e':
+            arg_emulator = std::stoi(optarg);
+            break;
+        case 'h':
+            usagefn();
+            exit(0);
+        default:
+            return c;
+        }
+    }
+
+    return -1;
 }
 
 template <Player_Type Pt>

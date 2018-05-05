@@ -6,7 +6,6 @@
 #include "common.h"
 #include <jack/jack.h>
 #include <jack/midiport.h>
-#include <getopt.h>
 #include <stdexcept>
 #include <system_error>
 #include <stdio.h>
@@ -38,35 +37,8 @@ static void usage()
 
 int main(int argc, char *argv[])
 {
-    unsigned nchip = default_nchip;
-    const char *bankfile = nullptr;
-    int emulator = -1;
-
-    for (int c; (c = getopt(argc, argv, "hp:n:b:e:")) != -1;) {
+    for (int c; (c = generic_getopt(argc, argv, "", usage)) != -1;) {
         switch (c) {
-        case 'p':
-            ::player_type = player_by_name(optarg);
-            if ((int)::player_type == -1) {
-                fprintf(stderr, "invalid player name\n");
-                return 1;
-            }
-            break;
-        case 'n':
-            nchip = std::stoi(optarg);
-            if ((int)nchip < 1) {
-                fprintf(stderr, "invalid number of chips\n");
-                return 1;
-            }
-            break;
-        case 'b':
-            bankfile = optarg;
-            break;
-        case 'e':
-            emulator = std::stoi(optarg);
-            break;
-        case 'h':
-            usage();
-            return 0;
         default:
             usage();
             return 1;
@@ -92,7 +64,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Jack client \"%s\" fs=%u bs=%u\n",
             jack_get_client_name(client), samplerate, bufsize);
 
-    initialize_player(samplerate, nchip, bankfile, emulator);
+    initialize_player(samplerate, arg_nchip, arg_bankfile, arg_emulator);
 
     jack_set_process_callback(client, process, nullptr);
     jack_activate(client);
