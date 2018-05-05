@@ -48,6 +48,9 @@ const char *player_name(Player_Type pt);
 const char *player_version(Player_Type pt);
 const char *player_emulator_name(Player_Type pt);
 unsigned player_chip_count(Player_Type pt);
+unsigned player_emulator(Player_Type pt);
+void player_dynamic_set_chip_count(Player_Type pt, unsigned nchip);
+void player_dynamic_set_emulator(Player_Type pt, unsigned emulator);
 Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);
 

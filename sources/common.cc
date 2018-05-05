@@ -22,7 +22,8 @@ double lvcurrent[2] = {};
 double cpuratio = 0;
 Program channel_map[16];
 
-static unsigned player_sample_rate;
+static unsigned player_sample_rate = 0;
+static unsigned player_emulator_id = 0;
 static std::mutex player_mutex;
 
 unsigned arg_nchip = default_nchip;
@@ -119,8 +120,11 @@ void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char 
     ::player = player;
     ::player_sample_rate = sample_rate;
 
-    if (emulator >= 0)
-        Traits::switch_emulator(player, emulator);
+    if (emulator >= 0) {
+        if (Traits::switch_emulator(player, emulator) < 0)
+            throw std::runtime_error("error selecting emulator");
+        ::player_emulator_id = emulator;
+    }
 
     fprintf(stderr, "Using emulator \"%s\"\n", Traits::emulator_name(player));
 
@@ -307,6 +311,34 @@ unsigned generic_player_chip_count()
 }
 
 template <Player_Type Pt>
+void generic_player_dynamic_set_chip_count(unsigned nchip)
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    std::lock_guard<std::mutex> lock(player_mutex);
+    Traits::panic(player);
+    Traits::set_num_chips(player, nchip);
+}
+
+template <Player_Type Pt>
+void generic_player_dynamic_set_emulator(unsigned emulator)
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    std::lock_guard<std::mutex> lock(player_mutex);
+    Traits::panic(player);
+    if (Traits::switch_emulator(player, emulator) < 0)
+        return;
+    ::player_emulator_id = emulator;
+}
+
+template <Player_Type Pt>
 std::vector<std::string> generic_enumerate_emulators()
 {
     typedef Player_Traits<Pt> Traits;
@@ -381,6 +413,22 @@ const char *player_emulator_name(Player_Type pt)
 unsigned player_chip_count(Player_Type pt)
 {
     PLAYER_DISPATCH(pt, player_chip_count);
+}
+
+unsigned player_emulator(Player_Type pt)
+{
+    (void)pt;
+    return ::player_emulator_id;
+}
+
+void player_dynamic_set_chip_count(Player_Type pt, unsigned nchip)
+{
+    PLAYER_DISPATCH(pt, player_dynamic_set_chip_count, nchip);
+}
+
+void player_dynamic_set_emulator(Player_Type pt, unsigned emulator)
+{
+    PLAYER_DISPATCH(pt, player_dynamic_set_emulator, emulator);
 }
 
 std::vector<std::string> enumerate_emulators(Player_Type pt)

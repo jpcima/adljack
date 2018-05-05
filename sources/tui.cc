@@ -20,6 +20,7 @@ struct TUI_context
     WINDOW_u win_cpuratio;
     WINDOW_u win_volume[2];
     WINDOW_u win_instrument[16];
+    WINDOW_u win_keydesc1;
 };
 
 static void setup_display(TUI_context &ctx);
@@ -29,6 +30,7 @@ enum {
     Colors_Highlight = 1,
     Colors_Frame,
     Colors_ActiveVolume,
+    Colors_KeyDescription,
 };
 
 void curses_interface_exec()
@@ -61,6 +63,32 @@ void curses_interface_exec()
             case 3:   // console break
                 quit = true;
                 break;
+            case '<': {
+                Player_Type pt = ::player_type;
+                unsigned emulator = player_emulator(pt);
+                if (emulator > 0)
+                    player_dynamic_set_emulator(pt, emulator - 1);
+                break;
+            }
+            case '>': {
+                Player_Type pt = ::player_type;
+                unsigned emulator = player_emulator(pt);
+                player_dynamic_set_emulator(pt, emulator + 1);
+                break;
+            }
+            case '[': {
+                Player_Type pt = ::player_type;
+                unsigned nchips = player_chip_count(pt);
+                if (nchips > 0)
+                    player_dynamic_set_chip_count(pt, nchips - 1);
+                break;
+            }
+            case ']': {
+                Player_Type pt = ::player_type;
+                unsigned nchips = player_chip_count(pt);
+                player_dynamic_set_chip_count(pt, nchips + 1);
+                break;
+            }
             case KEY_RESIZE:
                 clear();
                 break;
@@ -79,10 +107,15 @@ static void setup_display(TUI_context &ctx)
     init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
     init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
     init_pair(Colors_ActiveVolume, COLOR_GREEN, COLOR_BLACK);
+    init_pair(Colors_KeyDescription, COLOR_BLACK, COLOR_WHITE);
 
     WINDOW *inner = subwin(stdscr, LINES - 3, COLS - 2, 2, 1);
     if (!inner) return;
     ctx.win_inner.reset(inner);
+
+    unsigned cols = getcols(inner);
+    unsigned rows = getrows(inner);
+
     int row = 0;
 
     ctx.win_playertitle = linewin(inner, row++, 0);
@@ -96,12 +129,14 @@ static void setup_display(TUI_context &ctx)
     ++row;
 
     for (unsigned midichannel = 0; midichannel < 16; ++midichannel) {
-        unsigned width = getcols(inner) / 2;
+        unsigned width = cols / 2;
         unsigned row2 = row + midichannel % 8;
         unsigned col = (midichannel < 8) ? 0 : width;
         ctx.win_instrument[midichannel].reset(derwin(inner, 1, width, row2, col));
     }
     row += 8;
+
+    ctx.win_keydesc1.reset(derwin(inner, 1, cols, rows - 1, 0));
 }
 
 static void print_bar(WINDOW *w, double vol, char ch_on, char ch_off, int attr_on)
@@ -213,6 +248,34 @@ static void update_display(TUI_context &ctx)
         wattron(w, COLOR_PAIR(Colors_Highlight));
         mvwaddstr(w, 0, 12, midi_instrument_name[pgm.gm]);
         wattroff(w, COLOR_PAIR(Colors_Highlight));
+    }
+
+    struct Key_Description {
+        const char *key = nullptr;
+        const char *desc = nullptr;
+    };
+
+    if (WINDOW *w = ctx.win_keydesc1.get()) {
+        wclear(w);
+
+        static const Key_Description keydesc[] = {
+            { "ESC", "quit" },
+            { "<", "prev emulator" },
+            { ">", "next emulator" },
+            { "[", "chips +1" },
+            { "]", "chips -1" },
+        };
+        unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
+
+        wmove(w, 0, 0);
+        for (unsigned i = 0; i < nkeydesc; ++i) {
+            if (i > 0) waddstr(w, "   ");
+            wattron(w, COLOR_PAIR(Colors_KeyDescription));
+            waddstr(w, keydesc[i].key);
+            wattroff(w, COLOR_PAIR(Colors_KeyDescription));
+            waddstr(w, " ");
+            waddstr(w, keydesc[i].desc);
+        }
     }
 }
 

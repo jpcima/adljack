@@ -36,6 +36,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &init = adl_init;
     static constexpr auto &close = adl_close;
     static constexpr auto &reset = adl_reset;
+    static constexpr auto &panic = adl_panic;
     static constexpr auto &emulator_name = adl_chipEmulatorName;
     static constexpr auto &switch_emulator = adl_switchEmulator;
     static constexpr auto &get_num_chips = adl_getNumChips;
@@ -66,6 +67,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &init = opn2_init;
     static constexpr auto &close = opn2_close;
     static constexpr auto &reset = opn2_reset;
+    static constexpr auto &panic = opn2_panic;
     static constexpr auto &emulator_name = opn2_chipEmulatorName;
     static constexpr auto &switch_emulator = opn2_switchEmulator;
     static constexpr auto &get_num_chips = opn2_getNumChips;
