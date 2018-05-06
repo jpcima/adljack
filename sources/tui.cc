@@ -11,6 +11,8 @@
 #include <chrono>
 #include <cmath>
 #include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 namespace stc = std::chrono;
 
@@ -56,11 +58,26 @@ void curses_interface_exec()
             bank_directory.assign(path);
     }
 
+    time_t bank_mtime = 0;
+
+    auto update_bank_mtime =
+        [&]() -> bool {
+            struct stat st;
+            const char *path = ::player_bank_file.c_str();
+            time_t old_mtime = bank_mtime;
+            bank_mtime = (path[0] && !stat(path, &st)) ? st.st_mtime : 0;
+            return bank_mtime && bank_mtime != old_mtime;
+        };
+
     {
         TUI_context ctx;
         setup_display(ctx);
 
         show_status(ctx, "Ready!");
+        update_bank_mtime();
+
+        unsigned bank_check_interval = 1;
+        stc::steady_clock::time_point bank_check_last = stc::steady_clock::now();
 
         bool quit = false;
         while (!quit) {
@@ -69,6 +86,18 @@ void curses_interface_exec()
                 setup_display(ctx);
                 endwin();
                 refresh();
+            }
+
+            stc::steady_clock::time_point now = stc::steady_clock::now();
+            if (now - bank_check_last > stc::seconds(bank_check_interval)) {
+                if (update_bank_mtime()) {
+                    Player_Type pt = ::player_type;
+                    if (player_dynamic_load_bank(pt, ::player_bank_file.c_str()))
+                        show_status(ctx, "Bank has changed on disk. Reload!");
+                    else
+                        show_status(ctx, "Bank has changed on disk. Reloading failed.");
+                }
+                bank_check_last = now;
             }
 
             update_display(ctx);
@@ -120,8 +149,10 @@ void curses_interface_exec()
                         quit = true;
                     else if (code == File_Selection_Code::Ok) {
                         Player_Type pt = ::player_type;
-                        if (player_dynamic_load_bank(pt, fopts.filepath.c_str()))
+                        if (player_dynamic_load_bank(pt, fopts.filepath.c_str())) {
                             show_status(ctx, "Bank loaded!");
+                            update_bank_mtime();
+                        }
                         else
                             show_status(ctx, "Error loading the bank file.");
                         bank_directory = fopts.directory;
