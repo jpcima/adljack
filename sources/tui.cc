@@ -390,6 +390,11 @@ static void update_display(TUI_context &ctx)
         wclear(w);
         const Program &pgm = channel_map[midichannel];
         mvwprintw(w, 0, 0, "%2u: [%3u]", midichannel + 1, pgm.gm);
+        if (midi_channel_note_count[midichannel] > 0) {
+            wattron(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
+            mvwaddch(w, 0, 11, '*');
+            wattroff(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
+        }
         wattron(w, COLOR_PAIR(Colors_Highlight));
         mvwaddstr(w, 0, 12, midi_instrument_name[pgm.gm]);
         wattroff(w, COLOR_PAIR(Colors_Highlight));

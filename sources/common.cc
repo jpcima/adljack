@@ -22,6 +22,8 @@ VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
 double cpuratio = 0;
 Program channel_map[16];
+unsigned midi_channel_note_count[16] = {};
+std::bitset<128> midi_channel_note_active[16];
 
 static unsigned player_sample_rate = 0;
 static unsigned player_emulator_id = 0;
@@ -184,13 +186,25 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
     case 0b1001:
         if (len < 3) break;
         if (msg[2] != 0) {
-            Traits::rt_note_on(player, channel, msg[1], msg[2]);
+            unsigned note = msg[1] & 0x7f;
+            unsigned vel = msg[2] & 0x7f;
+            Traits::rt_note_on(player, channel, note, vel);
+            if (!midi_channel_note_active[channel][note]) {
+                ++midi_channel_note_count[channel];
+                midi_channel_note_active[channel][note] = true;
+            }
             break;
         }
-    case 0b1000:
+    case 0b1000: {
         if (len < 3) break;
-        Traits::rt_note_off(player, channel, msg[1]);
+        unsigned note = msg[1] & 0x7f;
+        Traits::rt_note_off(player, channel, note);
+        if (midi_channel_note_active[channel][note]) {
+            --midi_channel_note_count[channel];
+            midi_channel_note_active[channel][note] = false;
+        }
         break;
+    }
     case 0b1010:
         if (len < 3) break;
         Traits::rt_note_aftertouch(player, channel, msg[1], msg[2]);
@@ -199,10 +213,17 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
         if (len < 2) break;
         Traits::rt_channel_aftertouch(player, channel, msg[1]);
         break;
-    case 0b1011:
+    case 0b1011: {
         if (len < 3) break;
-        Traits::rt_controller_change(player, channel, msg[1], msg[2]);
+        unsigned cc = msg[1] & 0x7f;
+        unsigned val = msg[2] & 0x7f;
+        Traits::rt_controller_change(player, channel, cc, val);
+        if (cc == 120 || cc == 123) {
+            midi_channel_note_count[channel] = 0;
+            midi_channel_note_active[channel].reset();
+        }
         break;
+    }
     case 0b1100: {
         if (len < 2) break;
         unsigned pgm = msg[1] & 0x7f;

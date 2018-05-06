@@ -10,6 +10,7 @@
 #include <getopt.h>
 #include <string>
 #include <vector>
+#include <bitset>
 #include <adlmidi.h>
 #include <stdint.h>
 
@@ -28,6 +29,9 @@ struct Program {
     /* TODO bank msb lsb */
 };
 extern Program channel_map[16];
+
+extern unsigned midi_channel_note_count[16];
+extern std::bitset<128> midi_channel_note_active[16];
 
 static constexpr unsigned default_nchip = 4;
 static constexpr unsigned midi_message_max_size = 64;
