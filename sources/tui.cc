@@ -195,6 +195,10 @@ static void setup_colors()
 {
     start_color();
 
+#if defined(PDCURSES) && !defined(PDC_RGB)
+#    error PDCurses color definitions are not defined in the appropriate order.
+#endif
+
     if (can_change_color()) {
 #ifdef PDCURSES
         constexpr uint32_t tango_colors[16] = {
