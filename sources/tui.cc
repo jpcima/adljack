@@ -85,7 +85,7 @@ void curses_interface_exec()
             case '[': {
                 Player_Type pt = ::player_type;
                 unsigned nchips = player_chip_count(pt);
-                if (nchips > 0)
+                if (nchips > 1)
                     player_dynamic_set_chip_count(pt, nchips - 1);
                 break;
             }
