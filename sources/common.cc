@@ -339,6 +339,20 @@ void generic_player_dynamic_set_emulator(unsigned emulator)
 }
 
 template <Player_Type Pt>
+void generic_player_dynamic_load_bank(const char *bankfile)
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    std::lock_guard<std::mutex> lock(player_mutex);
+    Traits::panic(player);
+    if (Traits::open_bank_file(player, bankfile) < 0)
+        return;
+}
+
+template <Player_Type Pt>
 std::vector<std::string> generic_enumerate_emulators()
 {
     typedef Player_Traits<Pt> Traits;
@@ -429,6 +443,11 @@ void player_dynamic_set_chip_count(Player_Type pt, unsigned nchip)
 void player_dynamic_set_emulator(Player_Type pt, unsigned emulator)
 {
     PLAYER_DISPATCH(pt, player_dynamic_set_emulator, emulator);
+}
+
+void player_dynamic_load_bank(Player_Type pt, const char *bankfile)
+{
+    PLAYER_DISPATCH(pt, player_dynamic_load_bank, bankfile);
 }
 
 std::vector<std::string> enumerate_emulators(Player_Type pt)

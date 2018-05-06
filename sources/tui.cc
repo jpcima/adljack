@@ -5,9 +5,12 @@
 
 #if defined(ADLJACK_USE_CURSES)
 #include "tui.h"
+#include "tui_fileselect.h"
 #include "insnames.h"
 #include "common.h"
 #include <cmath>
+#include <limits.h>
+#include <unistd.h>
 
 extern std::string get_program_title();
 
@@ -26,21 +29,23 @@ struct TUI_context
 static void setup_display(TUI_context &ctx);
 static void update_display(TUI_context &ctx);
 
-enum {
-    Colors_Highlight = 1,
-    Colors_Frame,
-    Colors_ActiveVolume,
-    Colors_KeyDescription,
-};
-
 void curses_interface_exec()
 {
     initscr();
     raw();
     keypad(stdscr, true);
     noecho();
-    timeout(50);
+    const unsigned timeout_ms = 50;
+    timeout(timeout_ms);
     curs_set(0);
+    set_escdelay(25);
+
+    std::string bank_directory;
+    {
+        char pathbuf[PATH_MAX + 1];
+        if (char *path = getcwd(pathbuf, sizeof(pathbuf)))
+            bank_directory.assign(path);
+    }
 
     {
         TUI_context ctx;
@@ -59,7 +64,8 @@ void curses_interface_exec()
 
             int ch = getch();
             switch (ch) {
-            case 27:  // escape
+            case 'q':
+            case 'Q':
             case 3:   // console break
                 quit = true;
                 break;
@@ -89,6 +95,27 @@ void curses_interface_exec()
                 player_dynamic_set_chip_count(pt, nchips + 1);
                 break;
             }
+            case 'b':
+            case 'B': {
+                WINDOW_u w(newwin(getrows(stdscr), getcols(stdscr), 0, 0));
+                if (w) {
+                    File_Selection_Options fopts;
+                    fopts.title = "Load bank";
+                    fopts.directory = bank_directory;
+                    timeout(-1);
+                    File_Selection_Code code = fileselect(w.get(), fopts);
+                    timeout(timeout_ms);
+                    if (code == File_Selection_Code::Break)
+                        quit = true;
+                    else if (code == File_Selection_Code::Ok) {
+                        Player_Type pt = ::player_type;
+                        player_dynamic_load_bank(pt, fopts.filepath.c_str());
+                        bank_directory = fopts.directory;
+                    }
+                    clear();
+                }
+                break;
+            }
             case KEY_RESIZE:
                 clear();
                 break;
@@ -105,11 +132,12 @@ static void setup_display(TUI_context &ctx)
 
     start_color();
     init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(Colors_Select, COLOR_BLACK, COLOR_WHITE);
     init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
     init_pair(Colors_ActiveVolume, COLOR_GREEN, COLOR_BLACK);
     init_pair(Colors_KeyDescription, COLOR_BLACK, COLOR_WHITE);
 
-    WINDOW *inner = subwin(stdscr, LINES - 3, COLS - 2, 2, 1);
+    WINDOW *inner = subwin(stdscr, LINES - 2, COLS - 2, 1, 1);
     if (!inner) return;
     ctx.win_inner.reset(inner);
 
@@ -259,11 +287,12 @@ static void update_display(TUI_context &ctx)
         wclear(w);
 
         static const Key_Description keydesc[] = {
-            { "ESC", "quit" },
+            { "q", "quit" },
             { "<", "prev emulator" },
             { ">", "next emulator" },
             { "[", "chips +1" },
             { "]", "chips -1" },
+            { "b", "load bank" },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 

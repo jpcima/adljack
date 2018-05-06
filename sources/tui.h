@@ -8,6 +8,14 @@
 #include <curses.h>
 #include <memory>
 
+enum {
+    Colors_Highlight = 1,
+    Colors_Select,
+    Colors_Frame,
+    Colors_ActiveVolume,
+    Colors_KeyDescription,
+};
+
 void curses_interface_exec();
 
 //------------------------------------------------------------------------------

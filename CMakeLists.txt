@@ -20,11 +20,17 @@ pkg_check_modules(JACK jack)
 
 find_package(Curses)
 
+set(adl_sources
+  "sources/tui.cc"
+  "sources/tui_fileselect.cc"
+  "sources/insnames.cc"
+  "sources/common.cc")
+
 ## Jack version
 if(NOT JACK_FOUND)
   message(WARNING "Jack not found. Not building ADL-jack.")
 else()
-  add_executable(adljack "sources/jackmain.cc" "sources/tui.cc" "sources/insnames.cc" "sources/common.cc")
+  add_executable(adljack "sources/jackmain.cc" ${adl_sources})
   target_include_directories(adljack PRIVATE ${JACK_INCLUDE_DIRS})
   link_directories(${JACK_LIBRARY_DIRS})
   target_link_libraries(adljack PRIVATE ADLMIDI_static OPNMIDI_static ${JACK_LIBRARIES})
@@ -45,7 +51,7 @@ elseif(NOT RTMIDI_FOUND)
   message(WARNING "RtMidi not found. Not building ADL-rt.")
 else()
   add_subdirectory("thirdparty/ring-buffer")
-  add_executable(adlrt "sources/rtmain.cc" "sources/tui.cc" "sources/insnames.cc" "sources/common.cc")
+  add_executable(adlrt "sources/rtmain.cc" ${adl_sources})
   target_include_directories(adlrt PRIVATE ${RTAUDIO_INCLUDE_DIRS} ${RTMIDI_INCLUDE_DIRS})
   link_directories(${RTAUDIO_LIBRARY_DIRS} ${RTMIDI_LIBRARY_DIRS})
   target_link_libraries(adlrt PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer ${RTAUDIO_LIBRARIES} ${RTMIDI_LIBRARIES})
