@@ -46,6 +46,7 @@ struct File_Selection_Context {
     WINDOW *win = nullptr;
     File_Selection_Options *opts = nullptr;
     //
+    WINDOW_u win_title;
     WINDOW_u win_inner;
     std::vector<File_Entry> file_list;
     unsigned file_selection = 0;
@@ -55,6 +56,7 @@ static void setup_display(File_Selection_Context &ctx);
 static void update_display(File_Selection_Context &ctx);
 static void update_file_list(File_Selection_Context &ctx);
 static std::string visit_file(File_Selection_Context &ctx);
+static std::string visit_file_if_directory(File_Selection_Context &ctx);
 
 File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
 {
@@ -106,6 +108,7 @@ File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
             ctx.file_selection -= count;
             break;
         }
+        case KEY_ENTER:
         case '\r':
         case '\n': {
             std::string path = visit_file(ctx);
@@ -115,6 +118,15 @@ File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
             }
             break;
         }
+        case KEY_LEFT:
+        case KEY_BACKSPACE:
+        case '\b':
+            ctx.file_selection = 0;  // the first entry ".."
+            visit_file(ctx);
+            break;
+        case KEY_RIGHT:
+            visit_file_if_directory(ctx);
+            break;
         case 27:  // escape
             quit = true;
             break;
@@ -126,69 +138,80 @@ File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
 
 static void setup_display(File_Selection_Context &ctx)
 {
-    WINDOW *inner = subwin(stdscr, LINES - 2, COLS - 2, 1, 1);
-    if (!inner) return;
-    ctx.win_inner.reset(inner);
+    WINDOW *wdlg = ctx.win;
+    ctx.win_title.reset(derwin(wdlg, 1, getcols(wdlg) - 2, 1, 1));
+    ctx.win_inner.reset(derwin(wdlg, getrows(wdlg) - 4, getcols(wdlg) - 2, 3, 1));
 }
 
 static void update_display(File_Selection_Context &ctx)
 {
-    WINDOW *inner = ctx.win_inner.get();
+    WINDOW *wdlg = ctx.win;
     File_Selection_Options &opts = *ctx.opts;
 
     {
         size_t titlesize = opts.title.size();
 
-        attron(A_BOLD|COLOR_PAIR(Colors_Frame));
-        border(' ', ' ', '-', ' ', '-', '-', ' ', ' ');
-        attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
+        wattron(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
+        wborder(wdlg, ' ', ' ', '-', ' ', '-', '-', ' ', ' ');
+        wattroff(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
 
-        unsigned cols = getcols(stdscr);
+        unsigned cols = getcols(wdlg);
         if (cols >= titlesize + 2) {
             unsigned x = (cols - (titlesize + 2)) / 2;
-            attron(A_BOLD|COLOR_PAIR(Colors_Frame));
-            mvaddch(0, x, '(');
-            mvaddch(0, x + titlesize + 1, ')');
-            attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
-            mvaddstr(0, x + 1, opts.title.c_str());
+            wattron(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvwaddch(wdlg, 0, x, '(');
+            mvwaddch(wdlg, 0, x + titlesize + 1, ')');
+            wattroff(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvwaddstr(wdlg, 0, x + 1, opts.title.c_str());
         }
     }
 
-    wclear(inner);
-
-    unsigned file_selection = ctx.file_selection;
-    unsigned file_count = ctx.file_list.size();
-    unsigned display_max = getrows(inner);
-    unsigned display_offset = file_selection;
-    display_offset -= std::min(display_offset, display_max / 2);
-
-    for (unsigned display_nth = 0; display_nth < display_max; ++display_nth) {
-        unsigned index = display_nth + display_offset;
-        if (index >= file_count)
-            break;
-
-        const File_Entry &fe = ctx.file_list[index];
-        bool selected = index == file_selection;
-
-        int sel_attr = 0;
-        if (selected)
-            sel_attr |= COLOR_PAIR(Colors_Select);
-        int ent_attr = 0;
-        if (fe.type == File_Type::Directory)
-            ent_attr |= COLOR_PAIR(Colors_Highlight);
-
-        if (selected)
-            wattron(inner, sel_attr);
-        else
-            wattron(inner, ent_attr);
-        mvwaddstr(inner, display_nth, 0, fe.name.c_str());
-        if (!selected)
-            wattroff(inner, ent_attr);
-        if (fe.type == File_Type::Directory)
-            waddch(inner, '/');
-        if (selected)
-            wattroff(inner, sel_attr);
+    if (WINDOW *w = ctx.win_title.get()) {
+        wclear(w);
+        wattron(w, A_UNDERLINE);
+        mvwprintw(w, 0, 0, "Directory: %s", opts.directory.c_str());
+        wattroff(w, A_UNDERLINE);
     }
+
+    if (WINDOW *inner = ctx.win_inner.get()) {
+        wclear(inner);
+
+        unsigned file_selection = ctx.file_selection;
+        unsigned file_count = ctx.file_list.size();
+        unsigned display_max = getrows(inner);
+        unsigned display_offset = file_selection;
+        display_offset -= std::min(display_offset, display_max / 2);
+
+        for (unsigned display_nth = 0; display_nth < display_max; ++display_nth) {
+            unsigned index = display_nth + display_offset;
+            if (index >= file_count)
+                break;
+
+            const File_Entry &fe = ctx.file_list[index];
+            bool selected = index == file_selection;
+
+            int sel_attr = 0;
+            if (selected)
+                sel_attr |= COLOR_PAIR(Colors_Select);
+            int ent_attr = 0;
+            if (fe.type == File_Type::Directory)
+                ent_attr |= COLOR_PAIR(Colors_Highlight);
+
+            if (selected)
+                wattron(inner, sel_attr);
+            else
+                wattron(inner, ent_attr);
+            mvwaddstr(inner, display_nth, 0, fe.name.c_str());
+            if (!selected)
+                wattroff(inner, ent_attr);
+            if (fe.type == File_Type::Directory)
+                waddch(inner, '/');
+            if (selected)
+                wattroff(inner, sel_attr);
+        }
+    }
+
+    wrefresh(wdlg);
 }
 
 void update_file_list(File_Selection_Context &ctx)
@@ -276,5 +299,13 @@ std::string visit_file(File_Selection_Context &ctx)
     else {
         return relative;
     }
+}
+
+static std::string visit_file_if_directory(File_Selection_Context &ctx)
+{
+    File_Entry &fe = ctx.file_list.at(ctx.file_selection);
+    if (fe.type != File_Type::Directory)
+        return std::string();
+    return visit_file(ctx);
 }
 #endif
