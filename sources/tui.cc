@@ -290,8 +290,8 @@ static void update_display(TUI_context &ctx)
             { "q", "quit" },
             { "<", "prev emulator" },
             { ">", "next emulator" },
-            { "[", "chips +1" },
-            { "]", "chips -1" },
+            { "[", "chips -1" },
+            { "]", "chips +1" },
             { "b", "load bank" },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
