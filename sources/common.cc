@@ -16,7 +16,7 @@ namespace stc = std::chrono;
 
 void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
-const char *player_bank_file = nullptr;
+std::string player_bank_file;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};

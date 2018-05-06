@@ -23,6 +23,7 @@ struct TUI_context
     WINDOW_u win_emutitle;
     WINDOW_u win_chipcount;
     WINDOW_u win_cpuratio;
+    WINDOW_u win_banktitle;
     WINDOW_u win_volume[2];
     WINDOW_u win_instrument[16];
     WINDOW_u win_status;
@@ -163,6 +164,7 @@ static void setup_display(TUI_context &ctx)
     ctx.win_emutitle = linewin(inner, row++, 0);
     ctx.win_chipcount = linewin(inner, row++, 0);
     ctx.win_cpuratio = linewin(inner, row++, 0);
+    ctx.win_banktitle = linewin(inner, row++, 0);
     ++row;
 
     for (unsigned channel = 0; channel < 2; ++channel)
@@ -248,6 +250,22 @@ static void update_display(TUI_context &ctx)
         WINDOW_u barw(derwin(w, 1, 25, 0, 10));
         if (barw)
             print_bar(barw.get(), cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
+    }
+    if (WINDOW *w = ctx.win_banktitle.get()) {
+        wclear(w);
+        std::string title;
+        const std::string &path = ::player_bank_file;
+        if (path.empty())
+            title = "(default)";
+        else
+        {
+            size_t pos = path.rfind('/');
+            title = (pos != path.npos) ? path.substr(pos + 1) : path;
+        }
+        mvwaddstr(w, 0, 0, "Bank");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
+        mvwaddstr(w, 0, 10, title.c_str());
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
 
     double channel_volumes[2] = {lvcurrent[0], lvcurrent[1]};
