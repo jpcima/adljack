@@ -408,6 +408,8 @@ static void update_display(TUI_context &ctx)
         const char *desc = nullptr;
     };
 
+    const unsigned key_spacing = 20;
+
     if (WINDOW *w = ctx.win_keydesc1.get()) {
         wclear(w);
 
@@ -419,9 +421,8 @@ static void update_display(TUI_context &ctx)
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
-        wmove(w, 0, 0);
         for (unsigned i = 0; i < nkeydesc; ++i) {
-            if (i > 0) waddstr(w, "   ");
+            wmove(w, 0, i * key_spacing);
             wattron(w, COLOR_PAIR(Colors_KeyDescription));
             waddstr(w, keydesc[i].key);
             wattroff(w, COLOR_PAIR(Colors_KeyDescription));
@@ -439,9 +440,8 @@ static void update_display(TUI_context &ctx)
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
-        wmove(w, 0, 0);
         for (unsigned i = 0; i < nkeydesc; ++i) {
-            if (i > 0) waddstr(w, "   ");
+            wmove(w, 0, i * key_spacing);
             wattron(w, COLOR_PAIR(Colors_KeyDescription));
             waddstr(w, keydesc[i].key);
             wattroff(w, COLOR_PAIR(Colors_KeyDescription));
