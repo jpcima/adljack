@@ -192,6 +192,22 @@ static void setup_display(TUI_context &ctx)
     ctx = TUI_context();
 
     start_color();
+
+#ifdef PDCURSES
+    constexpr uint32_t tango_colors[16] = {
+        0x2e3436, 0xcc0000, 0x4e9a06, 0xc4a000,
+        0x3465a4, 0x75507b, 0x06989a, 0xd3d7cf,
+        0x555753, 0xef2929, 0x8ae234, 0xf57900,
+        0x729fcf, 0xad7fa8, 0x34e2e2, 0xeeeeec,
+    };
+    for (unsigned i = 0; i < 16; ++i) {
+        unsigned r = (tango_colors[i] >> 16) & 0xff;
+        unsigned g = (tango_colors[i] >> 8) & 0xff;
+        unsigned b = (tango_colors[i] >> 0) & 0xff;
+        init_color(i, r * 1000 / 0xff, g * 1000 / 0xff, b * 1000 / 0xff);
+    }
+#endif
+
     init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
     init_pair(Colors_Select, COLOR_BLACK, COLOR_WHITE);
     init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
