@@ -163,7 +163,7 @@ static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM
             SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)name.c_str());
         }
         SendMessage(hchoice, CB_SETCURSEL, 0, 0);
-
+        SetFocus(hchoice);
         return 0;
     }
     case WM_COMMAND: {

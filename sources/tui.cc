@@ -30,6 +30,7 @@ struct TUI_context
     WINDOW_u win_instrument[16];
     WINDOW_u win_status;
     WINDOW_u win_keydesc1;
+    WINDOW_u win_keydesc2;
     std::string status_text;
     bool status_display = false;
     unsigned status_timeout = 0;
@@ -252,8 +253,9 @@ static void setup_display(TUI_context &ctx)
     }
     row += 8;
 
-    ctx.win_status.reset(derwin(inner, 1, cols, rows - 3, 0));
-    ctx.win_keydesc1.reset(derwin(inner, 1, cols, rows - 1, 0));
+    ctx.win_status.reset(derwin(inner, 1, cols, rows - 4, 0));
+    ctx.win_keydesc1.reset(derwin(inner, 1, cols, rows - 2, 0));
+    ctx.win_keydesc2.reset(derwin(inner, 1, cols, rows - 1, 0));
 }
 
 static void print_bar(WINDOW *w, double vol, char ch_on, char ch_off, int attr_on)
@@ -410,12 +412,30 @@ static void update_display(TUI_context &ctx)
         wclear(w);
 
         static const Key_Description keydesc[] = {
-            { "q", "quit" },
             { "<", "prev emulator" },
             { ">", "next emulator" },
             { "[", "chips -1" },
             { "]", "chips +1" },
+        };
+        unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
+
+        wmove(w, 0, 0);
+        for (unsigned i = 0; i < nkeydesc; ++i) {
+            if (i > 0) waddstr(w, "   ");
+            wattron(w, COLOR_PAIR(Colors_KeyDescription));
+            waddstr(w, keydesc[i].key);
+            wattroff(w, COLOR_PAIR(Colors_KeyDescription));
+            waddstr(w, " ");
+            waddstr(w, keydesc[i].desc);
+        }
+    }
+
+    if (WINDOW *w = ctx.win_keydesc2.get()) {
+        wclear(w);
+
+        static const Key_Description keydesc[] = {
             { "b", "load bank" },
+            { "q", "quit" },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
