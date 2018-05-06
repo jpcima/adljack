@@ -13,6 +13,9 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#if defined(_WIN32)
+#    include <windows.h>
+#endif
 
 struct DIR_deleter { void operator()(DIR *x) { closedir(x); } };
 typedef std::unique_ptr<DIR, DIR_deleter> DIR_u;
@@ -214,6 +217,15 @@ static void update_display(File_Selection_Context &ctx)
     wrefresh(wdlg);
 }
 
+static bool is_separator(char c)
+{
+#if !defined(_WIN32)
+    return c == '/';
+#else
+    return c == '/' || c == '\\';
+#endif
+}
+
 void update_file_list(File_Selection_Context &ctx)
 {
     File_Selection_Options &opts = *ctx.opts;
@@ -221,7 +233,9 @@ void update_file_list(File_Selection_Context &ctx)
     const std::string &directory = opts.directory;
 #else
     // needs terminator if it's just the drive letter
-    std::string directory = opts.directory + '/';
+    std::string directory = opts.directory;
+    if (directory.empty() || !is_separator(directory.back()))
+        directory.push_back('/');
 #endif
 
     ctx.file_list.clear();
@@ -230,6 +244,22 @@ void update_file_list(File_Selection_Context &ctx)
     fe.name = "..";
     fe.type = File_Type::Directory;
     ctx.file_list.push_back(fe);
+
+#if defined(_WIN32)
+    // root directory special case
+    if (directory == "/") {
+        DWORD drivemask = GetLogicalDrives();
+        for (unsigned i = 0; i < 26; ++i) {
+            if (!(drivemask & (1 << i)))
+                continue;
+            char name[3] = {(char)('A' + i), ':', 0};
+            fe.name = name;
+            fe.type = File_Type::Directory;
+            ctx.file_list.push_back(fe);
+        }
+        return;
+    }
+#endif
 
     DIR_u dir(opendir(directory.c_str()));
     if (!dir)
@@ -259,12 +289,7 @@ void update_file_list(File_Selection_Context &ctx)
 
 static std::string relative_path(std::string dir, const std::string &entry)
 {
-#if !defined(_WIN32)
-    auto separator = [](char c) -> bool { return c == '/'; };
-#else
-    auto separator = [](char c) -> bool { return c == '/' || c == '\\'; };
-#endif
-    while (!dir.empty() && separator(dir.back()))
+    while (!dir.empty() && is_separator(dir.back()))
         dir.pop_back();
     if (entry == ".") {
         if (dir.empty())
@@ -272,6 +297,10 @@ static std::string relative_path(std::string dir, const std::string &entry)
         return dir;
     }
     else if (entry == "..") {
+#if defined(_WIN32)
+        if (dir.size() == 2 && dir[1] == ':')
+            return "/";  // drive letter special case
+#endif
 #if !defined(_WIN32)
         size_t pos = dir.rfind('/');
 #else
@@ -279,12 +308,18 @@ static std::string relative_path(std::string dir, const std::string &entry)
 #endif
         if (pos != std::string::npos)
             dir.resize(pos);
-        while (!dir.empty() && separator(dir.back()))
+        while (!dir.empty() && is_separator(dir.back()))
             dir.pop_back();
         if (dir.empty())
             dir = "/";
         return dir;
-    } else {
+    }
+#if defined(_WIN32)
+    else if (dir.empty()) {
+        return entry;  // drive letter special case
+    }
+#endif
+    else {
         return dir + '/' + entry;
     }
 }
