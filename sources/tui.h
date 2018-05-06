@@ -9,7 +9,8 @@
 #include <memory>
 
 enum {
-    Colors_Highlight = 1,
+    Colors_Background = 1,
+    Colors_Highlight,
     Colors_Select,
     Colors_Frame,
     Colors_ActiveVolume,
