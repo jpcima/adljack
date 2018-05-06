@@ -217,7 +217,12 @@ static void update_display(File_Selection_Context &ctx)
 void update_file_list(File_Selection_Context &ctx)
 {
     File_Selection_Options &opts = *ctx.opts;
+#if !defined(_WIN32)
     const std::string &directory = opts.directory;
+#else
+    // needs terminator if it's just the drive letter
+    std::string directory = opts.directory + '/';
+#endif
 
     ctx.file_list.clear();
 
