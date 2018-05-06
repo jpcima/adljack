@@ -54,6 +54,10 @@ void curses_interface_exec()
     set_escdelay(25);
 #endif
 
+#ifdef PDCURSES
+    PDC_set_title(get_program_title().c_str());
+#endif
+
     std::string bank_directory;
     {
         char pathbuf[PATH_MAX + 1];
