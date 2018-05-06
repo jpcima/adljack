@@ -302,7 +302,11 @@ static void update_display(TUI_context &ctx)
             title = "(default)";
         else
         {
+#if !defined(_WIN32)
             size_t pos = path.rfind('/');
+#else
+            size_t pos = path.find_last_of("/\\");
+#endif
             title = (pos != path.npos) ? path.substr(pos + 1) : path;
         }
         mvwaddstr(w, 0, 0, "Bank");

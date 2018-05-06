@@ -133,7 +133,6 @@ static void setup_display(File_Selection_Context &ctx)
 
 static void update_display(File_Selection_Context &ctx)
 {
-    WINDOW *dialog = ctx.win;
     WINDOW *inner = ctx.win_inner.get();
     File_Selection_Options &opts = *ctx.opts;
 
@@ -232,7 +231,12 @@ void update_file_list(File_Selection_Context &ctx)
 
 static std::string relative_path(std::string dir, const std::string &entry)
 {
-    while (!dir.empty() && dir.back() == '/')
+#if !defined(_WIN32)
+    auto separator = [](char c) -> bool { return c == '/'; };
+#else
+    auto separator = [](char c) -> bool { return c == '/' || c == '\\'; };
+#endif
+    while (!dir.empty() && separator(dir.back()))
         dir.pop_back();
     if (entry == ".") {
         if (dir.empty())
@@ -240,10 +244,14 @@ static std::string relative_path(std::string dir, const std::string &entry)
         return dir;
     }
     else if (entry == "..") {
+#if !defined(_WIN32)
         size_t pos = dir.rfind('/');
+#else
+        size_t pos = dir.find_last_of("/\\");
+#endif
         if (pos != std::string::npos)
             dir.resize(pos);
-        while (dir.back() == '/')
+        while (!dir.empty() && separator(dir.back()))
             dir.pop_back();
         if (dir.empty())
             dir = "/";
