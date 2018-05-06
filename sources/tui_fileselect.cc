@@ -26,6 +26,21 @@ struct File_Entry {
     std::string name;
 };
 
+bool operator<(const File_Entry &a, const File_Entry &b)
+{
+    if (a.name == "..")
+        return true;
+    if (b.name == "..")
+        return false;
+    if (a.type != b.type) {
+        if (a.type == File_Type::Directory)
+            return true;
+        if (b.type == File_Type::Directory)
+            return false;
+    }
+    return a.name < b.name;
+}
+
 struct File_Selection_Context {
     WINDOW *win = nullptr;
     File_Selection_Options *opts = nullptr;
@@ -204,6 +219,8 @@ void update_file_list(File_Selection_Context &ctx)
             fe.type = File_Type::Regular;
         ctx.file_list.push_back(fe);
     }
+
+    std::sort(ctx.file_list.begin(), ctx.file_list.end());
 }
 
 static std::string relative_path(std::string dir, const std::string &entry)
