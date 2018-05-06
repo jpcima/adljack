@@ -7,3 +7,12 @@
 [submodule "thirdparty/ring-buffer"]
 	path = thirdparty/ring-buffer
 	url = https://github.com/jpcima/ring-buffer.git
+[submodule "thirdparty/rtmidi"]
+	path = thirdparty/rtmidi
+	url = https://github.com/thestk/rtmidi.git
+[submodule "thirdparty/rtaudio"]
+	path = thirdparty/rtaudio
+	url = https://github.com/thestk/rtaudio.git
+[submodule "thirdparty/PDCurses"]
+	path = thirdparty/PDCurses
+	url = https://github.com/wmcbrine/PDCurses.git

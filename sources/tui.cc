@@ -49,7 +49,10 @@ void curses_interface_exec()
     const unsigned timeout_ms = 50;
     timeout(timeout_ms);
     curs_set(0);
+
+#if !defined(PDCURSES)
     set_escdelay(25);
+#endif
 
     std::string bank_directory;
     {
@@ -81,8 +84,17 @@ void curses_interface_exec()
 
         bool quit = false;
         while (!quit) {
-            if (is_term_resized(LINES, COLS)) {
+#if defined(PDCURSES)
+            bool resized = is_termresized();
+#else
+            bool resized = is_term_resized(LINES, COLS);
+#endif
+            if (resized) {
+#if defined(PDCURSES)
+                resize_term(LINES, COLS);
+#else
                 resizeterm(LINES, COLS);
+#endif
                 setup_display(ctx);
                 endwin();
                 refresh();

@@ -3,6 +3,7 @@
 //    (See accompanying file LICENSE or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
+#if defined(ADLJACK_USE_CURSES)
 #include "tui_fileselect.h"
 #include "tui.h"
 #include <algorithm>
@@ -70,7 +71,12 @@ File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
 
     bool quit = false;
     while (!quit) {
-        if (is_term_resized(LINES, COLS))
+#if defined(PDCURSES)
+        bool resized = is_termresized();
+#else
+        bool resized = is_term_resized(LINES, COLS);
+#endif
+        if (resized)
             return File_Selection_Code::Cancel;  // XXX close and let caller handle resize
 
         update_display(ctx);
@@ -100,6 +106,7 @@ File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
             ctx.file_selection -= count;
             break;
         }
+        case '\r':
         case '\n': {
             std::string path = visit_file(ctx);
             if (!path.empty()) {
@@ -262,3 +269,4 @@ std::string visit_file(File_Selection_Context &ctx)
         return relative;
     }
 }
+#endif
