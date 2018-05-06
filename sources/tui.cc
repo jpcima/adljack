@@ -26,6 +26,7 @@ struct TUI_context
     WINDOW_u win_chipcount;
     WINDOW_u win_cpuratio;
     WINDOW_u win_banktitle;
+    WINDOW_u win_volumeratio;
     WINDOW_u win_volume[2];
     WINDOW_u win_instrument[16];
     WINDOW_u win_status;
@@ -155,6 +156,14 @@ void curses_interface_exec()
                 player_dynamic_set_chip_count(pt, nchips + 1);
                 break;
             }
+            case '/': {
+                ::player_volume = std::max(0, player_volume - 1);
+                break;
+            }
+            case '*': {
+                ::player_volume = std::min(500, player_volume + 1);
+                break;
+            }
             case 'b':
             case 'B': {
                 WINDOW_u w(newwin(getrows(stdscr), getcols(stdscr), 0, 0));
@@ -249,7 +258,7 @@ static void setup_display(TUI_context &ctx)
     ctx.win_chipcount = linewin(inner, row++, 0);
     ctx.win_cpuratio = linewin(inner, row++, 0);
     ctx.win_banktitle = linewin(inner, row++, 0);
-    ++row;
+    ctx.win_volumeratio = linewin(inner, row++, 0);
 
     for (unsigned channel = 0; channel < 2; ++channel)
         ctx.win_volume[channel] = linewin(inner, row++, 0);
@@ -364,6 +373,13 @@ static void update_display(TUI_context &ctx)
     //  (better use linear to watch output for clipping)
     const bool logarithmic = false;
 
+    if (WINDOW *w = ctx.win_volumeratio.get()) {
+        mvwaddstr(w, 0, 0, "Volume");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
+        mvwprintw(w, 0, 10, "%d%%\n", ::player_volume);
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
+    }
+
     for (unsigned channel = 0; channel < 2; ++channel) {
         WINDOW *w = ctx.win_volume[channel].get();
         if (!w) continue;
@@ -423,7 +439,7 @@ static void update_display(TUI_context &ctx)
         const char *desc = nullptr;
     };
 
-    const unsigned key_spacing = 20;
+    const unsigned key_spacing = 16;
 
     if (WINDOW *w = ctx.win_keydesc1.get()) {
         wclear(w);
@@ -433,6 +449,7 @@ static void update_display(TUI_context &ctx)
             { ">", "next emulator" },
             { "[", "chips -1" },
             { "]", "chips +1" },
+            { "b", "load bank" },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
@@ -450,7 +467,8 @@ static void update_display(TUI_context &ctx)
         wclear(w);
 
         static const Key_Description keydesc[] = {
-            { "b", "load bank" },
+            { "/", "volume -1" },
+            { "*", "volume +1" },
             { "p", "panic" },
             { "q", "quit" },
         };

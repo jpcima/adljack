@@ -17,6 +17,7 @@ namespace stc = std::chrono;
 void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
 std::string player_bank_file;
+int player_volume = 100;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
@@ -274,8 +275,8 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
     DcFilter &dcrf = dcfilter[1];
     double lvcurrent[2];
 
+    const double outputgain = ::player_volume * (1.0 / 100.0);
     for (unsigned i = 0; i < nframes; ++i) {
-        constexpr double outputgain = 1.0; // 3.5;
         float *leftp = &left[i * stride];
         float *rightp = &right[i * stride];
         double left_sample = dclf.process(outputgain * *leftp);

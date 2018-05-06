@@ -17,6 +17,7 @@
 extern void *player;
 extern Player_Type player_type;
 extern std::string player_bank_file;
+extern int player_volume;
 extern DcFilter dcfilter[2];
 extern VuMonitor lvmonitor[2];
 extern double lvcurrent[2];
