@@ -357,6 +357,18 @@ bool generic_player_dynamic_load_bank(const char *bankfile)
 }
 
 template <Player_Type Pt>
+void generic_player_dynamic_panic()
+{
+    typedef Player_Traits<Pt> Traits;
+    typedef typename Traits::player Player;
+
+    Player *player = reinterpret_cast<Player *>(::player);
+
+    std::lock_guard<std::mutex> lock(player_mutex);
+    Traits::panic(player);
+}
+
+template <Player_Type Pt>
 std::vector<std::string> generic_enumerate_emulators()
 {
     typedef Player_Traits<Pt> Traits;
@@ -452,6 +464,11 @@ void player_dynamic_set_emulator(Player_Type pt, unsigned emulator)
 bool player_dynamic_load_bank(Player_Type pt, const char *bankfile)
 {
     PLAYER_DISPATCH(pt, player_dynamic_load_bank, bankfile);
+}
+
+void player_dynamic_panic(Player_Type pt)
+{
+    PLAYER_DISPATCH(pt, player_dynamic_panic);
 }
 
 std::vector<std::string> enumerate_emulators(Player_Type pt)

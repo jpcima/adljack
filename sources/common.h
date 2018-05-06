@@ -53,6 +53,7 @@ unsigned player_emulator(Player_Type pt);
 void player_dynamic_set_chip_count(Player_Type pt, unsigned nchip);
 void player_dynamic_set_emulator(Player_Type pt, unsigned emulator);
 bool player_dynamic_load_bank(Player_Type pt, const char *bankfile);
+void player_dynamic_panic(Player_Type pt);
 Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);
 

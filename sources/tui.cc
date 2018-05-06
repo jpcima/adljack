@@ -181,6 +181,12 @@ void curses_interface_exec()
                 }
                 break;
             }
+            case 'p':
+            case 'P': {
+                Player_Type pt = ::player_type;
+                player_dynamic_panic(pt);
+                break;
+            }
             case KEY_RESIZE:
                 clear();
                 break;
@@ -440,6 +446,7 @@ static void update_display(TUI_context &ctx)
 
         static const Key_Description keydesc[] = {
             { "b", "load bank" },
+            { "p", "panic" },
             { "q", "quit" },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
