@@ -8,9 +8,11 @@
 #include "tui_fileselect.h"
 #include "insnames.h"
 #include "common.h"
+#include <chrono>
 #include <cmath>
 #include <limits.h>
 #include <unistd.h>
+namespace stc = std::chrono;
 
 extern std::string get_program_title();
 
@@ -23,11 +25,17 @@ struct TUI_context
     WINDOW_u win_cpuratio;
     WINDOW_u win_volume[2];
     WINDOW_u win_instrument[16];
+    WINDOW_u win_status;
     WINDOW_u win_keydesc1;
+    std::string status_text;
+    bool status_display = false;
+    unsigned status_timeout = 0;
+    stc::steady_clock::time_point status_start;
 };
 
 static void setup_display(TUI_context &ctx);
 static void update_display(TUI_context &ctx);
+static void show_status(TUI_context &ctx, const std::string &text, unsigned timeout = 10);
 
 void curses_interface_exec()
 {
@@ -50,6 +58,8 @@ void curses_interface_exec()
     {
         TUI_context ctx;
         setup_display(ctx);
+
+        show_status(ctx, "Ready!");
 
         bool quit = false;
         while (!quit) {
@@ -109,7 +119,10 @@ void curses_interface_exec()
                         quit = true;
                     else if (code == File_Selection_Code::Ok) {
                         Player_Type pt = ::player_type;
-                        player_dynamic_load_bank(pt, fopts.filepath.c_str());
+                        if (player_dynamic_load_bank(pt, fopts.filepath.c_str()))
+                            show_status(ctx, "Bank loaded!");
+                        else
+                            show_status(ctx, "Error loading the bank file.");
                         bank_directory = fopts.directory;
                     }
                     clear();
@@ -164,6 +177,7 @@ static void setup_display(TUI_context &ctx)
     }
     row += 8;
 
+    ctx.win_status.reset(derwin(inner, 1, cols, rows - 3, 0));
     ctx.win_keydesc1.reset(derwin(inner, 1, cols, rows - 1, 0));
 }
 
@@ -234,10 +248,6 @@ static void update_display(TUI_context &ctx)
         WINDOW_u barw(derwin(w, 1, 25, 0, 10));
         if (barw)
             print_bar(barw.get(), cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
-
-        // wattron(w, COLOR_PAIR(Colors_Highlight));
-        // mvwprintw(w, 0, 10, "%ld%%", std::lround(::cpuratio * 100));
-        // wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
 
     double channel_volumes[2] = {lvcurrent[0], lvcurrent[1]};
@@ -278,6 +288,24 @@ static void update_display(TUI_context &ctx)
         wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
 
+    if (WINDOW *w = ctx.win_status.get()) {
+        if (!ctx.status_text.empty()) {
+            if (!ctx.status_display) {
+                wclear(w);
+                wattron(w, COLOR_PAIR(Colors_Select));
+                waddstr(w, ctx.status_text.c_str());
+                wattroff(w, COLOR_PAIR(Colors_Select));
+                ctx.status_start = stc::steady_clock::now();
+                ctx.status_display = true;
+            }
+            else if (stc::steady_clock::now() - ctx.status_start > stc::seconds(ctx.status_timeout)) {
+                wclear(w);
+                ctx.status_text.clear();
+                ctx.status_display = false;
+            }
+        }
+    }
+
     struct Key_Description {
         const char *key = nullptr;
         const char *desc = nullptr;
@@ -306,6 +334,13 @@ static void update_display(TUI_context &ctx)
             waddstr(w, keydesc[i].desc);
         }
     }
+}
+
+static void show_status(TUI_context &ctx, const std::string &text, unsigned timeout)
+{
+    ctx.status_text = text;
+    ctx.status_display = false;
+    ctx.status_timeout = timeout;
 }
 
 //------------------------------------------------------------------------------

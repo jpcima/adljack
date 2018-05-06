@@ -16,6 +16,7 @@ namespace stc = std::chrono;
 
 void *player = nullptr;
 Player_Type player_type = Player_Type::OPL3;
+const char *player_bank_file = nullptr;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
 double lvcurrent[2] = {};
@@ -135,7 +136,7 @@ void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char 
         if (Traits::open_bank_file(player, bankfile) < 0)
             throw std::runtime_error("error loading bank file");
         fprintf(stderr, "Using banks from WOPL file.\n");
-        Traits::reset(player);  // not sure if necessary
+        ::player_bank_file = bankfile;
     }
 
     if (Traits::set_num_chips(player, nchip) < 0)
@@ -339,7 +340,7 @@ void generic_player_dynamic_set_emulator(unsigned emulator)
 }
 
 template <Player_Type Pt>
-void generic_player_dynamic_load_bank(const char *bankfile)
+bool generic_player_dynamic_load_bank(const char *bankfile)
 {
     typedef Player_Traits<Pt> Traits;
     typedef typename Traits::player Player;
@@ -349,7 +350,10 @@ void generic_player_dynamic_load_bank(const char *bankfile)
     std::lock_guard<std::mutex> lock(player_mutex);
     Traits::panic(player);
     if (Traits::open_bank_file(player, bankfile) < 0)
-        return;
+        return false;
+
+    ::player_bank_file = bankfile;
+    return true;
 }
 
 template <Player_Type Pt>
@@ -445,7 +449,7 @@ void player_dynamic_set_emulator(Player_Type pt, unsigned emulator)
     PLAYER_DISPATCH(pt, player_dynamic_set_emulator, emulator);
 }
 
-void player_dynamic_load_bank(Player_Type pt, const char *bankfile)
+bool player_dynamic_load_bank(Player_Type pt, const char *bankfile)
 {
     PLAYER_DISPATCH(pt, player_dynamic_load_bank, bankfile);
 }

@@ -15,6 +15,7 @@
 
 extern void *player;
 extern Player_Type player_type;
+extern const char *player_bank_file;
 extern DcFilter dcfilter[2];
 extern VuMonitor lvmonitor[2];
 extern double lvcurrent[2];
@@ -51,7 +52,7 @@ unsigned player_chip_count(Player_Type pt);
 unsigned player_emulator(Player_Type pt);
 void player_dynamic_set_chip_count(Player_Type pt, unsigned nchip);
 void player_dynamic_set_emulator(Player_Type pt, unsigned emulator);
-void player_dynamic_load_bank(Player_Type pt, const char *bankfile);
+bool player_dynamic_load_bank(Player_Type pt, const char *bankfile);
 Player_Type player_by_name(const char *name);
 std::vector<std::string> enumerate_emulators(Player_Type pt);
 
