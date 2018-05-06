@@ -12,6 +12,7 @@
 #include <stdio.h>
 #if defined(_WIN32)
 #    include "win_resource.h"
+#    include <windows.h>
 static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp);
 #endif
 
@@ -45,6 +46,32 @@ static void midi_event(double, std::vector<uint8_t> *message, void *)
         midi_rb.put<uint8_t>(size);
         midi_rb.put(message->data(), size);
     }
+}
+
+void audio_error_callback(RtAudioError::Type type, const std::string &text)
+{
+    if (type == RtAudioError::WARNING) {
+#if defined(_WIN32)
+        OutputDebugStringA(text.c_str());
+#else
+        // ignore, don't print anything
+#endif
+        return;
+    }
+    throw RtAudioError(text, type);
+}
+
+void midi_error_callback(RtMidiError::Type type, const std::string &text, void *)
+{
+    if (type == RtMidiError::WARNING) {
+#if defined(_WIN32)
+        OutputDebugStringA(text.c_str());
+#else
+        // ignore, don't print anything
+#endif
+        return;
+    }
+    throw RtMidiError(text, type);
 }
 
 static void usage()
@@ -112,12 +139,14 @@ int main(int argc, char *argv[])
 
     audio_client->openStream(
         &stream_param, nullptr, RTAUDIO_FLOAT32, sample_rate, &buffer_size,
-        &process, nullptr, &stream_opts);
+        &process, nullptr, &stream_opts, &audio_error_callback);
 
     ::audio_device_info = device_info;
 
     RtMidiIn *midi_client = ::midi_client = new RtMidiIn(
         RtMidi::Api::UNSPECIFIED, "adlrt", midi_buffer_size);
+    midi_client->setErrorCallback(&midi_error_callback);
+
     midi_rb = new Ring_Buffer(midi_buffer_size);
 
 #if defined(_WIN32)
