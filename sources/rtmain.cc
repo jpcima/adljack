@@ -10,6 +10,10 @@
 #include <stdexcept>
 #include <system_error>
 #include <stdio.h>
+#if defined(_WIN32)
+#    include "win_resource.h"
+static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp);
+#endif
 
 static RtAudio *audio_client;
 static RtAudio::DeviceInfo audio_device_info;
@@ -115,7 +119,20 @@ int main(int argc, char *argv[])
     RtMidiIn *midi_client = ::midi_client = new RtMidiIn(
         RtMidi::Api::UNSPECIFIED, "adlrt", midi_buffer_size);
     midi_rb = new Ring_Buffer(midi_buffer_size);
-    midi_client->openVirtualPort("midi");
+
+#if defined(_WIN32)
+    if (midi_client->getCurrentApi() != RtMidi::WINDOWS_MM)
+#endif
+        midi_client->openVirtualPort("adlrt MIDI");
+#if defined(_WIN32)
+    else {
+        INT_PTR port = DialogBox(nullptr, MAKEINTRESOURCE(IDD_DIALOG1), nullptr, &winmm_dlgproc);
+        if (port < 0)
+            return 1;
+        midi_client->openPort(port, "adlrt MIDI");
+    }
+#endif
+
     midi_client->setCallback(&midi_event);
 
     latency = buffer_size / (double)sample_rate;
@@ -132,3 +149,36 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+#if defined(_WIN32)
+static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp)
+{
+    switch (msg) {
+    case WM_INITDIALOG: {
+        RtMidiIn *midi_client = ::midi_client;
+        unsigned nports = midi_client->getPortCount();
+        HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
+        for (unsigned i = 0; i < nports; ++i) {
+            std::string name = midi_client->getPortName(i);
+            SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)name.c_str());
+        }
+        SendMessage(hchoice, CB_SETCURSEL, 0, 0);
+
+        return 0;
+    }
+    case WM_COMMAND: {
+        switch (wp) {
+            case IDOK: {
+                HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
+                EndDialog(hdlg, SendMessage(hchoice, CB_GETCURSEL, 0, 0));
+                break;
+            }
+            case IDCANCEL:
+                EndDialog(hdlg, -1);
+                break;
+        }
+    }
+    }
+    return FALSE;
+}
+#endif

@@ -58,6 +58,10 @@ set(adl_sources
   "sources/tui_fileselect.cc"
   "sources/insnames.cc"
   "sources/common.cc")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  list(APPEND adl_sources
+    "sources/winmm_dialog.rc")
+endif()
 
 ## Jack version
 if(NOT JACK_FOUND)
