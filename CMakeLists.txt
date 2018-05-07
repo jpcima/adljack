@@ -5,6 +5,13 @@ project(ADLjack VERSION "1.0.0" LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
+if(CMAKE_C_COMPILER_ID MATCHES "^(GNU|Clang)$")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+endif()
+if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang)$")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+endif()
+
 set(PREFER_PDCURSES "OFF" CACHE STRING "Prefer PDCurses as terminal library")
 
 set(WITH_MIDI_SEQUENCER OFF CACHE STRING "")
