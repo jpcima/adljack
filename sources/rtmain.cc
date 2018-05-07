@@ -12,6 +12,7 @@
 #include <stdio.h>
 #if defined(_WIN32)
 #    include "win_resource.h"
+#    include "te_virtual_midi.h"
 #    include <windows.h>
 static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp);
 #endif
@@ -20,6 +21,10 @@ static RtAudio *audio_client;
 static RtAudio::DeviceInfo audio_device_info;
 static RtMidiIn *midi_client;
 static std::string midi_port_name;
+#if defined(_WIN32)
+static bool have_virtualmidi = false;
+static LPVM_MIDI_PORT vmidi_port = nullptr;
+#endif
 static Ring_Buffer *midi_rb;
 
 static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudioStreamStatus, void *)
@@ -37,17 +42,28 @@ static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudio
     return 0;
 }
 
-static void midi_event(double, std::vector<uint8_t> *message, void *)
+static void generic_midi_event(const uint8_t *data, unsigned size)
 {
-    size_t size = message->size();
     if (size > midi_message_max_size)
         return;
     Ring_Buffer &midi_rb = *::midi_rb;
     if (midi_rb.size_free() >= 1 + size) {
         midi_rb.put<uint8_t>(size);
-        midi_rb.put(message->data(), size);
+        midi_rb.put(data, size);
     }
 }
+
+static void rtmidi_event(double, std::vector<uint8_t> *message, void *)
+{
+    generic_midi_event(message->data(), message->size());
+}
+
+#if defined(_WIN32)
+static void CALLBACK virtualmidi_event(LPVM_MIDI_PORT, LPBYTE bytes, DWORD length, DWORD_PTR)
+{
+    generic_midi_event(bytes, length);
+}
+#endif
 
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
 {
@@ -148,6 +164,17 @@ int main(int argc, char *argv[])
         RtMidi::Api::UNSPECIFIED, "ADLrt", midi_buffer_size);
     midi_client->setErrorCallback(&midi_error_callback);
 
+#if defined(_WIN32)
+    have_virtualmidi = virtualMIDI::load();
+    fprintf(stderr, "virtualMIDI %ls\n", have_virtualmidi ?
+            virtualMIDI::GetVersion(nullptr, nullptr, nullptr, nullptr) : L"not found");
+    if (have_virtualmidi) {
+        LPCWSTR driver_version = virtualMIDI::GetDriverVersion(nullptr, nullptr, nullptr, nullptr);
+        have_virtualmidi = driver_version && *driver_version;
+        fprintf(stderr, "virtualMIDI driver %ls\n", have_virtualmidi ? driver_version : L"not found");
+    }
+#endif
+
     midi_rb = new Ring_Buffer(midi_buffer_size);
 
 #if defined(_WIN32)
@@ -163,13 +190,40 @@ int main(int argc, char *argv[])
         if (port >= 0) {
             midi_client->openPort(port, "ADLrt MIDI");
             ::midi_port_name = midi_client->getPortName(port);
+        } else if (port == -2) {
+            // virtual midi
+            LPVM_MIDI_PORT port;
+            DWORD err;
+            unsigned nth = 0;
+            std::wstring name;
+            do {
+                if (nth == 0)
+                    name = L"ADLrt MIDI";
+                else
+                    name = L"ADLrt-" + std::to_wstring(nth) + L" MIDI";
+                ++nth;
+                port = virtualMIDI::CreatePortEx2(
+                    name.c_str(), &virtualmidi_event, 0, 256,
+                    TE_VM_FLAGS_PARSE_RX|TE_VM_FLAGS_INSTANTIATE_RX_ONLY);
+                if (!port)
+                    err = GetLastError();
+            }
+            while (!port && (err == ERROR_ALREADY_EXISTS || err == ERROR_ALIAS_EXISTS));
+
+            if (!port) {
+                fprintf(stderr, "could not create virtualMIDI port\n");
+                return 1;
+            }
+
+            ::vmidi_port = port;
+            ::midi_port_name = std::string(name.begin(), name.end());
         }
         else
             return 1;
     }
 #endif
 
-    midi_client->setCallback(&midi_event);
+    midi_client->setCallback(&rtmidi_event);
 
     latency = buffer_size / (double)sample_rate;
     fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
@@ -186,6 +240,10 @@ int main(int argc, char *argv[])
     //
     delete audio_client;
     delete midi_client;
+#if defined(_WIN32)
+    if (LPVM_MIDI_PORT port = ::vmidi_port)
+        virtualMIDI::Shutdown(port);
+#endif
 
     return 0;
 }
@@ -198,9 +256,14 @@ static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM
         RtMidiIn *midi_client = ::midi_client;
         unsigned nports = midi_client->getPortCount();
         HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
+        if (have_virtualmidi) {
+            int index = SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)"New Virtual MIDI port");
+            SendMessageA(hchoice, CB_SETITEMDATA, index, -2);
+        }
         for (unsigned i = 0; i < nports; ++i) {
             std::string name = midi_client->getPortName(i);
-            SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)name.c_str());
+            int index = SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)name.c_str());
+            SendMessageA(hchoice, CB_SETITEMDATA, index, i);
         }
         SendMessage(hchoice, CB_SETCURSEL, 0, 0);
         SetFocus(hchoice);
@@ -210,7 +273,11 @@ static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM
         switch (wp) {
             case IDOK: {
                 HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
-                EndDialog(hdlg, SendMessage(hchoice, CB_GETCURSEL, 0, 0));
+                int data = -1;
+                int index = SendMessage(hchoice, CB_GETCURSEL, 0, 0);
+                if (index >= 0)
+                    data = SendMessage(hchoice, CB_GETITEMDATA, index, 0);
+                EndDialog(hdlg, data);
                 break;
             }
             case IDCANCEL:
