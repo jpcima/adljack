@@ -57,6 +57,11 @@ else()
   set(PULSEAUDIO_FOUND FALSE)
 endif()
 
+set(DESKTOP_FILE_EXTRA "")
+if(CURSES_FOUND)
+  set(DESKTOP_FILE_EXTRA "Terminal=true\n")
+endif()
+
 message("!! Feature summary:")
 message("!!   Curses: ${CURSES_FOUND}")
 message("!!   PdCurses: ${PDCURSES_FOUND}")
@@ -91,6 +96,12 @@ else()
     target_link_libraries(adljack PRIVATE pdcurses)
   endif()
   install(TARGETS adljack DESTINATION "bin")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    configure_file("resources/adljack.desktop.in" "adljack.desktop" @ONLY)
+    configure_file("resources/opnjack.desktop.in" "opnjack.desktop" @ONLY)
+    install(FILES "${CMAKE_BINARY_DIR}/adljack.desktop" DESTINATION "share/applications")
+    install(FILES "${CMAKE_BINARY_DIR}/opnjack.desktop" DESTINATION "share/applications")
+  endif()
 endif()
 
 ## RtMidi library
@@ -145,7 +156,6 @@ if(JACK_FOUND)
   target_link_libraries(RtAudio PUBLIC ${JACK_LIBRARIES})
 endif()
 
-
 ## Cross platform version
 add_subdirectory("thirdparty/ring-buffer")
 add_executable(adlrt "sources/rtmain.cc" ${adl_sources})
@@ -161,10 +171,27 @@ endif()
 install(TARGETS adlrt DESTINATION "bin")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   install(FILES "${CMAKE_SOURCE_DIR}/resources/opnrt.bat" DESTINATION "bin")
+endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  configure_file("resources/adlrt.desktop.in" "adlrt.desktop" @ONLY)
+  configure_file("resources/opnrt.desktop.in" "opnrt.desktop" @ONLY)
+  install(FILES "${CMAKE_BINARY_DIR}/adlrt.desktop" DESTINATION "share/applications")
+  install(FILES "${CMAKE_BINARY_DIR}/opnrt.desktop" DESTINATION "share/applications")
+endif()
+
+## Data files
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   install(FILES "${CMAKE_SOURCE_DIR}/resources/adl.ico" DESTINATION "icons")
   install(FILES "${CMAKE_SOURCE_DIR}/resources/opn.ico" DESTINATION "icons")
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libADLMIDI/fm_banks/wopl_files/" DESTINATION "banks/wopl_files")
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libOPNMIDI/fm_banks/" DESTINATION "banks/wopn_files")
+endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/adl.png" DESTINATION "share/pixmaps" RENAME "adljack.png")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/opn.png" DESTINATION "share/pixmaps" RENAME "opnjack.png")
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libADLMIDI/fm_banks/wopl_files/" DESTINATION "share/adljack/wopl_files")
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libOPNMIDI/fm_banks/" DESTINATION "share/adljack/wopn_files")
 endif()
 
 ## Packaging

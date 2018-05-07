@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=ADLMIDI
+TryExec=adlrt
+Exec=adlrt
+Icon=adljack
+Type=Application
+Categories=AudioVideo;Audio;Music;Midi
+Path=@CMAKE_INSTALL_PREFIX@/share/adljack
+@DESKTOP_FILE_EXTRA@
