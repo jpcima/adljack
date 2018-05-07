@@ -158,6 +158,9 @@ elseif(PDCURSES_FOUND)
   target_link_libraries(adlrt PRIVATE pdcurses)
 endif()
 install(TARGETS adlrt DESTINATION "bin")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/opnrt.bat" DESTINATION "bin")
+endif()
 
 ## Packaging
 include(CPackLists.txt)
