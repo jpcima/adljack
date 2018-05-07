@@ -18,7 +18,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(CPACK_NSIS_EXECUTABLES_DIRECTORY "bin")
   set(CPACK_NSIS_CREATE_ICONS_EXTRA
     "CreateShortCut '$DESKTOP\\\\${PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\adlrt' ''
-     CreateShortCut '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME} (OPN2).lnk' '$INSTDIR\\\\bin\\\\opnrt' ''")
+     CreateShortCut '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME} (OPN2).lnk' '$INSTDIR\\\\bin\\\\opnrt' '' '$INSTDIR\\\\bin\\\\opn.ico'")
   set(CPACK_NSIS_DELETE_ICONS_EXTRA
     "Delete '$DESKTOP\\\\${PROJECT_NAME}.lnk'
      Delete '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME} (OPN2).lnk'")

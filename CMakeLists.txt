@@ -70,7 +70,8 @@ set(adl_sources
   "sources/common.cc")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND adl_sources
-    "sources/winmm_dialog.rc")
+    "sources/winmm_dialog.rc"
+    "sources/win_application.rc")
 endif()
 
 ## Jack version
@@ -160,6 +161,8 @@ endif()
 install(TARGETS adlrt DESTINATION "bin")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   install(FILES "${CMAKE_SOURCE_DIR}/resources/opnrt.bat" DESTINATION "bin")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/adl.ico" DESTINATION "bin")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/opn.ico" DESTINATION "bin")
 endif()
 
 ## Packaging
