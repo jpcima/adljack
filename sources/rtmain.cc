@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 
     RtAudio::StreamOptions stream_opts;
     stream_opts.flags = RTAUDIO_ALSA_USE_DEFAULT;
-    stream_opts.streamName = "adlrt";
+    stream_opts.streamName = "ADLrt";
 
     unsigned buffer_size = ceil(latency * sample_rate);
     fprintf(stderr, "Desired latency %f ms = buffer size %u\n",
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
     ::audio_device_info = device_info;
 
     RtMidiIn *midi_client = ::midi_client = new RtMidiIn(
-        RtMidi::Api::UNSPECIFIED, "adlrt", midi_buffer_size);
+        RtMidi::Api::UNSPECIFIED, "ADLrt", midi_buffer_size);
     midi_client->setErrorCallback(&midi_error_callback);
 
     midi_rb = new Ring_Buffer(midi_buffer_size);
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
 #if defined(_WIN32)
     if (midi_client->getCurrentApi() != RtMidi::WINDOWS_MM) {
 #endif
-        const char *vport_name = "adlrt MIDI";
+        const char *vport_name = "ADLrt MIDI";
         midi_client->openVirtualPort(vport_name);
         ::midi_port_name = vport_name;
 #if defined(_WIN32)
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
     else {
         INT_PTR port = DialogBox(nullptr, MAKEINTRESOURCE(IDD_DIALOG1), nullptr, &winmm_dlgproc);
         if (port >= 0) {
-            midi_client->openPort(port, "adlrt MIDI");
+            midi_client->openPort(port, "ADLrt MIDI");
             ::midi_port_name = midi_client->getPortName(port);
         }
         else

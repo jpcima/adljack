@@ -60,11 +60,11 @@ int main(int argc, char *argv[])
     if (argc != optind)
         return 1;
 
-    client = jack_client_open("adljack", JackNoStartServer, nullptr);
+    client = jack_client_open("ADLjack", JackNoStartServer, nullptr);
     if (!client)
         throw std::runtime_error("error creating Jack client");
 
-    midiport = jack_port_register(client, "midi", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput|JackPortIsTerminal, 0);
+    midiport = jack_port_register(client, "MIDI", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput|JackPortIsTerminal, 0);
     outport[0] = jack_port_register(client, "left", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput|JackPortIsTerminal, 0);
     outport[1] = jack_port_register(client, "right", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput|JackPortIsTerminal, 0);
 
