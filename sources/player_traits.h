@@ -19,6 +19,10 @@ static constexpr Player_Type all_player_types[] {
     #undef ARRAYVAL
 };
 
+enum {
+    player_type_count = sizeof(all_player_types) / sizeof(*all_player_types),
+};
+
 template <Player_Type>
 struct Player_Traits;
 
@@ -32,6 +36,7 @@ struct Player_Traits<Player_Type::OPL3>
     typedef ADLMIDI_SampleType sample_type;
 
     static const char *name() { return "ADLMIDI"; }
+    static const char *chip_name() { return "YMF262"; }
     static constexpr auto &version = adl_linkedLibraryVersion;
     static constexpr auto &init = adl_init;
     static constexpr auto &close = adl_close;
@@ -50,7 +55,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &rt_channel_aftertouch = adl_rt_channelAfterTouch;
     static constexpr auto &rt_controller_change = adl_rt_controllerChange;
     static constexpr auto &rt_program_change = adl_rt_patchChange;
-    static constexpr auto &rt_pitchbend_ml = adl_rt_pitchBendML;
+    static constexpr auto &rt_pitchbend = adl_rt_pitchBend;
 };
 
 #include <opnmidi.h>
@@ -63,6 +68,7 @@ struct Player_Traits<Player_Type::OPN2>
     typedef OPNMIDI_SampleType sample_type;
 
     static const char *name() { return "OPNMIDI"; }
+    static const char *chip_name() { return "YMF2612"; }
     static constexpr auto &version = opn2_linkedLibraryVersion;
     static constexpr auto &init = opn2_init;
     static constexpr auto &close = opn2_close;
@@ -81,5 +87,5 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &rt_channel_aftertouch = opn2_rt_channelAfterTouch;
     static constexpr auto &rt_controller_change = opn2_rt_controllerChange;
     static constexpr auto &rt_program_change = opn2_rt_patchChange;
-    static constexpr auto &rt_pitchbend_ml = opn2_rt_pitchBendML;
+    static constexpr auto &rt_pitchbend = opn2_rt_pitchBend;
 };

@@ -112,8 +112,7 @@ void curses_interface_exec()
             stc::steady_clock::time_point now = stc::steady_clock::now();
             if (now - bank_check_last > stc::seconds(bank_check_interval)) {
                 if (update_bank_mtime()) {
-                    Player_Type pt = ::player_type;
-                    if (player_dynamic_load_bank(pt, ::player_bank_file.c_str()))
+                    if (::player->dynamic_load_bank(::player_bank_file.c_str()))
                         show_status(ctx, "Bank has changed on disk. Reload!");
                     else
                         show_status(ctx, "Bank has changed on disk. Reloading failed.");
@@ -131,29 +130,29 @@ void curses_interface_exec()
                 quit = true;
                 break;
             case '<': {
-                Player_Type pt = ::player_type;
-                unsigned emulator = player_emulator(pt);
+                Player &player = *::player;
+                unsigned emulator = player.emulator();
                 if (emulator > 0)
-                    player_dynamic_set_emulator(pt, emulator - 1);
+                    player.dynamic_set_emulator(emulator - 1);
                 break;
             }
             case '>': {
-                Player_Type pt = ::player_type;
-                unsigned emulator = player_emulator(pt);
-                player_dynamic_set_emulator(pt, emulator + 1);
+                Player &player = *::player;
+                unsigned emulator = player.emulator();
+                player.dynamic_set_emulator(emulator + 1);
                 break;
             }
             case '[': {
-                Player_Type pt = ::player_type;
-                unsigned nchips = player_chip_count(pt);
+                Player &player = *::player;
+                unsigned nchips = player.chip_count();
                 if (nchips > 1)
-                    player_dynamic_set_chip_count(pt, nchips - 1);
+                    player.dynamic_set_chip_count(nchips - 1);
                 break;
             }
             case ']': {
-                Player_Type pt = ::player_type;
-                unsigned nchips = player_chip_count(pt);
-                player_dynamic_set_chip_count(pt, nchips + 1);
+                Player &player = *::player;
+                unsigned nchips = player.chip_count();
+                player.dynamic_set_chip_count(nchips + 1);
                 break;
             }
             case '/': {
@@ -177,9 +176,10 @@ void curses_interface_exec()
                     if (code == File_Selection_Code::Break)
                         quit = true;
                     else if (code == File_Selection_Code::Ok) {
-                        Player_Type pt = ::player_type;
-                        if (player_dynamic_load_bank(pt, fopts.filepath.c_str())) {
+                        Player &player = *::player;
+                        if (player.dynamic_load_bank(fopts.filepath.c_str())) {
                             show_status(ctx, "Bank loaded!");
+                            ::player_bank_file = fopts.filepath;
                             update_bank_mtime();
                         }
                         else
@@ -192,8 +192,8 @@ void curses_interface_exec()
             }
             case 'p':
             case 'P': {
-                Player_Type pt = ::player_type;
-                player_dynamic_panic(pt);
+                Player &player = *::player;
+                player.dynamic_panic();
                 break;
             }
             case KEY_RESIZE:
@@ -295,7 +295,8 @@ static void print_bar(WINDOW *w, double vol, char ch_on, char ch_off, int attr_o
 
 static void update_display(TUI_context &ctx)
 {
-    Player_Type pt = ::player_type;
+    Player &player = *::player;
+    Player_Type ptype = player.type();
 
     {
         std::string title = get_program_title();
@@ -320,21 +321,25 @@ static void update_display(TUI_context &ctx)
         wclear(w);
         mvwaddstr(w, 0, 0, "Player");
         wattron(w, COLOR_PAIR(Colors_Highlight));
-        mvwprintw(w, 0, 10, "%s %s", player_name(pt), player_version(pt));
+        mvwprintw(w, 0, 10, "%s %s", player.name(ptype), player.version(ptype));
         wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
     if (WINDOW *w = ctx.win_emutitle.get()) {
         wclear(w);
         mvwaddstr(w, 0, 0, "Emulator");
         wattron(w, COLOR_PAIR(Colors_Highlight));
-        mvwaddstr(w, 0, 10, player_emulator_name(pt));
+        mvwaddstr(w, 0, 10, player.emulator_name());
         wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
     if (WINDOW *w = ctx.win_chipcount.get()) {
         wclear(w);
         mvwaddstr(w, 0, 0, "Chips");
         wattron(w, COLOR_PAIR(Colors_Highlight));
-        mvwprintw(w, 0, 10, "%u", player_chip_count(pt));
+        mvwprintw(w, 0, 10, "%u", player.chip_count());
+        wattroff(w, COLOR_PAIR(Colors_Highlight));
+        waddstr(w, " * ");
+        wattron(w, COLOR_PAIR(Colors_Highlight));
+        waddstr(w, player.chip_name(ptype));
         wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
     if (WINDOW *w = ctx.win_cpuratio.get()) {

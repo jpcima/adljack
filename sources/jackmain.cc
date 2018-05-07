@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Jack client \"%s\" fs=%u bs=%u\n",
             jack_get_client_name(client), samplerate, bufsize);
 
-    initialize_player(samplerate, arg_nchip, arg_bankfile, arg_emulator);
+    initialize_player(arg_player_type, samplerate, arg_nchip, arg_bankfile, arg_emulator);
 
     jack_set_process_callback(client, process, nullptr);
     jack_activate(client);

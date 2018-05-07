@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
             device_info.name.c_str(), sample_rate, buffer_size, latency);
 
-    initialize_player(sample_rate, arg_nchip, arg_bankfile, arg_emulator);
+    initialize_player(arg_player_type, sample_rate, arg_nchip, arg_bankfile, arg_emulator);
 
     audio_client->startStream();
     player_ready();

@@ -7,16 +7,11 @@
 #include "tui.h"
 #include <thread>
 #include <chrono>
-#include <mutex>
 #include <stdexcept>
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 namespace stc = std::chrono;
 
-void *player = nullptr;
-Player_Type player_type = Player_Type::OPL3;
+std::unique_ptr<Player> player;
 std::string player_bank_file;
 int player_volume = 100;
 DcFilter dcfilter[2];
@@ -27,10 +22,7 @@ Program channel_map[16];
 unsigned midi_channel_note_count[16] = {};
 std::bitset<128> midi_channel_note_active[16];
 
-static unsigned player_sample_rate = 0;
-static unsigned player_emulator_id = 0;
-static std::mutex player_mutex;
-
+Player_Type arg_player_type = Player_Type::OPL3;
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
 int arg_emulator = -1;
@@ -51,13 +43,13 @@ void generic_usage(const char *progname, const char *more_options)
 
     fprintf(stderr, "Available players:\n");
     for (Player_Type pt : all_player_types) {
-        fprintf(stderr, "   * %s\n", player_name(pt));
+        fprintf(stderr, "   * %s\n", Player::name(pt));
     }
 
     for (Player_Type pt : all_player_types) {
-        std::vector<std::string> emus = enumerate_emulators(pt);
+        std::vector<std::string> emus = Player::enumerate_emulators(pt);
         size_t emu_count = emus.size();
-        fprintf(stderr, "Available emulators for %s:\n", player_name(pt));
+        fprintf(stderr, "Available emulators for %s:\n", Player::name(pt));
         for (size_t i = 0; i < emu_count; ++i)
             fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
     }
@@ -76,8 +68,8 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
     for (int c; (c = getopt(argc, argv, optstr.c_str())) != -1;) {
         switch (c) {
         case 'p':
-            ::player_type = player_by_name(optarg);
-            if ((int)::player_type == -1) {
+            ::arg_player_type = Player::type_by_name(optarg);
+            if ((int)::arg_player_type == -1) {
                 fprintf(stderr, "invalid player name\n");
                 exit(1);
             }
@@ -111,39 +103,33 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
     return -1;
 }
 
-template <Player_Type Pt>
-void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
+void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
 {
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
+    fprintf(stderr, "%s version %s\n", Player::name(pt), Player::version(pt));
 
-    fprintf(stderr, "%s version %s\n", Traits::name(), Traits::version());
-
-    Player *player = Traits::init(sample_rate);
+    Player *player = Player::create(pt, sample_rate);
     if (!player)
         throw std::runtime_error("error instantiating ADLMIDI");
-    ::player = player;
-    ::player_sample_rate = sample_rate;
+    ::player.reset(player);
 
     if (emulator >= 0) {
-        if (Traits::switch_emulator(player, emulator) < 0)
+        if (!player->set_emulator(emulator))
             throw std::runtime_error("error selecting emulator");
-        ::player_emulator_id = emulator;
     }
 
-    fprintf(stderr, "Using emulator \"%s\"\n", Traits::emulator_name(player));
+    fprintf(stderr, "Using emulator \"%s\"\n", player->emulator_name());
 
     if (!bankfile) {
         fprintf(stderr, "Using default banks.\n");
     }
     else {
-        if (Traits::open_bank_file(player, bankfile) < 0)
+        if (!player->load_bank_file(bankfile))
             throw std::runtime_error("error loading bank file");
         fprintf(stderr, "Using banks from WOPL file.\n");
         ::player_bank_file = bankfile;
     }
 
-    if (Traits::set_num_chips(player, nchip) < 0)
+    if (!player->set_chip_count(nchip))
         throw std::runtime_error("error setting the number of chips");
 
     fprintf(stderr, "DC filter @ %f Hz, LV monitor @ %f ms\n", dccutoff, lvrelease * 1e3);
@@ -153,26 +139,16 @@ void generic_initialize_player(unsigned sample_rate, unsigned nchip, const char 
     }
 }
 
-template <Player_Type Pt>
-void generic_player_ready()
+void player_ready()
 {
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
     fprintf(stderr, "%s ready with %u chips.\n",
-            Traits::name(), Traits::get_num_chips(player));
+            Player::name(player->type()), player->chip_count());
 }
 
-template <Player_Type Pt>
-void generic_play_midi(const uint8_t *msg, unsigned len)
+void play_midi(const uint8_t *msg, unsigned len)
 {
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-    std::unique_lock<std::mutex> lock(player_mutex, std::try_to_lock);
+    Player &player = *::player;
+    auto lock = player.take_lock(std::try_to_lock);
     if (!lock.owns_lock())
         return;
 
@@ -190,7 +166,7 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
         if (msg[2] != 0) {
             unsigned note = msg[1] & 0x7f;
             unsigned vel = msg[2] & 0x7f;
-            Traits::rt_note_on(player, channel, note, vel);
+            player.rt_note_on(channel, note, vel);
             if (!midi_channel_note_active[channel][note]) {
                 ++midi_channel_note_count[channel];
                 midi_channel_note_active[channel][note] = true;
@@ -200,7 +176,7 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
     case 0b1000: {
         if (len < 3) break;
         unsigned note = msg[1] & 0x7f;
-        Traits::rt_note_off(player, channel, note);
+        player.rt_note_off(channel, note);
         if (midi_channel_note_active[channel][note]) {
             --midi_channel_note_count[channel];
             midi_channel_note_active[channel][note] = false;
@@ -209,17 +185,17 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
     }
     case 0b1010:
         if (len < 3) break;
-        Traits::rt_note_aftertouch(player, channel, msg[1], msg[2]);
+        player.rt_note_aftertouch(channel, msg[1], msg[2]);
         break;
     case 0b1101:
         if (len < 2) break;
-        Traits::rt_channel_aftertouch(player, channel, msg[1]);
+        player.rt_channel_aftertouch(channel, msg[1]);
         break;
     case 0b1011: {
         if (len < 3) break;
         unsigned cc = msg[1] & 0x7f;
         unsigned val = msg[2] & 0x7f;
-        Traits::rt_controller_change(player, channel, cc, val);
+        player.rt_controller_change(channel, cc, val);
         if (cc == 120 || cc == 123) {
             midi_channel_note_count[channel] = 0;
             midi_channel_note_active[channel].reset();
@@ -229,30 +205,25 @@ void generic_play_midi(const uint8_t *msg, unsigned len)
     case 0b1100: {
         if (len < 2) break;
         unsigned pgm = msg[1] & 0x7f;
-        Traits::rt_program_change(player, channel, pgm);
+        player.rt_program_change(channel, pgm);
         channel_map[channel].gm = pgm;
         break;
     }
     case 0b1110:
         if (len < 3) break;
-        Traits::rt_pitchbend_ml(player, channel, msg[2], msg[1]);
+        unsigned value = (msg[1] & 0xf7) | ((msg[2] & 0xf7) << 7);
+        player.rt_pitchbend(channel, value);
         break;
     }
 }
 
-template <Player_Type Pt>
-void generic_generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)
+void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)
 {
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-    typedef typename Traits::audio_format AudioFormat;
-    typedef typename Traits::sample_type SampleType;
-
     if (nframes <= 0)
         return;
 
-    Player *player = reinterpret_cast<Player *>(::player);
-    std::unique_lock<std::mutex> lock(player_mutex, std::try_to_lock);
+    Player &player = *::player;
+    auto lock = player.take_lock(std::try_to_lock);
     if (!lock.owns_lock()) {
         for (unsigned i = 0; i < nframes; ++i) {
             float *leftp = &left[i * stride];
@@ -263,12 +234,12 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
         return;
     }
 
-    AudioFormat format;
-    format.type = (SampleType)ADLMIDI_SampleType_F32;
+    Player::Audio_Format format;
+    format.type = ADLMIDI_SampleType_F32;
     format.containerSize = sizeof(float);
     format.sampleOffset = stride * sizeof(float);
     stc::steady_clock::time_point t_before_gen = stc::steady_clock::now();
-    Traits::generate_format(player, 2 * nframes, (uint8_t *)left, (uint8_t *)right, &format);
+    player.generate(nframes, left, right, format);
     stc::steady_clock::time_point t_after_gen = stc::steady_clock::now();
     lock.unlock();
 
@@ -293,212 +264,10 @@ void generic_generate_outputs(float *left, float *right, unsigned nframes, unsig
 
     stc::steady_clock::duration d_gen = t_after_gen - t_before_gen;
     double d_sec = 1e-6 * stc::duration_cast<stc::microseconds>(d_gen).count();
-    ::cpuratio = d_sec / ((double)nframes / ::player_sample_rate);
+    ::cpuratio = d_sec / ((double)nframes / player.sample_rate());
 }
 
-template <Player_Type Pt>
-const char *generic_player_name()
-{
-    typedef Player_Traits<Pt> Traits;
-
-    return Traits::name();
-}
-
-template <Player_Type Pt>
-const char *generic_player_version()
-{
-    typedef Player_Traits<Pt> Traits;
-
-    return Traits::version();
-}
-
-template <Player_Type Pt>
-const char *generic_player_emulator_name()
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
-    return Traits::emulator_name(player);
-}
-
-template <Player_Type Pt>
-unsigned generic_player_chip_count()
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
-    return Traits::get_num_chips(player);
-}
-
-template <Player_Type Pt>
-void generic_player_dynamic_set_chip_count(unsigned nchip)
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
-    std::lock_guard<std::mutex> lock(player_mutex);
-    Traits::panic(player);
-    Traits::set_num_chips(player, nchip);
-}
-
-template <Player_Type Pt>
-void generic_player_dynamic_set_emulator(unsigned emulator)
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
-    std::lock_guard<std::mutex> lock(player_mutex);
-    Traits::panic(player);
-    if (Traits::switch_emulator(player, emulator) < 0)
-        return;
-    ::player_emulator_id = emulator;
-}
-
-template <Player_Type Pt>
-bool generic_player_dynamic_load_bank(const char *bankfile)
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
-    std::lock_guard<std::mutex> lock(player_mutex);
-    Traits::panic(player);
-    if (Traits::open_bank_file(player, bankfile) < 0)
-        return false;
-
-    ::player_bank_file = bankfile;
-    return true;
-}
-
-template <Player_Type Pt>
-void generic_player_dynamic_panic()
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = reinterpret_cast<Player *>(::player);
-
-    std::lock_guard<std::mutex> lock(player_mutex);
-    Traits::panic(player);
-}
-
-template <Player_Type Pt>
-std::vector<std::string> generic_enumerate_emulators()
-{
-    typedef Player_Traits<Pt> Traits;
-    typedef typename Traits::player Player;
-
-    Player *player = Traits::init(44100);
-    std::vector<std::string> names;
-    for (unsigned i = 0; Traits::switch_emulator(player, i) == 0; ++i)
-        names.push_back(Traits::emulator_name(player));
-    Traits::close(player);
-    return names;
-}
-
-#define PLAYER_DISPATCH_CASE(x, fn, ...)                \
-    case Player_Type::x:                                \
-    return generic_##fn<Player_Type::x>(__VA_ARGS__);   \
-
-#define PLAYER_DISPATCH(type, fn, ...)                                  \
-    switch ((type)) {                                                   \
-    EACH_PLAYER_TYPE(PLAYER_DISPATCH_CASE, fn, ##__VA_ARGS__)           \
-    default: assert(false); abort();                                    \
-    }
-
-void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
-{
-    PLAYER_DISPATCH(::player_type, initialize_player, sample_rate, nchip, bankfile, emulator);
-}
-
-void player_ready()
-{
-    PLAYER_DISPATCH(::player_type, player_ready);
-}
-
-void play_midi(const uint8_t *msg, unsigned len)
-{
-    PLAYER_DISPATCH(::player_type, play_midi, msg, len);
-}
-
-void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)
-{
-    PLAYER_DISPATCH(::player_type, generate_outputs, left, right, nframes, stride);
-}
-
-std::vector<std::string> enumerate_emulators()
-{
-    PLAYER_DISPATCH(::player_type, enumerate_emulators);
-}
-
-const char *player_name(Player_Type pt)
-{
-    PLAYER_DISPATCH(pt, player_name);
-}
-
-Player_Type player_by_name(const char *name)
-{
-    for (Player_Type pt : all_player_types)
-        if (!strcmp(name, player_name(pt)))
-            return pt;
-    return (Player_Type)-1;
-}
-
-const char *player_version(Player_Type pt)
-{
-    PLAYER_DISPATCH(pt, player_version);
-}
-
-const char *player_emulator_name(Player_Type pt)
-{
-    PLAYER_DISPATCH(pt, player_emulator_name);
-}
-
-unsigned player_chip_count(Player_Type pt)
-{
-    PLAYER_DISPATCH(pt, player_chip_count);
-}
-
-unsigned player_emulator(Player_Type pt)
-{
-    (void)pt;
-    return ::player_emulator_id;
-}
-
-void player_dynamic_set_chip_count(Player_Type pt, unsigned nchip)
-{
-    PLAYER_DISPATCH(pt, player_dynamic_set_chip_count, nchip);
-}
-
-void player_dynamic_set_emulator(Player_Type pt, unsigned emulator)
-{
-    PLAYER_DISPATCH(pt, player_dynamic_set_emulator, emulator);
-}
-
-bool player_dynamic_load_bank(Player_Type pt, const char *bankfile)
-{
-    PLAYER_DISPATCH(pt, player_dynamic_load_bank, bankfile);
-}
-
-void player_dynamic_panic(Player_Type pt)
-{
-    PLAYER_DISPATCH(pt, player_dynamic_panic);
-}
-
-std::vector<std::string> enumerate_emulators(Player_Type pt)
-{
-    PLAYER_DISPATCH(pt, enumerate_emulators);
-}
-
+//------------------------------------------------------------------------------
 static void print_volume_bar(FILE *out, unsigned size, double vol)
 {
     if (size < 2)
