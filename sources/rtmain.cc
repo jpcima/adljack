@@ -19,6 +19,7 @@ static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM
 static RtAudio *audio_client;
 static RtAudio::DeviceInfo audio_device_info;
 static RtMidiIn *midi_client;
+static std::string midi_port_name;
 static Ring_Buffer *midi_rb;
 
 static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudioStreamStatus, void *)
@@ -82,11 +83,11 @@ static void usage()
 std::string get_program_title()
 {
     std::string name = "ADLrt";
-    const std::string &device_name = ::audio_device_info.name;
-    if (!device_name.empty()) {
+    const std::string &port_name = ::midi_port_name;
+    if (!port_name.empty()) {
         name.push_back(' ');
         name.push_back('[');
-        name.append(device_name);
+        name.append(port_name);
         name.push_back(']');
     }
     return name;
@@ -150,15 +151,21 @@ int main(int argc, char *argv[])
     midi_rb = new Ring_Buffer(midi_buffer_size);
 
 #if defined(_WIN32)
-    if (midi_client->getCurrentApi() != RtMidi::WINDOWS_MM)
+    if (midi_client->getCurrentApi() != RtMidi::WINDOWS_MM) {
 #endif
-        midi_client->openVirtualPort("adlrt MIDI");
+        const char *vport_name = "adlrt MIDI";
+        midi_client->openVirtualPort(vport_name);
+        ::midi_port_name = vport_name;
 #if defined(_WIN32)
+    }
     else {
         INT_PTR port = DialogBox(nullptr, MAKEINTRESOURCE(IDD_DIALOG1), nullptr, &winmm_dlgproc);
-        if (port < 0)
+        if (port >= 0) {
+            midi_client->openPort(port, "adlrt MIDI");
+            ::midi_port_name = midi_client->getPortName(port);
+        }
+        else
             return 1;
-        midi_client->openPort(port, "adlrt MIDI");
     }
 #endif
 
