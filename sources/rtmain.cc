@@ -27,7 +27,7 @@ static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudio
     Ring_Buffer &midi_rb = *::midi_rb;
     uint8_t evsize;
     uint8_t evdata[midi_message_max_size];
-    while (midi_rb.peek(evsize) && 1 + evsize <= midi_rb.size_used()) {
+    while (midi_rb.peek(evsize) && 1u + evsize <= midi_rb.size_used()) {
         midi_rb.discard(1);
         midi_rb.get(evdata, evsize);
         play_midi(evdata, evsize);
