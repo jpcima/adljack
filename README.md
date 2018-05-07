@@ -7,6 +7,8 @@ It is based on the [libADLMIDI](https://github.com/Wohlstand/libADLMIDI) project
 - *adljack* is the version for the Jack audio system.
 - *adlrt* is the portable version for Linux, Windows and Mac.
 
+![screenshot](docs/screen.png)
+
 ## Usage
 
 This is how you use adljack in the console.
