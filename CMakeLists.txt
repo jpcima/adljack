@@ -161,8 +161,10 @@ endif()
 install(TARGETS adlrt DESTINATION "bin")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   install(FILES "${CMAKE_SOURCE_DIR}/resources/opnrt.bat" DESTINATION "bin")
-  install(FILES "${CMAKE_SOURCE_DIR}/resources/adl.ico" DESTINATION "bin")
-  install(FILES "${CMAKE_SOURCE_DIR}/resources/opn.ico" DESTINATION "bin")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/adl.ico" DESTINATION "icons")
+  install(FILES "${CMAKE_SOURCE_DIR}/resources/opn.ico" DESTINATION "icons")
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libADLMIDI/fm_banks/wopl_files/" DESTINATION "banks/wopl_files")
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libOPNMIDI/fm_banks/" DESTINATION "banks/wopn_files")
 endif()
 
 ## Packaging
