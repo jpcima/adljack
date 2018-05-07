@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(adljack VERSION 1.0 LANGUAGES C CXX)
+project(ADLjack VERSION "1.0.0" LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
@@ -14,8 +14,8 @@ set(libADLMIDI_STATIC ON CACHE STRING "")
 set(libADLMIDI_SHARED OFF CACHE STRING "")
 set(libOPNMIDI_STATIC ON CACHE STRING "")
 set(libOPNMIDI_SHARED OFF CACHE STRING "")
-add_subdirectory("thirdparty/libADLMIDI")
-add_subdirectory("thirdparty/libOPNMIDI")
+add_subdirectory("thirdparty/libADLMIDI" EXCLUDE_FROM_ALL)
+add_subdirectory("thirdparty/libOPNMIDI" EXCLUDE_FROM_ALL)
 
 include(FindPkgConfig)
 include(CheckFunctionExists)
@@ -158,3 +158,6 @@ elseif(PDCURSES_FOUND)
   target_link_libraries(adlrt PRIVATE pdcurses)
 endif()
 install(TARGETS adlrt DESTINATION "bin")
+
+## Packaging
+include(CPackLists.txt)

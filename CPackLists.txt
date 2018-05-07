@@ -1,0 +1,42 @@
+# -*- cmake -*-
+
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_VENDOR "${PROJECT_VENDOR}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${PROJECT_NAME}")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/resources/installer-license.txt")
+set(CPACK_CREATE_DESKTOP_LINKS TRUE)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(CPACK_PACKAGE_EXECUTABLES "adlrt" "${PROJECT_NAME}")
+  set(CPACK_NSIS_DISPLAY_NAME "${PROJECT_NAME}")
+  set(CPACK_NSIS_PACKAGE_NAME "${PROJECT_NAME}")
+  set(CPACK_NSIS_MODIFY_PATH TRUE)
+  set(CPACK_NSIS_EXECUTABLES_DIRECTORY "bin")
+  set(CPACK_NSIS_CREATE_ICONS_EXTRA
+    "CreateShortCut '$DESKTOP\\\\${PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\adlrt' ''")
+  set(CPACK_NSIS_DELETE_ICONS_EXTRA
+    "Delete '$DESKTOP\\\\${PROJECT_NAME}.lnk'")
+endif()
+
+include(CPack)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(windows_bundle_DLLS
+    "libgcc_s_sjlj-1.dll"
+    "libgcc_s_seh-1.dll"
+    "libstdc++-6.dll"
+    "libwinpthread-1.dll"
+    "SDL2.dll")
+  unset(_dllfile CACHE)
+  foreach(dll ${windows_bundle_DLLS})
+    find_file(_dllfile "${dll}" PATH_SUFFIXES "bin")
+    if(_dllfile)
+      install(FILES "${_dllfile}" DESTINATION "bin")
+    endif()
+    unset(_dllfile CACHE)
+  endforeach()
+endif()
