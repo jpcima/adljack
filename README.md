@@ -17,3 +17,26 @@ This is how you use adljack in the console.
 * -b [bank]: Loads the indicated bank file.
 * -e [emulator]: Selects the emulator. (by number, as listed in -h)
 * -L [latency]: (adlrt only) Defines the audio latency. The unit is milliseconds. Default 20ms.
+
+## Build instructions
+
+Installed required dependencies:
+- a C++ compiler for the 2014 standard
+- at least one development package for audio, and one for MIDI: ALSA, PulseAudio, Jack
+- either: (n)curses for a terminal interface, or SDL2 for a PDCurses pseudo-terminal (needed on Windows)
+
+### Compiling
+
+```
+git clone --recursive https://github.com/jpcima/adljack.git
+mkdir adljack/build
+cd adljack/build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build .
+```
+
+### Installing
+
+```
+sudo cmake --build . --target install
+```
