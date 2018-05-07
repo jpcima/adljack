@@ -10,6 +10,7 @@
 #include <mutex>
 #include <stdexcept>
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 namespace stc = std::chrono;
@@ -411,7 +412,7 @@ std::vector<std::string> generic_enumerate_emulators()
 #define PLAYER_DISPATCH(type, fn, ...)                                  \
     switch ((type)) {                                                   \
     EACH_PLAYER_TYPE(PLAYER_DISPATCH_CASE, fn, ##__VA_ARGS__)           \
-    default: assert(false);                                             \
+    default: assert(false); abort();                                    \
     }
 
 void initialize_player(unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
