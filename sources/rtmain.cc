@@ -3,35 +3,24 @@
 //    (See accompanying file LICENSE or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
+#include "rtmain.h"
 #include "common.h"
-#include <ring_buffer/ring_buffer.h>
-#include <RtAudio.h>
-#include <RtMidi.h>
-#if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-#    include "te_virtual_midi.h"
-#endif
-#include <stdexcept>
-#include <system_error>
+#include "winmm_dialog.h"
 #include <stdio.h>
-#if defined(_WIN32)
-#    include "win_resource.h"
-#    include <windows.h>
-static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp);
-#endif
 
-static RtAudio *audio_client;
-static RtAudio::DeviceInfo audio_device_info;
-static RtMidiIn *midi_client;
-static std::string midi_port_name;
+static std::string program_title = "ADLrt";
+
+static double arg_latency = 20e-3;  // audio latency, 20ms default
+
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-static bool have_virtualmidi = false;
-static LPVM_MIDI_PORT vmidi_port = nullptr;
+static bool vmidi_init();
+static VM_MIDI_PORT_u vmidi_port_setup(Audio_Context &ctx, std::string &name);
 #endif
-static Ring_Buffer *midi_rb;
 
-static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudioStreamStatus, void *)
+static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudioStreamStatus, void *user_data)
 {
-    Ring_Buffer &midi_rb = *::midi_rb;
+    Audio_Context &ctx = *(Audio_Context *)user_data;
+    Ring_Buffer &midi_rb = *ctx.midi_rb;
     uint8_t evsize;
     uint8_t evdata[midi_message_max_size];
     while (midi_rb.peek(evsize) && 1u + evsize <= midi_rb.size_used()) {
@@ -39,42 +28,31 @@ static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudio
         midi_rb.get(evdata, evsize);
         play_midi(evdata, evsize);
     }
-
     generate_outputs((float *)outputbuffer, (float *)outputbuffer + 1, nframes, 2);
     return 0;
 }
 
-static void generic_midi_event(const uint8_t *data, unsigned size)
+static void generic_midi_event(const uint8_t *data, unsigned size, Audio_Context &ctx)
 {
     if (size > midi_message_max_size)
         return;
-    Ring_Buffer &midi_rb = *::midi_rb;
+    Ring_Buffer &midi_rb = *ctx.midi_rb;
     if (midi_rb.size_free() >= 1 + size) {
         midi_rb.put<uint8_t>(size);
         midi_rb.put(data, size);
     }
 }
 
-static void rtmidi_event(double, std::vector<uint8_t> *message, void *)
+static void rtmidi_event(double, std::vector<uint8_t> *message, void *user_data)
 {
-    generic_midi_event(message->data(), message->size());
+    Audio_Context &ctx = *(Audio_Context *)user_data;
+    generic_midi_event(message->data(), message->size(), ctx);
 }
-
-#if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-static void CALLBACK virtualmidi_event(LPVM_MIDI_PORT, LPBYTE bytes, DWORD length, DWORD_PTR)
-{
-    generic_midi_event(bytes, length);
-}
-#endif
 
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
 {
     if (type == RtAudioError::WARNING) {
-#if defined(_WIN32)
-        OutputDebugStringA(text.c_str());
-#else
-        // ignore, don't print anything
-#endif
+        output_debug_string(text.c_str());
         return;
     }
     throw RtAudioError(text, type);
@@ -83,65 +61,31 @@ void audio_error_callback(RtAudioError::Type type, const std::string &text)
 void midi_error_callback(RtMidiError::Type type, const std::string &text, void *)
 {
     if (type == RtMidiError::WARNING) {
-#if defined(_WIN32)
-        OutputDebugStringA(text.c_str());
-#else
-        // ignore, don't print anything
-#endif
+        output_debug_string(text.c_str());
         return;
     }
     throw RtMidiError(text, type);
 }
 
-static void usage()
+int audio_main()
 {
-    generic_usage("adlrt", " [-L latency-ms]");
-}
+    Audio_Context ctx;
+    Ring_Buffer midi_rb(midi_buffer_size);
+    ctx.midi_rb = &midi_rb;
 
-std::string get_program_title()
-{
-    std::string name = "ADLrt";
-    const std::string &port_name = ::midi_port_name;
-    if (!port_name.empty()) {
-        name.push_back(' ');
-        name.push_back('[');
-        name.append(port_name);
-        name.push_back(']');
-    }
-    return name;
-}
+    RtAudio audio_client(RtAudio::Api::UNSPECIFIED);
+    ctx.audio_client = &audio_client;
+    RtMidiIn midi_client(RtMidi::Api::UNSPECIFIED, "ADLrt", midi_buffer_size);
+    ctx.midi_client = &midi_client;
 
-int main(int argc, char *argv[])
-{
-    double latency = 20e-3;  // audio latency, 20ms default
-
-    for (int c; (c = generic_getopt(argc, argv, "L:", usage)) != -1;) {
-        switch (c) {
-        case 'L':
-            latency = std::stod(optarg) * 1e-3;
-            if (latency <= 0) {
-                fprintf(stderr, "invalid latency\n");
-                return 1;
-            }
-            break;
-        default:
-            usage();
-            return 1;
-        }
-    }
-
-    if (argc != optind)
-        return 1;
-
-    RtAudio *audio_client = ::audio_client = new RtAudio(RtAudio::Api::UNSPECIFIED);
-    unsigned num_audio_devices = audio_client->getDeviceCount();
+    unsigned num_audio_devices = audio_client.getDeviceCount();
     if (num_audio_devices == 0) {
-        fprintf(stderr, "no audio devices present for output\n");
+        fprintf(stderr, "No audio devices are present for output.\n");
         return 1;
     }
 
-    unsigned output_device_id = audio_client->getDefaultOutputDevice();
-    RtAudio::DeviceInfo device_info = audio_client->getDeviceInfo(output_device_id);
+    unsigned output_device_id = audio_client.getDefaultOutputDevice();
+    RtAudio::DeviceInfo device_info = audio_client.getDeviceInfo(output_device_id);
     unsigned sample_rate = device_info.preferredSampleRate;
 
     RtAudio::StreamParameters stream_param;
@@ -152,146 +96,158 @@ int main(int argc, char *argv[])
     stream_opts.flags = RTAUDIO_ALSA_USE_DEFAULT;
     stream_opts.streamName = "ADLrt";
 
+    double latency = ::arg_latency;
     unsigned buffer_size = ceil(latency * sample_rate);
     fprintf(stderr, "Desired latency %f ms = buffer size %u\n",
             latency * 1e3, buffer_size);
 
-    audio_client->openStream(
+    audio_client.openStream(
         &stream_param, nullptr, RTAUDIO_FLOAT32, sample_rate, &buffer_size,
-        &process, nullptr, &stream_opts, &audio_error_callback);
+        &process, &ctx, &stream_opts, &audio_error_callback);
 
-    ::audio_device_info = device_info;
-
-    RtMidiIn *midi_client = ::midi_client = new RtMidiIn(
-        RtMidi::Api::UNSPECIFIED, "ADLrt", midi_buffer_size);
-    midi_client->setErrorCallback(&midi_error_callback);
+    midi_client.setCallback(&rtmidi_event, &ctx);
+    midi_client.setErrorCallback(&midi_error_callback);
 
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-    have_virtualmidi = virtualMIDI::load();
-    fprintf(stderr, "virtualMIDI %ls\n", have_virtualmidi ?
-            virtualMIDI::GetVersion(nullptr, nullptr, nullptr, nullptr) : L"not found");
-    if (have_virtualmidi) {
-        LPCWSTR driver_version = virtualMIDI::GetDriverVersion(nullptr, nullptr, nullptr, nullptr);
-        have_virtualmidi = driver_version && *driver_version;
-        fprintf(stderr, "virtualMIDI driver %ls\n", have_virtualmidi ? driver_version : L"not found");
-    }
+    VM_MIDI_PORT_u vmidi_port;
+    ctx.have_virtualmidi = vmidi_init();
 #endif
 
-    midi_rb = new Ring_Buffer(midi_buffer_size);
+    std::string midi_port_name;
 
+    switch (midi_client.getCurrentApi()) {
+    default:
+        midi_port_name = "ADLrt MIDI";
+        midi_client.openVirtualPort(midi_port_name.c_str());
+        break;
 #if defined(_WIN32)
-    if (midi_client->getCurrentApi() != RtMidi::WINDOWS_MM) {
-#endif
-        const char *vport_name = "ADLrt MIDI";
-        midi_client->openVirtualPort(vport_name);
-        ::midi_port_name = vport_name;
-#if defined(_WIN32)
-    }
-    else {
-        INT_PTR port = DialogBox(nullptr, MAKEINTRESOURCE(IDD_DIALOG1), nullptr, &winmm_dlgproc);
-        if (port >= 0) {
-            midi_client->openPort(port, "ADLrt MIDI");
-            ::midi_port_name = midi_client->getPortName(port);
+    case RtMidi::WINDOWS_MM: {
+        switch(int port = dlg_select_midi_port(ctx)) {
+        default:
+            midi_client.openPort(port, "ADLrt MIDI");
+            midi_port_name = midi_client.getPortName(port);
+            break;
+        case -1:
+            return 1;
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-        } else if (port == -2) {
-            // virtual midi
-            LPVM_MIDI_PORT port;
-            DWORD err;
-            unsigned nth = 0;
-            std::wstring name;
-            do {
-                if (nth == 0)
-                    name = L"ADLrt MIDI";
-                else
-                    name = L"ADLrt-" + std::to_wstring(nth) + L" MIDI";
-                ++nth;
-                port = virtualMIDI::CreatePortEx2(
-                    name.c_str(), &virtualmidi_event, 0, 256,
-                    TE_VM_FLAGS_PARSE_RX|TE_VM_FLAGS_INSTANTIATE_RX_ONLY);
-                if (!port)
-                    err = GetLastError();
-            }
-            while (!port && (err == ERROR_ALREADY_EXISTS || err == ERROR_ALIAS_EXISTS));
-
-            if (!port) {
-                fprintf(stderr, "could not create virtualMIDI port\n");
+        case -2:
+            vmidi_port = vmidi_port_setup(ctx, midi_port_name);
+            if (!vmidi_port)
                 return 1;
-            }
-
-            ::vmidi_port = port;
-            ::midi_port_name = std::string(name.begin(), name.end());
+            ctx.vmidi_port = vmidi_port.get();
+            break;
 #endif
         }
-        else
-            return 1;
+        break;
     }
 #endif
+    }
 
-    midi_client->setCallback(&rtmidi_event);
+    ::program_title = std::string("ADLrt") + " [" + midi_port_name + "]";
 
     latency = buffer_size / (double)sample_rate;
     fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
             device_info.name.c_str(), sample_rate, buffer_size, latency);
 
-    initialize_player(arg_player_type, sample_rate, arg_nchip, arg_bankfile, arg_emulator);
+    if (!initialize_player(arg_player_type, sample_rate, arg_nchip, arg_bankfile, arg_emulator))
+        return 1;
 
-    audio_client->startStream();
+    audio_client.startStream();
     player_ready();
 
     //
     interface_exec();
 
     //
-    delete audio_client;
-    delete midi_client;
+    audio_client.stopStream();
+    midi_client.closePort();
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-    if (LPVM_MIDI_PORT port = ::vmidi_port)
-        virtualMIDI::Shutdown(port);
+    vmidi_port.reset();
 #endif
 
     return 0;
 }
 
-#if defined(_WIN32)
-static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp)
+static void usage()
 {
-    switch (msg) {
-    case WM_INITDIALOG: {
-        RtMidiIn *midi_client = ::midi_client;
-        unsigned nports = midi_client->getPortCount();
-        HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
-#if defined(ADLJACK_ENABLE_VIRTUALMIDI)
-        if (have_virtualmidi) {
-            int index = SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)"New Virtual MIDI port");
-            SendMessageA(hchoice, CB_SETITEMDATA, index, -2);
-        }
-#endif
-        for (unsigned i = 0; i < nports; ++i) {
-            std::string name = midi_client->getPortName(i);
-            int index = SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)name.c_str());
-            SendMessageA(hchoice, CB_SETITEMDATA, index, i);
-        }
-        SendMessage(hchoice, CB_SETCURSEL, 0, 0);
-        SetFocus(hchoice);
-        return 0;
-    }
-    case WM_COMMAND: {
-        switch (wp) {
-            case IDOK: {
-                HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
-                int data = -1;
-                int index = SendMessage(hchoice, CB_GETCURSEL, 0, 0);
-                if (index >= 0)
-                    data = SendMessage(hchoice, CB_GETITEMDATA, index, 0);
-                EndDialog(hdlg, data);
-                break;
+    generic_usage("adlrt", " [-L latency-ms]");
+}
+
+std::string get_program_title()
+{
+    return ::program_title;
+}
+
+int main(int argc, char *argv[])
+{
+    for (int c; (c = generic_getopt(argc, argv, "L:", usage)) != -1;) {
+        switch (c) {
+        case 'L': {
+            double latency = ::arg_latency = std::stod(optarg) * 1e-3;
+            if (latency <= 0) {
+                fprintf(stderr, "Invalid latency.\n");
+                return 1;
             }
-            case IDCANCEL:
-                EndDialog(hdlg, -1);
-                break;
+            break;
+        }
+        default:
+            usage();
+            return 1;
         }
     }
+
+    if (argc != optind)
+        return 1;
+
+    return audio_main();
+}
+
+#if defined(ADLJACK_ENABLE_VIRTUALMIDI)
+static bool vmidi_init()
+{
+    bool have = virtualMIDI::load();
+    fprintf(stderr, "virtualMIDI %ls\n", have ?
+            virtualMIDI::GetVersion(nullptr, nullptr, nullptr, nullptr) : L"not found");
+    if (have) {
+        const WCHAR *driver_version = virtualMIDI::GetDriverVersion(nullptr, nullptr, nullptr, nullptr);
+        have = driver_version && *driver_version;
+        fprintf(stderr, "virtualMIDI driver %ls\n", have ? driver_version : L"not found");
     }
-    return FALSE;
+    return have;
+}
+
+static void CALLBACK vmidi_event(VM_MIDI_PORT *, BYTE *bytes, DWORD length, DWORD_PTR user_data)
+{
+    Audio_Context &ctx = *(Audio_Context *)user_data;
+    generic_midi_event(bytes, length, ctx);
+}
+
+static VM_MIDI_PORT_u vmidi_port_setup(Audio_Context &ctx, std::string &name)
+{
+    VM_MIDI_PORT_u port;
+    DWORD err;
+    unsigned nth = 0;
+    std::wstring nametmp;
+    do {
+        if (nth == 0)
+            nametmp = L"ADLrt MIDI";
+        else
+            nametmp = L"ADLrt-" + std::to_wstring(nth) + L" MIDI";
+        ++nth;
+        port.reset(virtualMIDI::CreatePortEx2(
+                       nametmp.c_str(), &vmidi_event, (DWORD_PTR)&ctx, 256,
+                       TE_VM_FLAGS_PARSE_RX|TE_VM_FLAGS_INSTANTIATE_RX_ONLY));
+        if (!port)
+            err = GetLastError();
+    }
+    while (!port && (err == ERROR_ALREADY_EXISTS || err == ERROR_ALIAS_EXISTS));
+
+    if (!port) {
+        fprintf(stderr, "Could not create virtualMIDI port.\n");
+        return {};
+    }
+
+    name.assign(nametmp.begin(), nametmp.end());
+    return port;
 }
 #endif

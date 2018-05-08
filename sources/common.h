@@ -13,6 +13,9 @@
 #include <memory>
 #include <adlmidi.h>
 #include <stdint.h>
+#if defined(_WIN32)
+#    include <windows.h>
+#endif
 
 extern std::unique_ptr<Player> player[player_type_count];
 extern std::string player_bank_file[player_type_count];
@@ -69,7 +72,7 @@ extern unsigned arg_emulator;
 void generic_usage(const char *progname, const char *more_options);
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)());
 
-void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator);
+bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator);
 void player_ready();
 void play_midi(const uint8_t *msg, unsigned len);
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride);
@@ -77,3 +80,11 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
 void dynamic_switch_emulator_id(unsigned index);
 
 void interface_exec();
+
+#if !defined(_WIN32)
+inline void output_debug_string(const char *s)
+    { /* ignore, don't print anything */ }
+#else
+inline void output_debug_string(const char *s)
+    { OutputDebugStringA(s); }
+#endif
