@@ -94,7 +94,7 @@ void curses_interface_exec()
         stc::steady_clock::time_point bank_check_last = stc::steady_clock::now();
 
         bool quit = false;
-        while (!quit) {
+        while (!quit && !interface_interrupted()) {
 #if defined(PDCURSES)
             bool resized = is_termresized();
 #else
@@ -203,6 +203,9 @@ void curses_interface_exec()
     }
 
     endwin();
+
+    if (interface_interrupted())
+        fprintf(stderr, "Interrupted.\n");
 }
 
 static void setup_colors()

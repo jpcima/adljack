@@ -75,7 +75,7 @@ File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
     setup_display(ctx);
 
     bool quit = false;
-    while (!quit) {
+    while (!quit && !interface_interrupted()) {
 #if defined(PDCURSES)
         bool resized = is_termresized();
 #else

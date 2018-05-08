@@ -88,3 +88,6 @@ inline void output_debug_string(const char *s)
 inline void output_debug_string(const char *s)
     { OutputDebugStringA(s); }
 #endif
+
+void handle_signals();
+bool interface_interrupted();

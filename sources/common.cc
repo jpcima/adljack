@@ -9,7 +9,10 @@
 #include <thread>
 #include <chrono>
 #include <stdexcept>
+#include <system_error>
 #include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
 namespace stc = std::chrono;
 
 std::unique_ptr<Player> player[player_type_count];
@@ -364,6 +367,11 @@ static void print_volume_bar(FILE *out, unsigned size, double vol)
 static void simple_interface_exec()
 {
     while (1) {
+        if (interface_interrupted()) {
+            fprintf(stderr, "Interrupted.\n");
+            break;
+        }
+
         fprintf(stderr, "\033[2K");
         double volumes[2] = {lvcurrent[0], lvcurrent[1]};
         const char *names[2] = {"Left", "Right"};
@@ -401,4 +409,43 @@ void interface_exec()
 #else
     simple_interface_exec();
 #endif
+}
+
+static sig_atomic_t interrupted_by_signal = 0;
+
+void handle_signals()
+{
+#if defined(_WIN32)
+    /* not implemented */
+#else
+    sigset_t sigs;
+    int nsignal = 0;
+
+    sigemptyset(&sigs);
+    for (int signo : {SIGINT, SIGTERM}) {
+        sigaddset(&sigs, signo);
+        nsignal = signo + 1;
+    }
+
+    for (int sig = 1; sig < nsignal; ++sig) {
+        if (!sigismember(&sigs, sig))
+            continue;
+        struct sigaction sa = {};
+        sa.sa_handler = +[](int) { ::interrupted_by_signal = 1; };
+        sa.sa_mask = sigs;
+        if (sigaction(sig, &sa, nullptr) == -1)
+            throw std::system_error(errno, std::generic_category(), "sigaction");
+    }
+
+    std::thread handler_thread([]() { for (;;) pause(); });
+    handler_thread.detach();
+
+    if (pthread_sigmask(SIG_BLOCK, &sigs, nullptr) == -1)
+        throw std::system_error(errno, std::generic_category(), "pthread_sigmask");
+#endif
+}
+
+bool interface_interrupted()
+{
+    return ::interrupted_by_signal;
 }

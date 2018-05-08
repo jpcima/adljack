@@ -92,5 +92,6 @@ int main(int argc, char *argv[])
     if (argc != optind)
         return 1;
 
+    handle_signals();
     return audio_main();
 }
