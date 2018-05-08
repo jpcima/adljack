@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(ADLjack VERSION "1.0.0" LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
 if(CMAKE_C_COMPILER_ID MATCHES "^(GNU|Clang)$")
@@ -168,8 +168,11 @@ if(JACK_FOUND)
   target_link_libraries(RtAudio PUBLIC ${JACK_LIBRARIES})
 endif()
 
+## Ring buffer
+add_library(ring_buffer STATIC "thirdparty/ring-buffer/sources/ring_buffer.cc")
+target_include_directories(ring_buffer PUBLIC "thirdparty/ring-buffer/include")
+
 ## Cross platform version
-add_subdirectory("thirdparty/ring-buffer")
 add_executable(adlrt "sources/rtmain.cc" ${adl_sources})
 target_link_libraries(adlrt PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer RtAudio RtMidi)
 if(CURSES_FOUND)

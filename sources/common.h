@@ -21,6 +21,8 @@ extern std::unique_ptr<Player> player[player_type_count];
 extern std::string player_bank_file[player_type_count];
 
 struct Emulator_Id {
+    Emulator_Id(Player_Type player, unsigned emulator)
+        : player(player), emulator(emulator) {}
     Player_Type player {};
     unsigned emulator = 0;
 };

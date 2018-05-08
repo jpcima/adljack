@@ -4,9 +4,6 @@
 [submodule "thirdparty/libOPNMIDI"]
 	path = thirdparty/libOPNMIDI
 	url = https://github.com/Wohlstand/libOPNMIDI.git
-[submodule "thirdparty/ring-buffer"]
-	path = thirdparty/ring-buffer
-	url = https://github.com/jpcima/ring-buffer.git
 [submodule "thirdparty/rtmidi"]
 	path = thirdparty/rtmidi
 	url = https://github.com/thestk/rtmidi.git

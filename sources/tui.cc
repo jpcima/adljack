@@ -458,6 +458,8 @@ static void update_display(TUI_context &ctx)
     }
 
     struct Key_Description {
+        Key_Description(const char *key, const char *desc)
+            : key(key), desc(desc) {}
         const char *key = nullptr;
         const char *desc = nullptr;
     };
