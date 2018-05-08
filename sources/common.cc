@@ -113,10 +113,19 @@ void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
     fprintf(stderr, "%s version %s\n", Player::name(pt), Player::version(pt));
 
     for (unsigned i = 0; i < player_type_count; ++i) {
-        std::unique_ptr<Player> player(Player::create((Player_Type)i, sample_rate));
+        Player *player = Player::create((Player_Type)i, sample_rate);
         if (!player)
             throw std::runtime_error("error instantiating player");
-        ::player[i] = std::move(player);
+        ::player[i].reset(player);
+
+#pragma message("Using my own bank embed for OPN2. Remove this in the future.")
+        if ((Player_Type)i == Player_Type::OPN2) {
+            static const uint8_t bank[] = {
+                #include "embedded-banks/opn2.h"
+            };
+            if (!player->load_bank_data(bank, sizeof(bank)))
+                throw std::runtime_error("error loading bank data");
+        }
 
         std::vector<std::string> emus = Player::enumerate_emulators((Player_Type)i);
         unsigned emu_count = emus.size();

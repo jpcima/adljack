@@ -1,0 +1,61 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| Conversion from binary to C.
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp (ql:quickload '(#:getopt) :silent t))
+
+(defpackage #:ros.script.bin2c
+  (:use #:cl #:getopt)
+  (:import-from #:uiop
+                #:quit
+                #:parse-native-namestring))
+(in-package #:ros.script.bin2c)
+
+(defun process (input output)
+  (let ((name (typecase input
+                (file-stream (format nil "\"~A\"" (file-namestring (pathname input))))
+                (t "<standard-input>")))
+        (endl t))
+    (format output "// BEGIN ~A~%" name)
+    (loop :for i :from 0 :for b = (read-byte input nil nil) :while b :do
+      (when (and endl (> i 0) (= 0 (mod i 512)))
+        (format output "// ~8,'0X:~%" i))
+      (format output "0x~2,'0X," b)
+      (setf endl (= 0 (mod (+ i 1) 16)))
+      (when endl
+        (write-char #\Newline output)))
+    (unless endl
+      (write-char #\Newline output))
+    (format output "// END ~A~%" name)))
+
+(defmacro with-open-file? ((file filespec &rest args) &body body)
+  (let ((v-filespec (gensym)))
+    `(let* ((,v-filespec ,filespec)
+            (,file (when ,v-filespec (open ,v-filespec ,@args))))
+       (unwind-protect (progn ,@body)
+         (when ,v-filespec (close ,file))))))
+
+(defun main (&rest argv)
+  (handler-case
+      (multiple-value-bind (args opts errs)
+          (getopt argv '(("i" :required)
+                         ("o" :required)))
+        (when (or args errs)
+          (quit 1))
+        (let* ((input-paths (loop :for opt :in opts :if (string= "i" (car opt))
+                               :collect (parse-native-namestring (cdr opt))))
+               (output-path (cdr (assoc "o" opts :test #'string=)))
+               (output-path (when output-path (parse-native-namestring output-path))))
+          (with-open-file? (output output-path :direction :output :if-exists :supersede)
+            (dolist (input-path (or input-paths (list nil)))
+              (with-open-file? (input input-path :element-type '(unsigned-byte 8))
+                (process (or input *standard-input*)
+                         (or output *standard-output*)))))))
+    #+sbcl(sb-sys:interactive-interrupt ()
+            (format *error-output* "Interrupt~%")
+            (quit 1)))
+  t)
+;;; vim: set ft=lisp lisp:

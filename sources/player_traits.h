@@ -47,6 +47,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &get_num_chips = adl_getNumChips;
     static constexpr auto &set_num_chips = adl_setNumChips;
     static constexpr auto &open_bank_file = adl_openBankFile;
+    static constexpr auto &open_bank_data = adl_openBankData;
     static constexpr auto &generate = adl_generate;
     static constexpr auto &generate_format = adl_generateFormat;
     static constexpr auto &rt_note_on = adl_rt_noteOn;
@@ -79,6 +80,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &get_num_chips = opn2_getNumChips;
     static constexpr auto &set_num_chips = opn2_setNumChips;
     static constexpr auto &open_bank_file = opn2_openBankFile;
+    static constexpr auto &open_bank_data = opn2_openBankData;
     static constexpr auto &generate = opn2_generate;
     static constexpr auto &generate_format = opn2_generateFormat;
     static constexpr auto &rt_note_on = opn2_rt_noteOn;
