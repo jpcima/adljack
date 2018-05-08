@@ -18,12 +18,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(CPACK_NSIS_CREATE_ICONS_EXTRA
     "SetOutPath '$INSTDIR'
      CreateShortCut '$DESKTOP\\\\${PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\adlrt' ''
-     CreateShortCut '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\adlrt' '' '$INSTDIR\\\\icons\\\\adl.ico'
-     CreateShortCut '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME} (OPN2).lnk' '$INSTDIR\\\\bin\\\\opnrt' '' '$INSTDIR\\\\icons\\\\opn.ico'")
+     CreateShortCut '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\adlrt' '' '$INSTDIR\\\\icons\\\\adl.ico'")
   set(CPACK_NSIS_DELETE_ICONS_EXTRA
     "Delete '$DESKTOP\\\\${PROJECT_NAME}.lnk'
-     Delete '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME}.lnk'
-     Delete '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME} (OPN2).lnk'")
+     Delete '$SMPROGRAMS\\\\${PROJECT_NAME}\\\\${PROJECT_NAME}.lnk'")
 endif()
 
 include(CPack)
