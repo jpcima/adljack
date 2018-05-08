@@ -315,6 +315,10 @@ void dynamic_switch_emulator_id(unsigned index)
     else {
         Player &new_player = *::player[(unsigned)new_id.player];
         new_player.set_emulator(new_id.emulator);
+        // transmit program changes events
+        /* TODO and bank number */
+        for (unsigned channel = 0; channel < 16; ++channel)
+            new_player.rt_program_change(channel, channel_map[channel].gm);
     }
 
     ::active_emulator_id = index;
