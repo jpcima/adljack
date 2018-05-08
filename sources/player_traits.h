@@ -71,7 +71,7 @@ struct Player_Traits<Player_Type::OPN2>
     typedef OPNMIDI_SampleType sample_type;
 
     static const char *name() { return "OPNMIDI"; }
-    static const char *chip_name() { return "YMF2612"; }
+    static const char *chip_name() { return "YM2612"; }
     static constexpr auto &version = opn2_linkedLibraryVersion;
     static constexpr auto &init = opn2_init;
     static constexpr auto &close = opn2_close;
