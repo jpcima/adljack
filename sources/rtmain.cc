@@ -183,6 +183,10 @@ int main(int argc, char *argv[])
     //
     interface_exec();
 
+    //
+    delete audio_client;
+    delete midi_client;
+
     return 0;
 }
 

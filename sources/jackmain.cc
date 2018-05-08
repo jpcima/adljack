@@ -85,5 +85,9 @@ int main(int argc, char *argv[])
     //
     interface_exec();
 
+    //
+    jack_deactivate(client);
+    jack_client_close(client);
+
     return 0;
 }
