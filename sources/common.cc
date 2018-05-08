@@ -315,6 +315,7 @@ void dynamic_switch_emulator_id(unsigned index)
     else {
         Player &new_player = *::player[(unsigned)new_id.player];
         new_player.set_emulator(new_id.emulator);
+        new_player.set_chip_count(player.chip_count());
         // transmit program changes events
         /* TODO and bank number */
         for (unsigned channel = 0; channel < 16; ++channel)
