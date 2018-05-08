@@ -40,7 +40,6 @@ if(PREFER_PDCURSES OR NOT CURSES_FOUND)
     "thirdparty/PDCurses/sdl2/*.c"
     "thirdparty/PDCurses/pdcurses/*.c")
   add_library(pdcurses STATIC ${PDCURSES_SOURCES})
-  target_compile_definitions(pdcurses PUBLIC "PDC_RGB")
   target_include_directories(pdcurses PUBLIC "thirdparty/PDCurses")
   find_package(SDL2 REQUIRED)
   if(SDL2_INCLUDE_DIRS AND SDL2_LIBRARIES)

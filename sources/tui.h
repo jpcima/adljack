@@ -7,6 +7,7 @@
 #if defined(ADLJACK_USE_CURSES)
 #include <curses.h>
 #include <memory>
+#include <stdint.h>
 
 enum {
     Colors_Background = 1,
@@ -26,6 +27,7 @@ typedef std::unique_ptr<WINDOW, WINDOW_deleter> WINDOW_u;
 int getrows(WINDOW *w);
 int getcols(WINDOW *w);
 WINDOW_u linewin(WINDOW *w, int row, int col);
+void init_color_rgb24(short id, uint32_t value);
 
 //------------------------------------------------------------------------------
 bool interface_interrupted();
