@@ -23,7 +23,7 @@ This is how you use adljack in the console.
 ## Build instructions
 
 Installed required dependencies:
-- a C++ compiler for the 2014 standard
+- a C++ compiler for the 2011 standard
 - at least one development package for audio, and one for MIDI: ALSA, PulseAudio, Jack
 - either: (n)curses for a terminal interface, or SDL2 for a PDCurses pseudo-terminal (needed on Windows)
 
