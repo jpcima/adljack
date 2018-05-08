@@ -14,8 +14,31 @@
 #include <adlmidi.h>
 #include <stdint.h>
 
-extern std::unique_ptr<Player> player;
-extern std::string player_bank_file;
+extern std::unique_ptr<Player> player[player_type_count];
+extern std::string player_bank_file[player_type_count];
+
+struct Emulator_Id {
+    Player_Type player {};
+    unsigned emulator = 0;
+};
+
+inline bool operator==(const Emulator_Id &a, const Emulator_Id &b)
+    { return a.player == b.player && a.emulator == b.emulator; }
+inline bool operator!=(const Emulator_Id &a, const Emulator_Id &b)
+    { return !operator==(a, b); }
+
+extern std::vector<Emulator_Id> emulator_ids;
+extern unsigned active_emulator_id;
+
+inline unsigned active_player_count()
+    { return emulator_ids.size(); }
+inline unsigned active_player_index()
+    { return (unsigned)emulator_ids[active_emulator_id].player; }
+inline Player &active_player()
+    { return *::player[active_player_index()]; }
+inline std::string &active_bank_file()
+    { return ::player_bank_file[active_player_index()]; }
+
 extern int player_volume;
 extern DcFilter dcfilter[2];
 extern VuMonitor lvmonitor[2];
@@ -40,14 +63,16 @@ static constexpr unsigned midi_buffer_size = 1024;
 extern Player_Type arg_player_type;
 extern unsigned arg_nchip;
 extern const char *arg_bankfile;
-extern int arg_emulator;
+extern unsigned arg_emulator;
 
 void generic_usage(const char *progname, const char *more_options);
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)());
 
-void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator);
+void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator);
 void player_ready();
 void play_midi(const uint8_t *msg, unsigned len);
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride);
+
+void dynamic_switch_emulator_id(unsigned index);
 
 void interface_exec();

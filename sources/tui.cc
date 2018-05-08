@@ -70,15 +70,17 @@ void curses_interface_exec()
             bank_directory.assign(path);
     }
 
-    time_t bank_mtime = 0;
+    time_t player_bank_mtime[player_type_count] = { 0 };
 
     auto update_bank_mtime =
         [&]() -> bool {
             struct stat st;
-            const char *path = ::player_bank_file.c_str();
-            time_t old_mtime = bank_mtime;
-            bank_mtime = (path[0] && !stat(path, &st)) ? st.st_mtime : 0;
-            return bank_mtime && bank_mtime != old_mtime;
+            const char *path = active_bank_file().c_str();
+            Player_Type pt = active_player().type();
+            time_t old_mtime = player_bank_mtime[(unsigned)pt];
+            time_t new_mtime = (path[0] && !stat(path, &st)) ? st.st_mtime : 0;
+            player_bank_mtime[(unsigned)pt] = new_mtime;
+            return new_mtime && new_mtime != old_mtime;
         };
 
     {
@@ -112,7 +114,7 @@ void curses_interface_exec()
             stc::steady_clock::time_point now = stc::steady_clock::now();
             if (now - bank_check_last > stc::seconds(bank_check_interval)) {
                 if (update_bank_mtime()) {
-                    if (::player->dynamic_load_bank(::player_bank_file.c_str()))
+                    if (active_player().dynamic_load_bank(active_bank_file().c_str()))
                         show_status(ctx, "Bank has changed on disk. Reload!");
                     else
                         show_status(ctx, "Bank has changed on disk. Reloading failed.");
@@ -130,27 +132,24 @@ void curses_interface_exec()
                 quit = true;
                 break;
             case '<': {
-                Player &player = *::player;
-                unsigned emulator = player.emulator();
-                if (emulator > 0)
-                    player.dynamic_set_emulator(emulator - 1);
+                if (active_emulator_id > 0)
+                    dynamic_switch_emulator_id(active_emulator_id - 1);
                 break;
             }
             case '>': {
-                Player &player = *::player;
-                unsigned emulator = player.emulator();
-                player.dynamic_set_emulator(emulator + 1);
+                if (active_emulator_id + 1 < emulator_ids.size())
+                    dynamic_switch_emulator_id(active_emulator_id + 1);
                 break;
             }
             case '[': {
-                Player &player = *::player;
+                Player &player = active_player();
                 unsigned nchips = player.chip_count();
                 if (nchips > 1)
                     player.dynamic_set_chip_count(nchips - 1);
                 break;
             }
             case ']': {
-                Player &player = *::player;
+                Player &player = active_player();
                 unsigned nchips = player.chip_count();
                 player.dynamic_set_chip_count(nchips + 1);
                 break;
@@ -176,10 +175,10 @@ void curses_interface_exec()
                     if (code == File_Selection_Code::Break)
                         quit = true;
                     else if (code == File_Selection_Code::Ok) {
-                        Player &player = *::player;
+                        Player &player = active_player();
                         if (player.dynamic_load_bank(fopts.filepath.c_str())) {
                             show_status(ctx, "Bank loaded!");
-                            ::player_bank_file = fopts.filepath;
+                            active_bank_file() = fopts.filepath;
                             update_bank_mtime();
                         }
                         else
@@ -192,7 +191,7 @@ void curses_interface_exec()
             }
             case 'p':
             case 'P': {
-                Player &player = *::player;
+                Player &player = active_player();
                 player.dynamic_panic();
                 break;
             }
@@ -295,7 +294,7 @@ static void print_bar(WINDOW *w, double vol, char ch_on, char ch_off, int attr_o
 
 static void update_display(TUI_context &ctx)
 {
-    Player &player = *::player;
+    Player &player = active_player();
     Player_Type ptype = player.type();
 
     {
@@ -353,7 +352,7 @@ static void update_display(TUI_context &ctx)
     if (WINDOW *w = ctx.win_banktitle.get()) {
         wclear(w);
         std::string title;
-        const std::string &path = ::player_bank_file;
+        const std::string &path = active_bank_file();
         if (path.empty())
             title = "(default)";
         else

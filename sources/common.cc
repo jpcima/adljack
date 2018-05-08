@@ -5,14 +5,19 @@
 
 #include "common.h"
 #include "tui.h"
+#include <algorithm>
 #include <thread>
 #include <chrono>
 #include <stdexcept>
 #include <stdio.h>
 namespace stc = std::chrono;
 
-std::unique_ptr<Player> player;
-std::string player_bank_file;
+std::unique_ptr<Player> player[player_type_count];
+std::string player_bank_file[player_type_count];
+
+std::vector<Emulator_Id> emulator_ids;
+unsigned active_emulator_id = 0;
+
 int player_volume = 100;
 DcFilter dcfilter[2];
 VuMonitor lvmonitor[2];
@@ -25,7 +30,7 @@ std::bitset<128> midi_channel_note_active[16];
 Player_Type arg_player_type = Player_Type::OPL3;
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
-int arg_emulator = -1;
+unsigned arg_emulator = 0;
 #if defined(ADLJACK_USE_CURSES)
 static bool arg_simple_interface = false;
 #endif
@@ -103,33 +108,48 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
     return -1;
 }
 
-void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, int emulator)
+void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator)
 {
     fprintf(stderr, "%s version %s\n", Player::name(pt), Player::version(pt));
 
-    Player *player = Player::create(pt, sample_rate);
-    if (!player)
-        throw std::runtime_error("error instantiating ADLMIDI");
-    ::player.reset(player);
+    for (unsigned i = 0; i < player_type_count; ++i) {
+        std::unique_ptr<Player> player(Player::create((Player_Type)i, sample_rate));
+        if (!player)
+            throw std::runtime_error("error instantiating player");
+        ::player[i] = std::move(player);
 
-    if (emulator >= 0) {
-        if (!player->set_emulator(emulator))
-            throw std::runtime_error("error selecting emulator");
+        std::vector<std::string> emus = Player::enumerate_emulators((Player_Type)i);
+        unsigned emu_count = emus.size();
+        for (unsigned j = 0; j < emu_count; ++j) {
+            Emulator_Id id { (Player_Type)i, j };
+            emulator_ids.push_back(id);
+        }
     }
 
-    fprintf(stderr, "Using emulator \"%s\"\n", player->emulator_name());
+    auto emulator_id_pos = std::find(
+        emulator_ids.begin(), emulator_ids.end(),
+        Emulator_Id{ pt, emulator });
+    if (emulator_id_pos == emulator_ids.end())
+        throw std::runtime_error("the given emulator does not exist");
+    ::active_emulator_id = std::distance(emulator_ids.begin(), emulator_id_pos);
+
+    Player &player = *::player[(unsigned)pt];
+    if (!player.set_emulator(emulator))
+        throw std::runtime_error("error selecting emulator");
+
+    fprintf(stderr, "Using emulator \"%s\"\n", player.emulator_name());
 
     if (!bankfile) {
         fprintf(stderr, "Using default banks.\n");
     }
     else {
-        if (!player->load_bank_file(bankfile))
+        if (!player.load_bank_file(bankfile))
             throw std::runtime_error("error loading bank file");
         fprintf(stderr, "Using banks from WOPL file.\n");
-        ::player_bank_file = bankfile;
+        ::player_bank_file[(unsigned)pt] = bankfile;
     }
 
-    if (!player->set_chip_count(nchip))
+    if (!player.set_chip_count(nchip))
         throw std::runtime_error("error setting the number of chips");
 
     fprintf(stderr, "DC filter @ %f Hz, LV monitor @ %f ms\n", dccutoff, lvrelease * 1e3);
@@ -141,13 +161,14 @@ void initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
 void player_ready()
 {
+    Player &player = active_player();
     fprintf(stderr, "%s ready with %u chips.\n",
-            Player::name(player->type()), player->chip_count());
+            Player::name(player.type()), player.chip_count());
 }
 
 void play_midi(const uint8_t *msg, unsigned len)
 {
-    Player &player = *::player;
+    Player &player = active_player();
     auto lock = player.take_lock(std::try_to_lock);
     if (!lock.owns_lock())
         return;
@@ -222,7 +243,7 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
     if (nframes <= 0)
         return;
 
-    Player &player = *::player;
+    Player &player = active_player();
     auto lock = player.take_lock(std::try_to_lock);
     if (!lock.owns_lock()) {
         for (unsigned i = 0; i < nframes; ++i) {
@@ -265,6 +286,29 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
     stc::steady_clock::duration d_gen = t_after_gen - t_before_gen;
     double d_sec = 1e-6 * stc::duration_cast<stc::microseconds>(d_gen).count();
     ::cpuratio = d_sec / ((double)nframes / player.sample_rate());
+}
+
+void dynamic_switch_emulator_id(unsigned index)
+{
+    if (index == active_emulator_id)
+        return;
+
+    Emulator_Id old_id = emulator_ids[active_emulator_id];
+    Emulator_Id new_id  = emulator_ids[index];
+
+    Player &player = active_player();
+    auto lock = player.take_lock();
+
+    player.panic();
+    if (old_id.player == new_id.player) {
+        player.set_emulator(new_id.emulator);
+    }
+    else {
+        Player &new_player = *::player[(unsigned)new_id.player];
+        new_player.set_emulator(new_id.emulator);
+    }
+
+    ::active_emulator_id = index;
 }
 
 //------------------------------------------------------------------------------
