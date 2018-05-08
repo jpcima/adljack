@@ -49,7 +49,8 @@ static constexpr double lvrelease = 20e-3;
 
 struct Program {
     unsigned gm = 0;
-    /* TODO bank msb lsb */
+    unsigned bank_msb = 0;
+    unsigned bank_lsb = 0;
 };
 extern Program channel_map[16];
 

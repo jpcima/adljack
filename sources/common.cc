@@ -191,11 +191,11 @@ void play_midi(const uint8_t *msg, unsigned len)
 
     uint8_t channel = status & 0x0f;
     switch (status >> 4) {
-    case 0b1001:
+    case 0b1001: {
         if (len < 3) break;
-        if (msg[2] != 0) {
+        unsigned vel = msg[2] & 0x7f;
+        if (vel != 0) {
             unsigned note = msg[1] & 0x7f;
-            unsigned vel = msg[2] & 0x7f;
             player.rt_note_on(channel, note, vel);
             if (!midi_channel_note_active[channel][note]) {
                 ++midi_channel_note_count[channel];
@@ -203,6 +203,7 @@ void play_midi(const uint8_t *msg, unsigned len)
             }
             break;
         }
+    }
     case 0b1000: {
         if (len < 3) break;
         unsigned note = msg[1] & 0x7f;
@@ -215,11 +216,11 @@ void play_midi(const uint8_t *msg, unsigned len)
     }
     case 0b1010:
         if (len < 3) break;
-        player.rt_note_aftertouch(channel, msg[1], msg[2]);
+        player.rt_note_aftertouch(channel, msg[1] & 0x7f, msg[2] & 0x7f);
         break;
     case 0b1101:
         if (len < 2) break;
-        player.rt_channel_aftertouch(channel, msg[1]);
+        player.rt_channel_aftertouch(channel, msg[1] & 0x7f);
         break;
     case 0b1011: {
         if (len < 3) break;
@@ -229,6 +230,12 @@ void play_midi(const uint8_t *msg, unsigned len)
         if (cc == 120 || cc == 123) {
             midi_channel_note_count[channel] = 0;
             midi_channel_note_active[channel].reset();
+        }
+        else if (cc == 0) {
+            channel_map[channel].bank_msb = val;
+        }
+        else if (cc == 32) {
+            channel_map[channel].bank_lsb = val;
         }
         break;
     }
@@ -316,10 +323,12 @@ void dynamic_switch_emulator_id(unsigned index)
         Player &new_player = *::player[(unsigned)new_id.player];
         new_player.set_emulator(new_id.emulator);
         new_player.set_chip_count(player.chip_count());
-        // transmit program changes events
-        /* TODO and bank number */
-        for (unsigned channel = 0; channel < 16; ++channel)
+        // transmit bank change and program change events
+        for (unsigned channel = 0; channel < 16; ++channel) {
+            new_player.rt_bank_change_msb(channel, channel_map[channel].bank_msb);
+            new_player.rt_bank_change_lsb(channel, channel_map[channel].bank_lsb);
             new_player.rt_program_change(channel, channel_map[channel].gm);
+        }
     }
 
     ::active_emulator_id = index;

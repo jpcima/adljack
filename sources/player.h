@@ -46,6 +46,8 @@ public:
     virtual void rt_controller_change(unsigned chan, unsigned ctl, unsigned val) = 0;
     virtual void rt_program_change(unsigned chan, unsigned pgm) = 0;
     virtual void rt_pitchbend(unsigned chan, unsigned value) = 0;
+    virtual void rt_bank_change_msb(unsigned chan, unsigned value) = 0;
+    virtual void rt_bank_change_lsb(unsigned chan, unsigned value) = 0;
 
     bool dynamic_set_chip_count(unsigned nchip);
     bool dynamic_set_emulator(unsigned emulator);
@@ -122,4 +124,8 @@ public:
         { Traits::rt_program_change(player_.get(), chan, pgm); }
     void rt_pitchbend(unsigned chan, unsigned value) override
         { Traits::rt_pitchbend(player_.get(), chan, value); }
+    void rt_bank_change_msb(unsigned chan, unsigned value) override
+        { Traits::rt_bank_change_msb(player_.get(), chan, value); }
+    void rt_bank_change_lsb(unsigned chan, unsigned value) override
+        { Traits::rt_bank_change_lsb(player_.get(), chan, value); }
 };
