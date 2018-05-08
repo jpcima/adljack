@@ -7,6 +7,7 @@
 #if defined(ADLJACK_USE_CURSES)
 #include <curses.h>
 #include <string>
+#include <memory>
 
 struct File_Selection_Options {
     std::string directory;
@@ -18,9 +19,18 @@ struct File_Selection_Options {
 enum class File_Selection_Code {
     Ok,
     Cancel,
-    Break,
+    Continue,
 };
 
-File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts);
+class File_Selector {
+public:
+    File_Selector(WINDOW *w, File_Selection_Options &opts);
+    ~File_Selector();
+    void update();
+    File_Selection_Code key(int key);
+private:
+    struct Impl;
+    std::unique_ptr<Impl> P;
+};
 
 #endif

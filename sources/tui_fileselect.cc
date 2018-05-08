@@ -8,7 +8,6 @@
 #include "tui.h"
 #include <algorithm>
 #include <vector>
-#include <memory>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -45,111 +44,103 @@ bool operator<(const File_Entry &a, const File_Entry &b)
     return a.name < b.name;
 }
 
-struct File_Selection_Context {
-    WINDOW *win = nullptr;
-    File_Selection_Options *opts = nullptr;
+struct File_Selector::Impl
+{
+    WINDOW *win_ = nullptr;
+    File_Selection_Options *opts_ = nullptr;
     //
-    WINDOW_u win_title;
-    WINDOW_u win_inner;
-    std::vector<File_Entry> file_list;
-    unsigned file_selection = 0;
+    WINDOW_u win_title_;
+    WINDOW_u win_inner_;
+    std::vector<File_Entry> file_list_;
+    unsigned file_selection_ = 0;
+    //
+    void update_file_list();
+    void setup_display();
+    void update_display();
+    std::string visit_file();
+    std::string visit_file_if_directory();
 };
 
-static void setup_display(File_Selection_Context &ctx);
-static void update_display(File_Selection_Context &ctx);
-static void update_file_list(File_Selection_Context &ctx);
-static std::string visit_file(File_Selection_Context &ctx);
-static std::string visit_file_if_directory(File_Selection_Context &ctx);
-
-File_Selection_Code fileselect(WINDOW *w, File_Selection_Options &opts)
+File_Selector::File_Selector(WINDOW *w, File_Selection_Options &opts)
+    : P(new Impl)
 {
-    File_Selection_Context ctx;
-    ctx.win = w;
-    ctx.opts = &opts;
-    ctx.file_list.reserve(256);
-
+    P->win_ = w;
+    P->opts_ = &opts;
+    P->file_list_.reserve(256);
     if (opts.directory.empty())
         opts.directory = '/';
-    update_file_list(ctx);
+    P->update_file_list();
+    P->setup_display();
+}
 
-    setup_display(ctx);
+File_Selector::~File_Selector()
+{
+}
 
-    bool quit = false;
-    while (!quit && !interface_interrupted()) {
-#if defined(PDCURSES)
-        bool resized = is_termresized();
-#else
-        bool resized = is_term_resized(LINES, COLS);
-#endif
-        if (resized)
-            return File_Selection_Code::Cancel;  // XXX close and let caller handle resize
+void File_Selector::update()
+{
+    P->update_display();
+}
 
-        update_display(ctx);
-
-        int ch = getch();
-        switch (ch) {
-        case 'q':
-        case 'Q':
-        case 3:   // console break
-            return File_Selection_Code::Break;
-        case KEY_DOWN:
-            if (ctx.file_selection + 1 < ctx.file_list.size())
-                ++ctx.file_selection;
-            break;
-        case KEY_UP:
-            if (ctx.file_selection > 0)
-                --ctx.file_selection;
-            break;
-        case KEY_NPAGE: {
-            unsigned count = std::min<unsigned>
-                (10, ctx.file_list.size() - ctx.file_selection - 1);
-            ctx.file_selection += count;
-            break;
+File_Selection_Code File_Selector::key(int key)
+{
+    switch (key) {
+    case KEY_DOWN:
+        if (P->file_selection_ + 1 < P->file_list_.size())
+            ++P->file_selection_;
+        break;
+    case KEY_UP:
+        if (P->file_selection_ > 0)
+            --P->file_selection_;
+        break;
+    case KEY_NPAGE: {
+        unsigned count = std::min<unsigned>
+            (10, P->file_list_.size() - P->file_selection_ - 1);
+        P->file_selection_ += count;
+        break;
+    }
+    case KEY_PPAGE: {
+        unsigned count = std::min<unsigned>(10, P->file_selection_);
+        P->file_selection_ -= count;
+        break;
+    }
+    case KEY_ENTER:
+    case '\r':
+    case '\n': {
+        std::string path = P->visit_file();
+        if (!path.empty()) {
+            P->opts_->filepath = path;
+            return File_Selection_Code::Ok;
         }
-        case KEY_PPAGE: {
-            unsigned count = std::min<unsigned>(10, ctx.file_selection);
-            ctx.file_selection -= count;
-            break;
-        }
-        case KEY_ENTER:
-        case '\r':
-        case '\n': {
-            std::string path = visit_file(ctx);
-            if (!path.empty()) {
-                opts.filepath = path;
-                return File_Selection_Code::Ok;
-            }
-            break;
-        }
-        case KEY_LEFT:
-        case KEY_BACKSPACE:
-        case '\b':
-            ctx.file_selection = 0;  // the first entry ".."
-            visit_file(ctx);
-            break;
-        case KEY_RIGHT:
-            visit_file_if_directory(ctx);
-            break;
-        case 27:  // escape
-            quit = true;
-            break;
-        }
+        break;
+    }
+    case KEY_LEFT:
+    case KEY_BACKSPACE:
+    case '\b':
+        P->file_selection_ = 0;  // the first entry ".."
+        P->visit_file();
+        break;
+    case KEY_RIGHT:
+        P->visit_file_if_directory();
+        break;
+    case 27:  // escape
+        return File_Selection_Code::Cancel;
     }
 
-    return File_Selection_Code::Cancel;
+    return File_Selection_Code::Continue;
 }
 
-static void setup_display(File_Selection_Context &ctx)
+void File_Selector::Impl::setup_display()
 {
-    WINDOW *wdlg = ctx.win;
-    ctx.win_title.reset(derwin(wdlg, 1, getcols(wdlg) - 2, 1, 1));
-    ctx.win_inner.reset(derwin(wdlg, getrows(wdlg) - 4, getcols(wdlg) - 2, 3, 1));
+    WINDOW *wdlg = win_;
+    win_title_.reset(derwin(wdlg, 1, getcols(wdlg) - 2, 1, 1));
+    win_inner_.reset(derwin(wdlg, getrows(wdlg) - 4, getcols(wdlg) - 2, 3, 1));
 }
 
-static void update_display(File_Selection_Context &ctx)
+void File_Selector::Impl::update_display()
 {
-    WINDOW *wdlg = ctx.win;
-    File_Selection_Options &opts = *ctx.opts;
+    WINDOW *wdlg = win_;
+    File_Selection_Options &opts = *opts_;
 
     {
         size_t titlesize = opts.title.size();
@@ -169,18 +160,18 @@ static void update_display(File_Selection_Context &ctx)
         }
     }
 
-    if (WINDOW *w = ctx.win_title.get()) {
+    if (WINDOW *w = win_title_.get()) {
         wclear(w);
         wattron(w, A_UNDERLINE);
         mvwprintw(w, 0, 0, "Directory: %s", opts.directory.c_str());
         wattroff(w, A_UNDERLINE);
     }
 
-    if (WINDOW *inner = ctx.win_inner.get()) {
+    if (WINDOW *inner = win_inner_.get()) {
         wclear(inner);
 
-        unsigned file_selection = ctx.file_selection;
-        unsigned file_count = ctx.file_list.size();
+        unsigned file_selection = file_selection_;
+        unsigned file_count = file_list_.size();
         unsigned display_max = getrows(inner);
         unsigned display_offset = file_selection;
         display_offset -= std::min(display_offset, display_max / 2);
@@ -190,7 +181,7 @@ static void update_display(File_Selection_Context &ctx)
             if (index >= file_count)
                 break;
 
-            const File_Entry &fe = ctx.file_list[index];
+            const File_Entry &fe = file_list_[index];
             bool selected = index == file_selection;
 
             int sel_attr = 0;
@@ -226,9 +217,9 @@ static bool is_separator(char c)
 #endif
 }
 
-void update_file_list(File_Selection_Context &ctx)
+void File_Selector::Impl::update_file_list()
 {
-    File_Selection_Options &opts = *ctx.opts;
+    File_Selection_Options &opts = *opts_;
 #if !defined(_WIN32)
     const std::string &directory = opts.directory;
 #else
@@ -238,12 +229,12 @@ void update_file_list(File_Selection_Context &ctx)
         directory.push_back('/');
 #endif
 
-    ctx.file_list.clear();
+    file_list_.clear();
 
     File_Entry fe;
     fe.name = "..";
     fe.type = File_Type::Directory;
-    ctx.file_list.push_back(fe);
+    file_list_.push_back(fe);
 
 #if defined(_WIN32)
     // root directory special case
@@ -255,7 +246,7 @@ void update_file_list(File_Selection_Context &ctx)
             char name[3] = {(char)('A' + i), ':', 0};
             fe.name = name;
             fe.type = File_Type::Directory;
-            ctx.file_list.push_back(fe);
+            file_list_.push_back(fe);
         }
         return;
     }
@@ -281,10 +272,10 @@ void update_file_list(File_Selection_Context &ctx)
             fe.type = File_Type::Directory;
         else
             fe.type = File_Type::Regular;
-        ctx.file_list.push_back(fe);
+        file_list_.push_back(fe);
     }
 
-    std::sort(ctx.file_list.begin(), ctx.file_list.end());
+    std::sort(file_list_.begin(), file_list_.end());
 }
 
 static std::string relative_path(std::string dir, const std::string &entry)
@@ -324,16 +315,16 @@ static std::string relative_path(std::string dir, const std::string &entry)
     }
 }
 
-std::string visit_file(File_Selection_Context &ctx)
+std::string File_Selector::Impl::visit_file()
 {
-    File_Entry &fe = ctx.file_list.at(ctx.file_selection);
-    File_Selection_Options &opts = *ctx.opts;
+    File_Entry &fe = file_list_.at(file_selection_);
+    File_Selection_Options &opts = *opts_;
 
     std::string relative = relative_path(opts.directory, fe.name);
     if (fe.type == File_Type::Directory) {
         opts.directory = relative;
-        ctx.file_selection  = 0;
-        update_file_list(ctx);
+        file_selection_  = 0;
+        update_file_list();
         return std::string();
     }
     else {
@@ -341,11 +332,11 @@ std::string visit_file(File_Selection_Context &ctx)
     }
 }
 
-static std::string visit_file_if_directory(File_Selection_Context &ctx)
+std::string File_Selector::Impl::visit_file_if_directory()
 {
-    File_Entry &fe = ctx.file_list.at(ctx.file_selection);
+    File_Entry &fe = file_list_.at(file_selection_);
     if (fe.type != File_Type::Directory)
         return std::string();
-    return visit_file(ctx);
+    return visit_file();
 }
 #endif

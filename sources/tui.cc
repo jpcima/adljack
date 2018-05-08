@@ -95,6 +95,7 @@ void curses_interface_exec()
 
         bool quit = false;
         while (!quit && !interface_interrupted()) {
+#if 0
 #if defined(PDCURSES)
             bool resized = is_termresized();
 #else
@@ -110,6 +111,7 @@ void curses_interface_exec()
                 endwin();
                 refresh();
             }
+#endif
 
             stc::steady_clock::time_point now = stc::steady_clock::now();
             if (now - bank_check_last > stc::seconds(bank_check_interval)) {
@@ -169,12 +171,24 @@ void curses_interface_exec()
                     File_Selection_Options fopts;
                     fopts.title = "Load bank";
                     fopts.directory = bank_directory;
-                    timeout(-1);
-                    File_Selection_Code code = fileselect(w.get(), fopts);
-                    timeout(timeout_ms);
-                    if (code == File_Selection_Code::Break)
-                        quit = true;
-                    else if (code == File_Selection_Code::Ok) {
+                    File_Selector fs(w.get(), fopts);
+                    File_Selection_Code code = File_Selection_Code::Continue;
+                    fs.update();
+                    for (int ch = getch(); !quit && !interface_interrupted() &&
+                             code == File_Selection_Code::Continue; ch = getch()) {
+                        switch (ch) {
+                        case 'q':
+                        case 'Q':
+                        case 3:   // console break
+                            quit = true;
+                            break;
+                        default:
+                            code = fs.key(ch);
+                            fs.update();
+                            break;
+                        }
+                    }
+                    if (code == File_Selection_Code::Ok) {
                         Player &player = active_player();
                         if (player.dynamic_load_bank(fopts.filepath.c_str())) {
                             show_status(ctx, "Bank loaded!");
@@ -195,9 +209,11 @@ void curses_interface_exec()
                 player.dynamic_panic();
                 break;
             }
+#if 0
             case KEY_RESIZE:
                 clear();
                 break;
+#endif
             }
         }
     }
