@@ -40,7 +40,7 @@ unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
 unsigned arg_emulator = 0;
 #if defined(ADLJACK_USE_CURSES)
-static bool arg_simple_interface = false;
+bool arg_simple_interface = false;
 #endif
 
 void generic_usage(const char *progname, const char *more_options)

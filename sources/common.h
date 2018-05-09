@@ -70,6 +70,9 @@ extern Player_Type arg_player_type;
 extern unsigned arg_nchip;
 extern const char *arg_bankfile;
 extern unsigned arg_emulator;
+#if defined(ADLJACK_USE_CURSES)
+extern bool arg_simple_interface;
+#endif
 
 void generic_usage(const char *progname, const char *more_options);
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)());
