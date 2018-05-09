@@ -16,10 +16,10 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="adl-icon.svg"
-   inkscape:export-filename="/home/jpc/Documents/Projects/adljack/resources/adl-icon.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   sodipodi:docname="adl.svg"
+   inkscape:export-filename="/home/jpc/Documents/Projects/adljack/resources/adl.png"
+   inkscape:export-xdpi="36.000004"
+   inkscape:export-ydpi="36.000004">
   <defs
      id="defs2">
     <linearGradient
@@ -63,7 +63,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="54.131779"
+     inkscape:cx="-71.225364"
      inkscape:cy="33.438671"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
