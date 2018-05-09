@@ -4,13 +4,14 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "jackmain.h"
+#include "state.h"
 #include "common.h"
 #include <atomic>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <sys/stat.h>
 
 static std::string program_title = "ADLjack";
 
@@ -66,34 +67,119 @@ static int setup_audio(const char *client_name, Audio_Context &ctx, bool quiet =
 
 #if defined(ADLJACK_USE_NSM)
 static bool session_is_open = false;
+static std::string session_path;
 
-static int session_open(const char *name, const char *display_name, const char *client_id, char **out_msg, void *user_data)
+static bool session_file_load(const char *path)
+{
+    FILE_u stream(fopen(session_path.c_str(), "rb"));
+
+    if (!stream) {
+        debug_printf("Cannot open session file '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    if (fseeko(stream.get(), 0, SEEK_END) != 0) {
+        debug_printf("Input error on file '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    uint64_t size = ftello(stream.get());
+    if (size > session_size_max) {
+        debug_printf("Session file too large '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    std::vector<uint8_t> data(size);
+    debug_printf("Session file is %zu bytes long.\n", data.size());
+
+    if (fseek(stream.get(), 0, SEEK_SET) != 0 || fread(data.data(), 1, size, stream.get()) != size) {
+        debug_printf("Read error on file '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    if (!load_state(data)) {
+        debug_printf("Error loading state data '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    return true;
+}
+
+static int session_open(const char *path, const char *display_name, const char *client_id, char **out_msg, void *user_data)
 {
     Audio_Context &ctx = *(Audio_Context *)user_data;
 
-    if (::session_is_open)
+    debug_printf("About to open the session.");
+
+    if (::session_is_open) {
+        debug_printf("The session is already open.");
         return 1;
+    }
 
     const bool quiet = true;
     if (setup_audio(client_id, ctx, quiet) != 0)
         return 1;
 
+    if (mkdir(path, 0755) != 0 && errno != EEXIST) {
+        debug_printf("Error creating the session directory.");
+        return 1;
+    }
+
+    std::string session_path = std::string(path) + "/session.dat";
+    ::session_path = session_path;
+    if (!session_file_load(session_path.c_str()))
+        debug_printf("Could not load session file. Continuing anyway.");
+
     jack_client_t *client = ctx.client.get();
     jack_activate(client);
     player_ready(quiet);
 
-    /* TODO */
-
     ::session_is_open = true;
+    debug_printf("Session opened.");
     return 0;
+}
+
+static bool session_file_save(const char *path)
+{
+    std::vector<uint8_t> data;
+    if (!save_state(data)) {
+        debug_printf("Error saving state data.\n");
+        return false;
+    }
+
+    if (data.size() > session_size_max) {
+        debug_printf("Session data too large '%s'.\n");
+        return false;
+    }
+
+    FILE_u stream(fopen(path, "wb"));
+
+    if (!stream) {
+        debug_printf("Cannot open session file '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    if (fwrite(data.data(), 1, data.size(), stream.get()) != data.size() || fflush(stream.get()) != 0) {
+        debug_printf("Write error on file '%s'.\n", session_path.c_str());
+        return false;
+    }
+
+    return true;
 }
 
 static int session_save(char **out_msg, void *user_data)
 {
     Audio_Context &ctx = *(Audio_Context *)user_data;
 
-    /* TODO */
+    debug_printf("About to save the session.");
 
+    const std::string &session_path = ::session_path;
+    if (!session_file_save(session_path.c_str())) {
+        debug_printf("Could not save session file.");
+        return ERR_GENERAL;
+    }
+
+    debug_printf("Session saved.");
     return 0;
 }
 

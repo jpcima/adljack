@@ -1,0 +1,31 @@
+//          Copyright Jean Pierre Cimalando 2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+
+namespace fb.state;
+
+table State {
+    channel : [Channel_State] (required);
+    player : [Player_State] (required);
+    chip_count : ubyte = 1;
+    volume : ushort = 100;
+    active_id : Player_Id (required);
+}
+
+table Channel_State {
+    program : ubyte = 0;
+    bank : ushort = 0;
+}
+
+table Player_Id {
+    player : string (required);
+    emulator : string (required);
+}
+
+table Player_State {
+    id : Player_Id (required);
+    bank_file : string;
+}
+
+root_type State;

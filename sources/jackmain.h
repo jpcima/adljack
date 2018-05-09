@@ -32,3 +32,5 @@ struct Nsm_Deleter {
 };
 typedef std::unique_ptr<nsm_client_t, Nsm_Deleter> nsm_client_u;
 #endif
+
+enum { session_size_max = 1024 };

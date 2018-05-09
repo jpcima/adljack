@@ -26,6 +26,7 @@ public:
     static const char *version(Player_Type pt);
     static const char *chip_name(Player_Type pt);
     static std::vector<std::string> enumerate_emulators(Player_Type pt);
+    static unsigned emulator_by_name(Player_Type pt, const char *name);
 
     const char *name() const
         { return name(type()); }
@@ -35,6 +36,8 @@ public:
         { return chip_name(type()); }
     std::vector<std::string> enumerate_emulators() const
         { return enumerate_emulators(type()); }
+    unsigned emulator_by_name(const char *name) const
+        { return emulator_by_name(type(), name); }
 
     virtual ~Player() {}
     virtual Player_Type type() const = 0;

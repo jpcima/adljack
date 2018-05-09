@@ -489,11 +489,11 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         return true;
     }
     case '/': {
-        ::player_volume = std::max(0, player_volume - 1);
+        ::player_volume = std::max(volume_min, ::player_volume - 1);
         return true;
     }
     case '*': {
-        ::player_volume = std::min(500, player_volume + 1);
+        ::player_volume = std::min(volume_max, ::player_volume + 1);
         return true;
     }
     case 'b':

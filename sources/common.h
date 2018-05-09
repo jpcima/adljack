@@ -12,6 +12,7 @@
 #include <bitset>
 #include <memory>
 #include <adlmidi.h>
+#include <stdio.h>
 #include <stdarg.h>
 #include <stdint.h>
 
@@ -19,9 +20,13 @@ extern std::unique_ptr<Player> player[player_type_count];
 extern std::string player_bank_file[player_type_count];
 
 struct Emulator_Id {
+    Emulator_Id()
+        {}
     Emulator_Id(Player_Type player, unsigned emulator)
         : player(player), emulator(emulator) {}
-    Player_Type player {};
+    explicit operator bool() const
+        { return player != (Player_Type)-1; }
+    Player_Type player = (Player_Type)-1;
     unsigned emulator = 0;
 };
 
@@ -51,6 +56,9 @@ extern double lvcurrent[2];
 extern double cpuratio;
 static constexpr double dccutoff = 5.0;
 static constexpr double lvrelease = 20e-3;
+
+static constexpr int volume_min = 0;
+static constexpr int volume_max = 500;
 
 struct Program {
     unsigned gm = 0;
@@ -94,3 +102,8 @@ void debug_vprintf(const char *fmt, va_list ap);
 
 void qfprintf(bool q, FILE *stream, const char *fmt, ...);
 void qvfprintf(bool q, FILE *stream, const char *fmt, va_list ap);
+
+struct FILE_Deleter {
+    void operator()(FILE *x) { fclose(x); }
+};
+typedef std::unique_ptr<FILE, FILE_Deleter> FILE_u;

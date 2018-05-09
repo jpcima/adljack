@@ -13,3 +13,6 @@
 [submodule "thirdparty/PDCurses"]
 	path = thirdparty/PDCurses
 	url = https://github.com/wmcbrine/PDCurses.git
+[submodule "thirdparty/flatbuffers"]
+	path = thirdparty/flatbuffers
+	url = https://github.com/google/flatbuffers.git

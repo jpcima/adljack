@@ -65,6 +65,15 @@ std::vector<std::string> Player::enumerate_emulators(Player_Type pt)
     return names;
 }
 
+unsigned Player::emulator_by_name(Player_Type pt, const char *name)
+{
+    std::vector<std::string> names = enumerate_emulators(pt);
+    for (unsigned i = 0, n = names.size(); i < n; ++i)
+        if (names[i] == name)
+            return i;
+    return (unsigned)-1;
+}
+
 Player_Type Player::type_by_name(const char *nam)
 {
     for (Player_Type pt : all_player_types)
