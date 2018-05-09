@@ -77,8 +77,8 @@ extern bool arg_simple_interface;
 void generic_usage(const char *progname, const char *more_options);
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)());
 
-bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator);
-void player_ready();
+bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet = false);
+void player_ready(bool quiet = false);
 void play_midi(const uint8_t *msg, unsigned len);
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride);
 
@@ -91,3 +91,6 @@ bool interface_interrupted();
 
 void debug_printf(const char *fmt, ...);
 void debug_vprintf(const char *fmt, va_list ap);
+
+void qfprintf(bool q, FILE *stream, const char *fmt, ...);
+void qvfprintf(bool q, FILE *stream, const char *fmt, va_list ap);

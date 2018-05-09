@@ -116,14 +116,14 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
     return -1;
 }
 
-bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator)
+bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet)
 {
-    fprintf(stderr, "%s version %s\n", Player::name(pt), Player::version(pt));
+    qfprintf(quiet, stderr, "%s version %s\n", Player::name(pt), Player::version(pt));
 
     for (unsigned i = 0; i < player_type_count; ++i) {
         Player *player = Player::create((Player_Type)i, sample_rate);
         if (!player) {
-            fprintf(stderr, "Error instantiating player.\n");
+            qfprintf(quiet, stderr, "Error instantiating player.\n");
             return false;
         }
         ::player[i].reset(player);
@@ -134,7 +134,7 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
                 #include "embedded-banks/opn2.h"
             };
             if (!player->load_bank_data(bank, sizeof(bank))) {
-                fprintf(stderr, "Error loading bank data.\n");
+                qfprintf(quiet, stderr, "Error loading bank data.\n");
                 return false;
             }
         }
@@ -151,37 +151,37 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         emulator_ids.begin(), emulator_ids.end(),
         Emulator_Id{ pt, emulator });
     if (emulator_id_pos == emulator_ids.end()) {
-        fprintf(stderr, "The given emulator does not exist.\n");
+        qfprintf(quiet, stderr, "The given emulator does not exist.\n");
         return 1;
     }
     ::active_emulator_id = std::distance(emulator_ids.begin(), emulator_id_pos);
 
     Player &player = *::player[(unsigned)pt];
     if (!player.set_emulator(emulator)) {
-        fprintf(stderr, "Error selecting emulator.\n");
+        qfprintf(quiet, stderr, "Error selecting emulator.\n");
         return 1;
     }
 
-    fprintf(stderr, "Using emulator \"%s\"\n", player.emulator_name());
+    qfprintf(quiet, stderr, "Using emulator \"%s\"\n", player.emulator_name());
 
     if (!bankfile) {
-        fprintf(stderr, "Using default banks.\n");
+        qfprintf(quiet, stderr, "Using default banks.\n");
     }
     else {
         if (!player.load_bank_file(bankfile)) {
-            fprintf(stderr, "Error loading bank file.\n");
+            qfprintf(quiet, stderr, "Error loading bank file.\n");
             return 1;
         }
-        fprintf(stderr, "Using banks from WOPL file.\n");
+        qfprintf(quiet, stderr, "Using banks from WOPL file.\n");
         ::player_bank_file[(unsigned)pt] = bankfile;
     }
 
     if (!player.set_chip_count(nchip)) {
-        fprintf(stderr, "Error setting the number of chips.\n");
+        qfprintf(quiet, stderr, "Error setting the number of chips.\n");
         return 1;
     }
 
-    fprintf(stderr, "DC filter @ %f Hz, LV monitor @ %f ms\n", dccutoff, lvrelease * 1e3);
+    qfprintf(quiet, stderr, "DC filter @ %f Hz, LV monitor @ %f ms\n", dccutoff, lvrelease * 1e3);
     for (unsigned i = 0; i < 2; ++i) {
         dcfilter[i].cutoff(dccutoff / sample_rate);
         lvmonitor[i].release(lvrelease * sample_rate);
@@ -190,11 +190,11 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
     return true;
 }
 
-void player_ready()
+void player_ready(bool quiet)
 {
     Player &player = active_player();
-    fprintf(stderr, "%s ready with %u chips.\n",
-            Player::name(player.type()), player.chip_count());
+    qfprintf(quiet, stderr, "%s ready with %u chips.\n",
+             Player::name(player.type()), player.chip_count());
 }
 
 void play_midi(const uint8_t *msg, unsigned len)
@@ -480,3 +480,19 @@ void debug_vprintf(const char *fmt, va_list ap)
     vsyslog(LOG_INFO, fmt, ap);
 }
 #endif
+
+void qfprintf(bool q, FILE *stream, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    qvfprintf(q, stream, fmt, ap);
+    va_end(ap);
+}
+
+void qvfprintf(bool q, FILE *stream, const char *fmt, va_list ap)
+{
+    if (q)
+        debug_vprintf(fmt, ap);
+    else
+        vfprintf(stream, fmt, ap);
+}

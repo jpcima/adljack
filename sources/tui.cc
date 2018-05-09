@@ -67,12 +67,10 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     const unsigned timeout_ms = 50;
     timeout(timeout_ms);
     curs_set(0);
-
 #if !defined(PDCURSES)
     set_escdelay(25);
 #endif
-
-#ifdef PDCURSES
+#if defined(PDCURSES)
     PDC_set_title(get_program_title().c_str());
 #endif
 

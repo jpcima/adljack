@@ -89,6 +89,7 @@ typedef int (nsm_save_callback)( char **out_msg, void *userdata );
 typedef void (nsm_active_callback)( int b, void *userdata );
 typedef void (nsm_session_is_loaded_callback)( void *userdata );
 typedef int (nsm_broadcast_callback)( const char *, lo_message m, void *userdata );
+typedef void (nsm_log_callback)( void *userdata, const char *, ... );
 
 #define _NSM() ((struct _nsm_client_t*)nsm)
 
@@ -121,6 +122,9 @@ struct _nsm_client_t
 
     nsm_broadcast_callback *broadcast;
     void *broadcast_userdata;
+
+    nsm_log_callback *log;
+    void *log_userdata;
 };
 
 enum
@@ -151,6 +155,16 @@ nsm_get_session_manager_name ( nsm_client_t *nsm )
 }
 
 NSM_EXPORT
+void
+_nsm_stdio_log( void *user_data, const char *fmt, ... )
+{
+    va_list ap;
+    va_start( ap, fmt );
+    vfprintf ( (FILE *)user_data, fmt, ap );
+    va_end( ap );
+}
+
+NSM_EXPORT
 nsm_client_t *
 nsm_new ( void )
 {
@@ -171,6 +185,9 @@ nsm_new ( void )
     nsm->active = 0;
     nsm->session_is_loaded = 0;
     nsm->broadcast = 0;
+
+    nsm->log = &_nsm_stdio_log;
+    nsm->log_userdata = stderr;
 
     return (nsm_client_t *)nsm;
 }
@@ -218,7 +235,8 @@ nsm_send_announce ( nsm_client_t *nsm, const char *app_name, const char *capabil
 
     if ( ! to )
     {
-        fprintf( stderr, "NSM: Bad address!" );
+        if ( _NSM()->log )
+            _NSM()->log( _NSM()->log_userdata, "NSM: Bad address!" );
         return;
     }
 
@@ -337,6 +355,14 @@ nsm_set_broadcast_callback( nsm_client_t *nsm, nsm_broadcast_callback *broadcast
     _NSM()->broadcast_userdata = userdata;
 }
 
+NSM_EXPORT
+void
+nsm_set_log_callback( nsm_client_t *nsm, nsm_log_callback *log_callback, void *userdata )
+{
+    _NSM()->log = log_callback;
+    _NSM()->log_userdata = userdata;
+}
+
 
 
 /****************/
@@ -417,7 +443,8 @@ NSM_EXPORT int _nsm_osc_announce_reply ( const char *path, const char *types, lo
 
     struct _nsm_client_t *nsm = (struct _nsm_client_t*)user_data;
 
-    fprintf( stderr, "NSM: Successfully registered. NSM says: %s", &argv[1]->s );
+    if ( nsm->log )
+        nsm->log( nsm->log_userdata, "NSM: Successfully registered. NSM says: %s", &argv[1]->s );
 
     nsm->nsm_is_active = 1;
     nsm->_session_manager_name = strdup( &argv[2]->s );
@@ -441,7 +468,8 @@ NSM_EXPORT int _nsm_osc_error ( const char *path, const char *types, lo_arg **ar
 
     struct _nsm_client_t *nsm = (struct _nsm_client_t*)user_data;
 
-    fprintf( stderr, "NSM: Failed to register with NSM server: %s", &argv[2]->s );
+    if ( nsm->log )
+        nsm->log( nsm->log_userdata, "NSM: Failed to register with NSM server: %s", &argv[2]->s );
 
     nsm->nsm_is_active = 0;
 

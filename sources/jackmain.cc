@@ -32,11 +32,11 @@ static int process(jack_nframes_t nframes, void *user_data)
     return 0;
 }
 
-static int setup_audio(const char *client_name, Audio_Context &ctx)
+static int setup_audio(const char *client_name, Audio_Context &ctx, bool quiet = false)
 {
     jack_client_t *client(jack_client_open("ADLjack", JackNoStartServer, nullptr));
     if (!client) {
-        fprintf(stderr, "Error creating Jack client.\n");
+        qfprintf(quiet, stderr, "Error creating Jack client.\n");
         return 1;
     }
     ctx.client.reset(client);
@@ -48,16 +48,16 @@ static int setup_audio(const char *client_name, Audio_Context &ctx)
     ctx.outport[1] = jack_port_register(client, "right", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput|JackPortIsTerminal, 0);
 
     if (!ctx.midiport || !ctx.outport[0] || !ctx.outport[1]) {
-        fprintf(stderr, "Error creating Jack ports.\n");
+        qfprintf(quiet, stderr, "Error creating Jack ports.\n");
         return 1;
     }
 
     jack_nframes_t bufsize = jack_get_buffer_size(client);
     unsigned samplerate = jack_get_sample_rate(client);
-    fprintf(stderr, "Jack client \"%s\" fs=%u bs=%u\n",
-            jack_get_client_name(client), samplerate, bufsize);
+    qfprintf(quiet, stderr, "Jack client \"%s\" fs=%u bs=%u\n",
+             jack_get_client_name(client), samplerate, bufsize);
 
-    if (!initialize_player(arg_player_type, samplerate, arg_nchip, arg_bankfile, arg_emulator))
+    if (!initialize_player(arg_player_type, samplerate, arg_nchip, arg_bankfile, arg_emulator, quiet))
         return 1;
 
     jack_set_process_callback(client, process, &ctx);
@@ -74,12 +74,13 @@ static int session_open(const char *name, const char *display_name, const char *
     if (::session_is_open)
         return 1;
 
-    if (setup_audio(client_id, ctx) != 0)
+    const bool quiet = true;
+    if (setup_audio(client_id, ctx, quiet) != 0)
         return 1;
 
     jack_client_t *client = ctx.client.get();
     jack_activate(client);
-    player_ready();
+    player_ready(quiet);
 
     /* TODO */
 
@@ -148,6 +149,14 @@ static void execvp_in_xterminal(int argc, char *argv[])
     }
 }
 
+static void session_log(void *, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    debug_vprintf(fmt, ap);
+    va_end(ap);
+}
+
 static int session_main(int argc, char *argv[], const char *url, Audio_Context &ctx)
 {
 #if defined(ADLJACK_USE_GRAPHIC_TERMINAL)
@@ -164,6 +173,7 @@ static int session_main(int argc, char *argv[], const char *url, Audio_Context &
 
     nsm_client_u nsm;
     nsm.reset(nsm_new());
+    nsm_set_log_callback(nsm.get(), &session_log, nullptr);
     nsm_set_open_callback(nsm.get(), &session_open, &ctx);
     nsm_set_save_callback(nsm.get(), &session_save, &ctx);
     if (nsm_init(nsm.get(), url) != 0) {
