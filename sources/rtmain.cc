@@ -7,6 +7,9 @@
 #include "common.h"
 #include "winmm_dialog.h"
 #include <stdio.h>
+#if !defined(_WIN32)
+#    include <syslog.h>
+#endif
 
 static std::string program_title = "ADLrt";
 
@@ -52,7 +55,7 @@ static void rtmidi_event(double, std::vector<uint8_t> *message, void *user_data)
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
 {
     if (type == RtAudioError::WARNING) {
-        output_debug_string(text.c_str());
+        debug_printf("%s", text.c_str());
         return;
     }
     throw RtAudioError(text, type);
@@ -61,7 +64,7 @@ void audio_error_callback(RtAudioError::Type type, const std::string &text)
 void midi_error_callback(RtMidiError::Type type, const std::string &text, void *)
 {
     if (type == RtMidiError::WARNING) {
-        output_debug_string(text.c_str());
+        debug_printf("%s", text.c_str());
         return;
     }
     throw RtMidiError(text, type);
@@ -156,7 +159,7 @@ int audio_main()
     player_ready();
 
     //
-    interface_exec();
+    interface_exec(nullptr, nullptr);
 
     //
     audio_client.stopStream();
@@ -198,6 +201,10 @@ int main(int argc, char *argv[])
 
     if (argc != optind)
         return 1;
+
+#if !defined(_WIN32)
+    openlog("ADLrt", 0, LOG_USER);
+#endif
 
     handle_signals();
     return audio_main();

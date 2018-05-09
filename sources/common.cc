@@ -13,13 +13,18 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#if defined(_WIN32)
+#    include <windows.h>
+#else
+#    include <syslog.h>
+#endif
 namespace stc = std::chrono;
 
 std::unique_ptr<Player> player[player_type_count];
 std::string player_bank_file[player_type_count];
 
 std::vector<Emulator_Id> emulator_ids;
-unsigned active_emulator_id = 0;
+unsigned active_emulator_id = (unsigned)-1;
 
 int player_volume = 100;
 DcFilter dcfilter[2];
@@ -364,13 +369,16 @@ static void print_volume_bar(FILE *out, unsigned size, double vol)
     fprintf(out, "]");
 }
 
-static void simple_interface_exec()
+static void simple_interface_exec(void(*idle_proc)(void *), void *idle_data)
 {
     while (1) {
         if (interface_interrupted()) {
             fprintf(stderr, "Interrupted.\n");
             break;
         }
+
+        if (idle_proc)
+            idle_proc(idle_data);
 
         fprintf(stderr, "\033[2K");
         double volumes[2] = {lvcurrent[0], lvcurrent[1]};
@@ -399,13 +407,13 @@ static void simple_interface_exec()
     }
 }
 
-void interface_exec()
+void interface_exec(void(*idle_proc)(void *), void *idle_data)
 {
 #if defined(ADLJACK_USE_CURSES)
     if (arg_simple_interface)
-        simple_interface_exec();
+        simple_interface_exec(idle_proc, idle_data);
     else
-        curses_interface_exec();
+        curses_interface_exec(idle_proc, idle_data);
 #else
     simple_interface_exec();
 #endif
@@ -449,3 +457,26 @@ bool interface_interrupted()
 {
     return ::interrupted_by_signal;
 }
+
+void debug_printf(const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    debug_vprintf(fmt, ap);
+    va_end(ap);
+}
+
+#if defined(_WIN32)
+void debug_vprintf(const char *fmt, va_list ap)
+{
+    char buf[256];
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    buf[sizeof(buf) - 1] = '\0';
+    OutputDebugStringA(buf);
+}
+#else
+void debug_vprintf(const char *fmt, va_list ap)
+{
+    vsyslog(LOG_INFO, fmt, ap);
+}
+#endif

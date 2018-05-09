@@ -18,9 +18,22 @@ enum {
     Colors_KeyDescription,
 };
 
-void curses_interface_exec();
+void curses_interface_exec(void (*idle_proc)(void *), void *idle_data);
 
 //------------------------------------------------------------------------------
+struct Screen {
+    Screen() {}
+    ~Screen() { end(); }
+    void init()
+        { if (!active_) { initscr(); active_ = true; } }
+    void end()
+        { if (active_) { endwin(); active_ = false; } }
+private:
+    Screen(const Screen &) = delete;
+    Screen &operator=(const Screen &) = delete;
+    bool active_ = false;
+};
+
 struct WINDOW_deleter { void operator()(WINDOW *w) { delwin(w); } };
 typedef std::unique_ptr<WINDOW, WINDOW_deleter> WINDOW_u;
 

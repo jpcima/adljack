@@ -20,11 +20,21 @@ public:
     typedef ADLMIDI_SampleType Sample_Type;
 
     static Player *create(Player_Type pt, unsigned sample_rate);
+    static Player_Type type_by_name(const char *nam);
+
     static const char *name(Player_Type pt);
     static const char *version(Player_Type pt);
     static const char *chip_name(Player_Type pt);
     static std::vector<std::string> enumerate_emulators(Player_Type pt);
-    static Player_Type type_by_name(const char *nam);
+
+    const char *name() const
+        { return name(type()); }
+    const char *version() const
+        { return version(type()); }
+    const char *chip_name() const
+        { return chip_name(type()); }
+    std::vector<std::string> enumerate_emulators() const
+        { return enumerate_emulators(type()); }
 
     virtual ~Player() {}
     virtual Player_Type type() const = 0;
@@ -72,7 +82,7 @@ private:
     typedef typename Traits::player player_t;
 
     struct Deleter { void operator()(player_t *x) { Traits::close(x); } };
-    std::unique_ptr<player_t> player_;
+    std::unique_ptr<player_t, Deleter> player_;
 
 public:
     virtual ~Generic_Player() {}

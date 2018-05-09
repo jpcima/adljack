@@ -12,10 +12,8 @@
 #include <bitset>
 #include <memory>
 #include <adlmidi.h>
+#include <stdarg.h>
 #include <stdint.h>
-#if defined(_WIN32)
-#    include <windows.h>
-#endif
 
 extern std::unique_ptr<Player> player[player_type_count];
 extern std::string player_bank_file[player_type_count];
@@ -35,10 +33,12 @@ inline bool operator!=(const Emulator_Id &a, const Emulator_Id &b)
 extern std::vector<Emulator_Id> emulator_ids;
 extern unsigned active_emulator_id;
 
+inline bool have_active_player()
+    { return ::active_emulator_id != (unsigned)-1; }
 inline unsigned active_player_count()
     { return emulator_ids.size(); }
 inline unsigned active_player_index()
-    { return (unsigned)emulator_ids[active_emulator_id].player; }
+    { return (unsigned)emulator_ids[::active_emulator_id].player; }
 inline Player &active_player()
     { return *::player[active_player_index()]; }
 inline std::string &active_bank_file()
@@ -81,15 +81,10 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
 
 void dynamic_switch_emulator_id(unsigned index);
 
-void interface_exec();
-
-#if !defined(_WIN32)
-inline void output_debug_string(const char *s)
-    { /* ignore, don't print anything */ }
-#else
-inline void output_debug_string(const char *s)
-    { OutputDebugStringA(s); }
-#endif
+void interface_exec(void(*idle_proc)(void *), void *idle_data);
 
 void handle_signals();
 bool interface_interrupted();
+
+void debug_printf(const char *fmt, ...);
+void debug_vprintf(const char *fmt, va_list ap);
