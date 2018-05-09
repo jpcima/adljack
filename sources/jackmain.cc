@@ -34,7 +34,7 @@ static int process(jack_nframes_t nframes, void *user_data)
 
 static int setup_audio(const char *client_name, Audio_Context &ctx, bool quiet = false)
 {
-    jack_client_t *client(jack_client_open("ADLjack", JackNoStartServer, nullptr));
+    jack_client_t *client(jack_client_open(client_name, JackNoStartServer, nullptr));
     if (!client) {
         qfprintf(quiet, stderr, "Error creating Jack client.\n");
         return 1;
