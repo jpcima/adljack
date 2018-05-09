@@ -228,8 +228,8 @@ static void setup_colors()
 {
     start_color();
 
+#if defined(PDCURSES)
     if (can_change_color()) {
-#if 1  // defined(PDCURSES)
         /* set Tango colors */
         init_color_rgb24(COLOR_BLACK, 0x2e3436);
         init_color_rgb24(COLOR_RED, 0xcc0000);
@@ -247,14 +247,15 @@ static void setup_colors()
         init_color_rgb24(8|COLOR_MAGENTA, 0xad7fa8);
         init_color_rgb24(8|COLOR_CYAN, 0x34e2e2);
         init_color_rgb24(8|COLOR_WHITE, 0xeeeeec);
-#endif
-        init_pair(Colors_Background, COLOR_WHITE, COLOR_BLACK);
-        init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
-        init_pair(Colors_Select, COLOR_BLACK, COLOR_WHITE);
-        init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
-        init_pair(Colors_ActiveVolume, COLOR_GREEN, COLOR_BLACK);
-        init_pair(Colors_KeyDescription, COLOR_BLACK, COLOR_WHITE);
     }
+#endif
+
+    init_pair(Colors_Background, COLOR_WHITE, COLOR_BLACK);
+    init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(Colors_Select, COLOR_BLACK, COLOR_WHITE);
+    init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
+    init_pair(Colors_ActiveVolume, COLOR_GREEN, COLOR_BLACK);
+    init_pair(Colors_KeyDescription, COLOR_BLACK, COLOR_WHITE);
 }
 
 static void setup_display(TUI_context &ctx)
@@ -534,12 +535,12 @@ WINDOW_u linewin(WINDOW *w, int row, int col)
     return WINDOW_u(derwin(w, 1, getcols(w) - col, row, col));
 }
 
-void init_color_rgb24(short id, uint32_t value)
+int init_color_rgb24(short id, uint32_t value)
 {
     unsigned r = (value >> 16) & 0xff;
     unsigned g = (value >> 8) & 0xff;
     unsigned b = value & 0xff;
-    init_color(id, r * 1000 / 0xff, g * 1000 / 0xff, b * 1000 / 0xff);
+    return init_color(id, r * 1000 / 0xff, g * 1000 / 0xff, b * 1000 / 0xff);
 }
 
 #endif  // defined(ADLJACK_USE_CURSES)
