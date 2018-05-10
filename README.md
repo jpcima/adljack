@@ -32,7 +32,7 @@ Installed required dependencies:
 ```
 git clone --recursive https://github.com/jpcima/adljack.git
 mkdir adljack/build
-cd adljack/build
+cd adljack
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 ```
