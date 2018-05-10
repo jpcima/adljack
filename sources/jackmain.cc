@@ -7,6 +7,7 @@
 #include "state.h"
 #include "common.h"
 #include <atomic>
+#include <system_error>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -250,7 +251,9 @@ static int session_main(int argc, char *argv[], const char *url, Audio_Context &
 #else
     bool in_text_terminal = true;
 #endif
-    if (in_text_terminal && !isatty(STDOUT_FILENO)) {
+    if (in_text_terminal && !getenv("ADLJACK_DEDICATED_XTERMINAL")) {
+        if (setenv("ADLJACK_DEDICATED_XTERMINAL", "1", 1) == -1)
+            throw std::system_error(errno, std::generic_category(), "setenv");
         execvp_in_xterminal(argc, argv);
         return 1;
     }
