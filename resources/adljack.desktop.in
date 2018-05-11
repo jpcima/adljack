@@ -1,5 +1,8 @@
 [Desktop Entry]
 Name=ADLMIDI for Jack
+Name[fr]=ADLMIDI pour Jack
+Comment=OPL3/OPN2 synthesizer using ADLMIDI for Jack
+Comment[fr]=Synthétiseur OPL3/OPN2 utilisant ADLMIDI pour Jack
 TryExec=adljack
 Exec=adljack
 Icon=adljack

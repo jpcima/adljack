@@ -1,5 +1,7 @@
 [Desktop Entry]
 Name=ADLMIDI
+Comment=OPL3/OPN2 synthesizer using ADLMIDI
+Comment[fr]=Synthétiseur OPL3/OPN2 utilisant ADLMIDI
 TryExec=adlrt
 Exec=adlrt
 Icon=adljack
