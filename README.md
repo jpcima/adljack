@@ -57,6 +57,6 @@ sudo cmake --build . --target install
 
 ## Change Log
 
-### Version 1.0.0.0
+### Version 1.0.0
 
 This is the initial release.
