@@ -42,8 +42,8 @@ i686-w64-mingw32-cmake -DCMAKE_BUILD_TYPE=Release -DPREFER_PDCURSES=ON -DENABLE_
 i686-w64-mingw32-cmake --build .
 cpack -G NSIS .
 cpack -G ZIP .
-mv ADLjack-"$version"-win32.exe ../
-mv ADLjack-"$version"-win32.zip ../
+zip ../ADLjack-"$version"-win32-installer.zip ADLjack-"$version"-win32.exe
+cp ADLjack-"$version"-win32.zip ../ADLjack-"$version"-win32-portable.zip
 
 cd ..
 
@@ -53,5 +53,5 @@ x86_64-w64-mingw32-cmake -DCMAKE_BUILD_TYPE=Release -DPREFER_PDCURSES=ON -DENABL
 x86_64-w64-mingw32-cmake --build .
 cpack -G NSIS .
 cpack -G ZIP .
-mv ADLjack-"$version"-win64.exe ../
-mv ADLjack-"$version"-win64.zip ../
+zip ../ADLjack-"$version"-win64-installer.zip ADLjack-"$version"-win64.exe
+cp ADLjack-"$version"-win64.zip ../ADLjack-"$version"-win64-portable.zip
