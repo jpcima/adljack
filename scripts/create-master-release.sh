@@ -17,9 +17,10 @@ mkdir work
 cd work
 
 git clone .. adljack
-git checkout master
 
 cd adljack
+git checkout master
+git checkout v"$version"
 git submodule--helper list | awk '{ print $4 }' | \
 while read submodule; do
     git config --file .gitmodules submodule."$submodule".url "../../$submodule"
