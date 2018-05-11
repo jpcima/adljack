@@ -9,6 +9,18 @@ It is based on the [libADLMIDI](https://github.com/Wohlstand/libADLMIDI) project
 
 ![screenshot](docs/screen.png)
 
+## Feature list
+
+- [x] Real time, low latency FM synthesizer
+- [x] Support of multiple FM chip emulators
+- [x] Support of multiple chips for extended polyphony
+- [x] Loading instrument banks in WOPL and WOPN formats
+- [x] General MIDI level 1 and 2
+- [x] Multi-channel MIDI playback
+- [x] Automatic bank reloading when the file changes on disk
+- [x] User interface for the terminal with dynamic controls
+- [x] Session management with the [NSM](http://non.tuxfamily.org/nsm/) protocol (adljack only)
+
 ## Usage
 
 This is how you use adljack in the console.
@@ -42,3 +54,9 @@ cmake --build .
 ```
 sudo cmake --build . --target install
 ```
+
+## Change Log
+
+### Version 1.0.0.0
+
+This is the initial release.
