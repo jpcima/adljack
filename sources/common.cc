@@ -34,6 +34,7 @@ double cpuratio = 0;
 Program channel_map[16];
 unsigned midi_channel_note_count[16] = {};
 std::bitset<128> midi_channel_note_active[16];
+unsigned midi_channel_last_note_p1[16] = {};
 
 Player_Type arg_player_type = Player_Type::OPL3;
 unsigned arg_nchip = default_nchip;
@@ -223,6 +224,7 @@ void play_midi(const uint8_t *msg, unsigned len)
                 ++midi_channel_note_count[channel];
                 midi_channel_note_active[channel][note] = true;
             }
+            midi_channel_last_note_p1[channel] = note + 1;
             break;
         }
     }

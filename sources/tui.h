@@ -11,11 +11,14 @@
 
 enum {
     Colors_Background = 1,
-    Colors_Highlight,
-    Colors_Select,
-    Colors_Frame,
-    Colors_ActiveVolume,
-    Colors_KeyDescription,
+    Colors_Highlight = 2,
+    Colors_Select = 3,
+    Colors_Frame = 4,
+    Colors_ActiveVolume = 5,
+    Colors_KeyDescription = 6,
+    Colors_Instrument = 7,
+    Colors_InstrumentEx = Colors_Highlight,
+    Colors_ProgramNumber = 8,
 };
 
 void curses_interface_exec(void (*idle_proc)(void *), void *idle_data);

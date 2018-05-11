@@ -45,6 +45,10 @@ struct TUI_context
     Player *player = nullptr;
     std::string bank_directory;
     time_t bank_mtime[player_type_count] = {};
+    static constexpr unsigned perc_display_interval = 10;
+    unsigned perc_display_cycle = 0;
+    bool have_perc_display_program = false;
+    Midi_Program_Ex perc_display_program;
 };
 
 static void setup_colors();
@@ -143,7 +147,7 @@ static void setup_colors()
 {
     start_color();
 
-#if defined(PDCURSES)
+//#if defined(PDCURSES)
     if (can_change_color()) {
         /* set Tango colors */
         init_color_rgb24(COLOR_BLACK, 0x2e3436);
@@ -163,7 +167,7 @@ static void setup_colors()
         init_color_rgb24(8|COLOR_CYAN, 0x34e2e2);
         init_color_rgb24(8|COLOR_WHITE, 0xeeeeec);
     }
-#endif
+//#endif
 
     init_pair(Colors_Background, COLOR_WHITE, COLOR_BLACK);
     init_pair(Colors_Highlight, COLOR_YELLOW, COLOR_BLACK);
@@ -171,6 +175,8 @@ static void setup_colors()
     init_pair(Colors_Frame, COLOR_BLUE, COLOR_BLACK);
     init_pair(Colors_ActiveVolume, COLOR_GREEN, COLOR_BLACK);
     init_pair(Colors_KeyDescription, COLOR_BLACK, COLOR_WHITE);
+    init_pair(Colors_Instrument, COLOR_BLUE, COLOR_BLACK);
+    init_pair(Colors_ProgramNumber, COLOR_MAGENTA, COLOR_BLACK);
 }
 
 static void setup_display(TUI_context &ctx)
@@ -237,7 +243,8 @@ static void update_display(TUI_context &ctx)
         size_t titlesize = title.size();
 
         attron(A_BOLD|COLOR_PAIR(Colors_Frame));
-        border(' ', ' ', '-', ' ', '-', '-', ' ', ' ');
+        //border(' ', ' ', '-', ' ', '-', '-', ' ', ' ');
+        border(' ', ' ', '-', '-', '-', '-', '-', '-');
         attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
 
         unsigned cols = getcols(stdscr);
@@ -323,7 +330,7 @@ static void update_display(TUI_context &ctx)
     if (WINDOW *w = ctx.win.volumeratio.get()) {
         mvwaddstr(w, 0, 0, "Volume");
         wattron(w, COLOR_PAIR(Colors_Highlight));
-        mvwprintw(w, 0, 10, "%d%%\n", ::player_volume);
+        mvwprintw(w, 0, 10, "%3d%%\n", ::player_volume);
         wattroff(w, COLOR_PAIR(Colors_Highlight));
     }
 
@@ -352,15 +359,64 @@ static void update_display(TUI_context &ctx)
         if (!w) continue;
         wclear(w);
         const Program &pgm = channel_map[midichannel];
-        mvwprintw(w, 0, 0, "%2u: [%3u]", midichannel + 1, pgm.gm);
+        mvwprintw(w, 0, 0, "%2u: [", midichannel + 1);
+        wattron(w, A_BOLD|COLOR_PAIR(Colors_ProgramNumber));
+        wprintw(w, "%3u", pgm.gm);
+        wattroff(w, A_BOLD|COLOR_PAIR(Colors_ProgramNumber));
+        waddstr(w, "]");
         if (midi_channel_note_count[midichannel] > 0) {
             wattron(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
             mvwaddch(w, 0, 11, '*');
             wattroff(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
         }
-        wattron(w, COLOR_PAIR(Colors_Highlight));
-        mvwaddstr(w, 0, 12, midi_instrument_name[pgm.gm]);
-        wattroff(w, COLOR_PAIR(Colors_Highlight));
+
+        const char *name = nullptr;
+        Midi_Spec spec = Midi_Spec::GM;
+
+        const int ms_attr[5] = {
+            A_BOLD|COLOR_PAIR(Colors_Instrument),
+            A_BOLD|COLOR_PAIR(Colors_InstrumentEx),
+            A_BOLD|COLOR_PAIR(Colors_InstrumentEx),
+            A_BOLD|COLOR_PAIR(Colors_InstrumentEx),
+            A_BOLD|COLOR_PAIR(Colors_InstrumentEx),
+        };
+
+        if (midichannel == 9) {
+            // percussion display, with update rate limit
+            if (++ctx.perc_display_cycle == ctx.perc_display_interval) {
+                ctx.perc_display_cycle = 0;
+                if (unsigned pgm = ::midi_channel_last_note_p1[midichannel]) {
+                    --pgm;
+                    ctx.have_perc_display_program = true;
+                    ctx.perc_display_program = midi_percussion[pgm];
+                }
+            }
+            if (!ctx.have_perc_display_program)
+                name = "Percussion";
+            else {
+                spec = ctx.perc_display_program.spec;
+                name = ctx.perc_display_program.name;
+            }
+        }
+        else {
+            // melodic display
+            if (pgm.bank_msb | pgm.bank_lsb) {
+                if (const Midi_Program_Ex *ex = midi_program_ex_find(
+                        pgm.bank_msb, pgm.bank_lsb, pgm.gm)) {
+                    spec = ex->spec;
+                    name = ex->name;
+                }
+            }
+            if (!name)
+                name = midi_instrument_name[pgm.gm];
+        }
+
+        int attr = ms_attr[(unsigned)spec];
+        wattron(w, attr);
+        mvwaddstr(w, 0, 12, name);
+        wattroff(w, attr);
+        if (spec != Midi_Spec::GM)
+            wprintw(w, " [%s]", midi_spec_name(spec));
     }
 
     if (WINDOW *w = ctx.win.status.get()) {
