@@ -98,6 +98,7 @@ set(adl_sources
   "sources/tui.cc"
   "sources/tui_fileselect.cc"
   "sources/insnames.cc"
+  "sources/player_traits.cc"
   "sources/player.cc"
   "sources/common.cc")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

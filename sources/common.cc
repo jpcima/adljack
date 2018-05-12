@@ -129,16 +129,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         }
         ::player[i].reset(player);
 
-#pragma message("Using my own bank embed for OPN2. Remove this in the future.")
-        if ((Player_Type)i == Player_Type::OPN2) {
-            static const uint8_t bank[] = {
-                #include "embedded-banks/opn2.h"
-            };
-            if (!player->load_bank_data(bank, sizeof(bank))) {
-                qfprintf(quiet, stderr, "Error loading bank data.\n");
-                return false;
-            }
-        }
+        if (!player->set_embedded_bank(0))
+            qfprintf(quiet, stderr, "Error setting default bank.\n");
 
         std::vector<std::string> emus = Player::enumerate_emulators((Player_Type)i);
         unsigned emu_count = emus.size();

@@ -118,18 +118,18 @@ bool load_state(const std::vector<uint8_t> &data)
         Player &pl = *::player[(unsigned)pt];
         if (!pl.set_chip_count(chip_count))
             success = false;
-        if (const auto *bank_file = player->bank_file()) {
-            if (bank_file->size() > 0) {
-                if (!pl.load_bank_file(bank_file->c_str()))
-                    success = false;
-                else
-                    ::player_bank_file[(unsigned)pt] = bank_file->str();
-            }
-            else {
-#pragma message("TODO state: load the default bank")
-                
+        const auto *bank_file = player->bank_file();
+        if (bank_file && bank_file->size() > 0) {
+            if (!pl.load_bank_file(bank_file->c_str()))
+                success = false;
+            else
                 ::player_bank_file[(unsigned)pt] = bank_file->str();
-            }
+        }
+        else {
+            if (!pl.set_embedded_bank(0))
+                success = false;
+            else
+                ::player_bank_file[(unsigned)pt] = std::string();
         }
         unsigned emu = Player::emulator_by_name(pt, player->id()->emulator()->c_str());
         if (emu == (unsigned)-1) {

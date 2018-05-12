@@ -46,6 +46,7 @@ public:
     virtual void panic() = 0;
     virtual const char *emulator_name() const = 0;
     virtual bool set_emulator(unsigned emulator) = 0;
+    virtual bool set_embedded_bank(unsigned bank) = 0;
     unsigned emulator() const { return emulator_; }
     virtual unsigned chip_count() const = 0;
     virtual bool set_chip_count(unsigned count) = 0;
@@ -117,6 +118,8 @@ public:
         {
             return Traits::set_num_chips(player_.get(), count) >= 0 && chip_count() == count;
         }
+    bool set_embedded_bank(unsigned bank) override
+        { return Traits::set_bank(player_.get(), bank) >= 0; }
     bool load_bank_file(const char *file) override
         { return Traits::open_bank_file(player_.get(), file) >= 0; }
     bool load_bank_data(const void *data, size_t size) override
