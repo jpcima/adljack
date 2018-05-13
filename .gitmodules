@@ -6,10 +6,10 @@
 	url = https://github.com/Wohlstand/libOPNMIDI.git
 [submodule "thirdparty/rtmidi"]
 	path = thirdparty/rtmidi
-	url = https://github.com/thestk/rtmidi.git
+	url = https://github.com/Wohlstand/rtmidi.git
 [submodule "thirdparty/rtaudio"]
 	path = thirdparty/rtaudio
-	url = https://github.com/thestk/rtaudio.git
+	url = https://github.com/Wohlstand/rtaudio.git
 [submodule "thirdparty/PDCurses"]
 	path = thirdparty/PDCurses
 	url = https://github.com/wmcbrine/PDCurses.git
