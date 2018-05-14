@@ -197,42 +197,45 @@ static std::vector<std::string> get_xdg_desktops()
     return desktops;
 }
 
-static std::vector<const char *> get_terminal_choices()
+static std::vector<std::vector<const char *>> get_terminal_choices()
 {
-    std::vector<const char *> terminals;
+    std::vector<std::vector<const char *>> terminals;
     terminals.reserve(8);
     for (const std::string &desktop : get_xdg_desktops()) {
+#if 0
         if (desktop == "GNOME")
-            terminals.push_back("gnome-terminal");
-        else if (desktop == "KDE")
-            terminals.push_back("konsole");
+            // TODO does not close!
+            terminals.push_back({"gnome-terminal", "--wait", "--hide-menubar", "--"});
+        else
+#endif
+        if (desktop == "KDE")
+            terminals.push_back({"konsole", "--hide-menubar", "--hide-tabbar", "-e"});
         else if (desktop == "MATE")
-            terminals.push_back("mate-terminal");
+            terminals.push_back({"mate-terminal", "--disable-factory", "--hide-menubar", "-e"});
         else if (desktop == "XFCE") {
-            terminals.push_back("xfce-terminal");
-            terminals.push_back("xfce4-terminal");
+            terminals.push_back({"xfce-terminal", "--disable-server", "--hide-menubar", "--hide-toolbar", "--hide-scrollbar", "-e"});
+            terminals.push_back({"xfce4-terminal", "--disable-server", "--hide-menubar", "--hide-toolbar", "--hide-scrollbar", "-e"});
         }
         else if (desktop == "LXDE")
-            terminals.push_back("lxterminal");
+            terminals.push_back({"lxterminal", "--no-remote", "-e"});
     }
-    terminals.push_back("xterm");
-    terminals.push_back("rxvt");
+    terminals.push_back({"xterm", "-e"});
+    terminals.push_back({"rxvt", "-e"});
     return terminals;
 }
 
 static void execvp_in_xterminal(int argc, char *argv[])
 {
-    std::vector<const char *> terminals = get_terminal_choices();
     std::vector<const char *> args;
-    args.reserve(argc + 3);
-    for (const char *terminal : terminals) {
+    args.reserve(argc + 8);
+    for (const std::vector<const char *> &terminal_argv : get_terminal_choices()) {
         args.clear();
-        args.push_back(terminal);
-        args.push_back("-e");
+        for (const char *arg : terminal_argv)
+            args.push_back(arg);
         for (unsigned i = 0, n = argc; i < n; ++i)
             args.push_back(argv[i]);
         args.push_back(nullptr);
-        execvp(terminal, (char **)args.data());
+        execvp(args[0], (char **)args.data());
     }
 }
 
