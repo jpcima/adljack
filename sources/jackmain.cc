@@ -246,13 +246,16 @@ static void session_log(void *, const char *fmt, ...)
 
 static int session_main(int argc, char *argv[], const char *url, Audio_Context &ctx)
 {
+    debug_printf("Entering session management.");
+
 #if defined(ADLJACK_USE_GRAPHIC_TERMINAL)
     bool in_text_terminal = ::arg_simple_interface;
 #else
     bool in_text_terminal = true;
 #endif
     if (in_text_terminal && !getenv("ADLJACK_DEDICATED_XTERMINAL")) {
-        if (setenv("ADLJACK_DEDICATED_XTERMINAL", "1", 1) == -1)
+        if (setenv("ADLJACK_DEDICATED_XTERMINAL", "1", 1) == -1 ||
+            setenv("ADLJACK_SESSION_PROGNAME", argv[0], 1) == -1)
             throw std::system_error(errno, std::generic_category(), "setenv");
         execvp_in_xterminal(argc, argv);
         return 1;
@@ -266,13 +269,17 @@ static int session_main(int argc, char *argv[], const char *url, Audio_Context &
     nsm_set_open_callback(nsm.get(), &session_open, &ctx);
     nsm_set_save_callback(nsm.get(), &session_save, &ctx);
     if (nsm_init(nsm.get(), url) != 0) {
-        fprintf(stderr, "Error initializing session management.");
+        debug_printf("Error initializing session management.");
         return 1;
     }
     ctx.nsm = nsm.get();
 
     //
-    nsm_send_announce(nsm.get(), "ADLjack", "", argv[0]);
+    const char *progname = argv[0];
+    if (const char *env = getenv("ADLJACK_SESSION_PROGNAME"))
+        progname = env;
+    debug_printf("Announcing as %s.", progname);
+    nsm_send_announce(nsm.get(), "ADLjack", "", progname);
 
     //
     auto idle_proc =
