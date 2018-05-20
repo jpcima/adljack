@@ -1,6 +1,6 @@
 [submodule "thirdparty/libADLMIDI"]
 	path = thirdparty/libADLMIDI
-	url = https://github.com/Wohlstand/libADLMIDI
+	url = https://github.com/Wohlstand/libADLMIDI.git
 [submodule "thirdparty/libOPNMIDI"]
 	path = thirdparty/libOPNMIDI
 	url = https://github.com/Wohlstand/libOPNMIDI.git
