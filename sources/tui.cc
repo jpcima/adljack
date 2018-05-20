@@ -7,6 +7,7 @@
 #include "tui.h"
 #include "tui_fileselect.h"
 #include "insnames.h"
+#include "i18n.h"
 #include "common.h"
 #include <chrono>
 #include <cmath>
@@ -75,6 +76,7 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
 #if !defined(PDCURSES)
     set_escdelay(25);
 #endif
+
 #if defined(PDCURSES)
     PDC_set_title(get_program_title().c_str());
 #endif
@@ -88,7 +90,7 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     }
 
     setup_display(ctx);
-    show_status(ctx, "Ready!");
+    show_status(ctx, _("Ready!"));
 
     unsigned bank_check_interval = 1;
     stc::steady_clock::time_point bank_check_last = stc::steady_clock::now();
@@ -107,9 +109,9 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
         if (now - bank_check_last > stc::seconds(bank_check_interval)) {
             if (update_bank_mtime(ctx)) {
                 if (ctx.player->dynamic_load_bank(active_bank_file().c_str()))
-                    show_status(ctx, "Bank has changed on disk. Reload!");
+                    show_status(ctx, _("Bank has changed on disk. Reload!"));
                 else
-                    show_status(ctx, "Bank has changed on disk. Reloading failed.");
+                    show_status(ctx, _("Bank has changed on disk. Reloading failed."));
             }
             bank_check_last = now;
         }
@@ -252,30 +254,30 @@ static void update_display(TUI_context &ctx)
     }
 
     if (WINDOW *w = ctx.win.playertitle.get()) {
-        mvwaddstr(w, 0, 0, "Player");
+        mvwaddstr(w, 0, 0, _("Player"));
         if (player) {
             wattron(w, COLOR_PAIR(Colors_Highlight));
-            mvwprintw(w, 0, 10, "%s %s", player->name(), player->version());
+            mvwprintw(w, 0, 15, "%s %s", player->name(), player->version());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
         wclrtoeol(w);
         wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.emutitle.get()) {
-        mvwaddstr(w, 0, 0, "Emulator");
+        mvwaddstr(w, 0, 0, _("Emulator"));
         if (player) {
             wattron(w, COLOR_PAIR(Colors_Highlight));
-            mvwaddstr(w, 0, 10, player->emulator_name());
+            mvwaddstr(w, 0, 15, player->emulator_name());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
         wclrtoeol(w);
         wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.chipcount.get()) {
-        mvwaddstr(w, 0, 0, "Chips");
+        mvwaddstr(w, 0, 0, _("Chips"));
         if (player) {
             wattron(w, COLOR_PAIR(Colors_Highlight));
-            mvwprintw(w, 0, 10, "%u", player->chip_count());
+            mvwprintw(w, 0, 15, "%u", player->chip_count());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
             waddstr(w, " * ");
             wattron(w, COLOR_PAIR(Colors_Highlight));
@@ -286,18 +288,18 @@ static void update_display(TUI_context &ctx)
         wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.cpuratio.get()) {
-        mvwaddstr(w, 0, 0, "CPU");
+        mvwaddstr(w, 0, 0, _("CPU"));
         print_bar(w, 0, 10, 15, cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
         wclrtoeol(w);
         wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.banktitle.get()) {
-        mvwaddstr(w, 0, 0, "Bank");
+        mvwaddstr(w, 0, 0, _("Bank"));
         if (player) {
             std::string title;
             const std::string &path = active_bank_file();
             if (path.empty())
-                title = "(default)";
+                title = _("(default)");
             else
             {
 #if !defined(_WIN32)
@@ -308,7 +310,7 @@ static void update_display(TUI_context &ctx)
                 title = (pos != path.npos) ? path.substr(pos + 1) : path;
             }
             wattron(w, COLOR_PAIR(Colors_Highlight));
-            mvwaddstr(w, 0, 10, title.c_str());
+            mvwaddstr(w, 0, 15, title.c_str());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
         wclrtoeol(w);
@@ -316,16 +318,16 @@ static void update_display(TUI_context &ctx)
     }
 
     double channel_volumes[2] = {lvcurrent[0], lvcurrent[1]};
-    const char *channel_names[2] = {"Left", "Right"};
+    const char *channel_names[2] = {_("Left"), _("Right")};
 
     // enables logarithmic view for perceptual volume, otherwise linear.
     //  (better use linear to watch output for clipping)
     const bool logarithmic = false;
 
     if (WINDOW *w = ctx.win.volumeratio.get()) {
-        mvwaddstr(w, 0, 0, "Volume");
+        mvwaddstr(w, 0, 0, _("Volume"));
         wattron(w, COLOR_PAIR(Colors_Highlight));
-        mvwprintw(w, 0, 10, "%3d%%\n", ::player_volume);
+        mvwprintw(w, 0, 15, "%3d%%\n", ::player_volume);
         wattroff(w, COLOR_PAIR(Colors_Highlight));
         wclrtoeol(w);
         wrefresh(w);
@@ -343,7 +345,7 @@ static void update_display(TUI_context &ctx)
         }
 
         mvwaddstr(w, 0, 0, channel_names[channel]);
-        print_bar(w, 0, 6, getcols(w) - 6, vol, '*', '-', A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
+        print_bar(w, 0, 7, getcols(w) - 7, vol, '*', '-', A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
         wclrtoeol(w);
         wnoutrefresh(w);
     }
@@ -385,7 +387,7 @@ static void update_display(TUI_context &ctx)
                 }
             }
             if (!ctx.have_perc_display_program)
-                name = "Percussion";
+                name = _("Percussion");
             else {
                 spec = ctx.perc_display_program.spec;
                 name = ctx.perc_display_program.name;
@@ -445,11 +447,11 @@ static void update_display(TUI_context &ctx)
 
     if (WINDOW *w = ctx.win.keydesc1.get()) {
         static const Key_Description keydesc[] = {
-            { "<", "prev emulator" },
-            { ">", "next emulator" },
-            { "[", "chips -1" },
-            { "]", "chips +1" },
-            { "b", "load bank" },
+            { "<", _("prev emulator") },
+            { ">", _("next emulator") },
+            { "[", _("chips -1") },
+            { "]", _("chips +1") },
+            { "b", _("load bank") },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
@@ -468,10 +470,10 @@ static void update_display(TUI_context &ctx)
 
     if (WINDOW *w = ctx.win.keydesc2.get()) {
         static const Key_Description keydesc[] = {
-            { "/", "volume -1" },
-            { "*", "volume +1" },
-            { "p", "panic" },
-            { "q", "quit" },
+            { "/", _("volume -1") },
+            { "*", _("volume +1") },
+            { "p", _("panic") },
+            { "q", _("quit") },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
@@ -556,7 +558,7 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         erase();
 
         File_Selection_Options fopts;
-        fopts.title = "Load bank";
+        fopts.title = _("Load bank");
         fopts.directory = ctx.bank_directory;
         File_Selector fs(fopts);
         WINDOW_u w(derwin(stdscr, LINES, COLS, 0, 0));
@@ -581,12 +583,12 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
 
         if (code == File_Selection_Code::Ok) {
             if (player->dynamic_load_bank(fopts.filepath.c_str())) {
-                show_status(ctx, "Bank loaded!");
+                show_status(ctx, _("Bank loaded!"));
                 active_bank_file() = fopts.filepath;
                 update_bank_mtime(ctx);
             }
             else
-                show_status(ctx, "Error loading the bank file.");
+                show_status(ctx, _("Error loading the bank file."));
             ctx.bank_directory = fopts.directory;
         }
 

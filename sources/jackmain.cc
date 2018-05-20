@@ -5,6 +5,7 @@
 
 #include "jackmain.h"
 #include "state.h"
+#include "i18n.h"
 #include "common.h"
 #include <atomic>
 #include <system_error>
@@ -340,6 +341,8 @@ std::string get_program_title()
 
 int main(int argc, char *argv[])
 {
+    i18n_setup();
+
     for (int c; (c = generic_getopt(argc, argv, "", usage)) != -1;) {
         switch (c) {
         default:

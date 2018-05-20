@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "tui.h"
+#include "i18n.h"
 #include <algorithm>
 #include <thread>
 #include <chrono>
@@ -47,16 +48,16 @@ bool arg_simple_interface = false;
 
 void generic_usage(const char *progname, const char *more_options)
 {
-    const char *usage_string =
-        "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]"
+    std::string usage_string =
+        _("Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]");
 #if defined(ADLJACK_USE_CURSES)
-        " [-t]"
+    usage_string += " [-t]";
 #endif
-        "%s\n";
+    usage_string += "%s\n";
 
-    fprintf(stderr, usage_string, progname, more_options);
+    fprintf(stderr, usage_string.c_str(), progname, more_options);
 
-    fprintf(stderr, "Available players:\n");
+    fprintf(stderr, "%s\n", _("Available players:"));
     for (Player_Type pt : all_player_types) {
         fprintf(stderr, "   * %s\n", Player::name(pt));
     }
@@ -64,7 +65,7 @@ void generic_usage(const char *progname, const char *more_options)
     for (Player_Type pt : all_player_types) {
         std::vector<std::string> emus = Player::enumerate_emulators(pt);
         size_t emu_count = emus.size();
-        fprintf(stderr, "Available emulators for %s:\n", Player::name(pt));
+        fprintf(stderr, _("Available emulators for %s:\n"), Player::name(pt));
         for (size_t i = 0; i < emu_count; ++i)
             fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
     }
@@ -85,14 +86,14 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
         case 'p':
             ::arg_player_type = Player::type_by_name(optarg);
             if ((int)::arg_player_type == -1) {
-                fprintf(stderr, "Invalid player name.\n");
+                fprintf(stderr, "%s\n", _("Invalid player name."));
                 exit(1);
             }
             break;
         case 'n':
             arg_nchip = std::stoi(optarg);
             if ((int)arg_nchip < 1) {
-                fprintf(stderr, "Invalid number of chips.\n");
+                fprintf(stderr, "%s\n", _("Invalid number of chips."));
                 exit(1);
             }
             break;
@@ -120,18 +121,18 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
 
 bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet)
 {
-    qfprintf(quiet, stderr, "%s version %s\n", Player::name(pt), Player::version(pt));
+    qfprintf(quiet, stderr, _("%s version %s\n"), Player::name(pt), Player::version(pt));
 
     for (unsigned i = 0; i < player_type_count; ++i) {
         Player *player = Player::create((Player_Type)i, sample_rate);
         if (!player) {
-            qfprintf(quiet, stderr, "Error instantiating player.\n");
+            qfprintf(quiet, stderr, "%s\n", _("Error instantiating player."));
             return false;
         }
         ::player[i].reset(player);
 
         if (!player->set_embedded_bank(0))
-            qfprintf(quiet, stderr, "Error setting default bank.\n");
+            qfprintf(quiet, stderr, "%s\n", _("Error setting default bank."));
 
         std::vector<std::string> emus = Player::enumerate_emulators((Player_Type)i);
         unsigned emu_count = emus.size();
@@ -145,37 +146,37 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         emulator_ids.begin(), emulator_ids.end(),
         Emulator_Id{ pt, emulator });
     if (emulator_id_pos == emulator_ids.end()) {
-        qfprintf(quiet, stderr, "The given emulator does not exist.\n");
+        qfprintf(quiet, stderr, "%s\n", _("The given emulator does not exist."));
         return 1;
     }
     ::active_emulator_id = std::distance(emulator_ids.begin(), emulator_id_pos);
 
     Player &player = *::player[(unsigned)pt];
     if (!player.set_emulator(emulator)) {
-        qfprintf(quiet, stderr, "Error selecting emulator.\n");
+        qfprintf(quiet, stderr, "%s\n", _("Error selecting emulator."));
         return 1;
     }
 
-    qfprintf(quiet, stderr, "Using emulator \"%s\"\n", player.emulator_name());
+    qfprintf(quiet, stderr, _("Using emulator \"%s\"\n"), player.emulator_name());
 
     if (!bankfile) {
-        qfprintf(quiet, stderr, "Using default banks.\n");
+        qfprintf(quiet, stderr, "%s\n", _("Using default banks."));
     }
     else {
         if (!player.load_bank_file(bankfile)) {
-            qfprintf(quiet, stderr, "Error loading bank file.\n");
+            qfprintf(quiet, stderr, "%s\n", _("Error loading bank file."));
             return 1;
         }
-        qfprintf(quiet, stderr, "Using banks from WOPL file.\n");
+        qfprintf(quiet, stderr, "%s\n", _("Using banks from WOPL file."));
         ::player_bank_file[(unsigned)pt] = bankfile;
     }
 
     if (!player.set_chip_count(nchip)) {
-        qfprintf(quiet, stderr, "Error setting the number of chips.\n");
+        qfprintf(quiet, stderr, "%s\n", _("Error setting the number of chips."));
         return 1;
     }
 
-    qfprintf(quiet, stderr, "DC filter @ %f Hz, LV monitor @ %f ms\n", dccutoff, lvrelease * 1e3);
+    qfprintf(quiet, stderr, _("DC filter @ %f Hz, LV monitor @ %f ms\n"), dccutoff, lvrelease * 1e3);
     for (unsigned i = 0; i < 2; ++i) {
         dcfilter[i].cutoff(dccutoff / sample_rate);
         lvmonitor[i].release(lvrelease * sample_rate);
@@ -187,7 +188,7 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 void player_ready(bool quiet)
 {
     Player &player = active_player();
-    qfprintf(quiet, stderr, "%s ready with %u chips.\n",
+    qfprintf(quiet, stderr, _("%s ready with %u chips.\n"),
              Player::name(player.type()), player.chip_count());
 }
 
@@ -368,7 +369,7 @@ static void simple_interface_exec(void(*idle_proc)(void *), void *idle_data)
 {
     while (1) {
         if (interface_interrupted()) {
-            fprintf(stderr, "Interrupted.\n");
+            fprintf(stderr, "%s\n", _("Interrupted."));
             break;
         }
 

@@ -6,6 +6,7 @@
 #if defined(ADLJACK_USE_CURSES)
 #include "tui_fileselect.h"
 #include "tui.h"
+#include "i18n.h"
 #include <algorithm>
 #include <vector>
 #include <sys/types.h>
@@ -168,7 +169,7 @@ void File_Selector::Impl::update_display()
 
     if (WINDOW *w = win.title_.get()) {
         wattron(w, A_UNDERLINE);
-        mvwprintw(w, 0, 0, "Directory: %s", opts.directory.c_str());
+        mvwprintw(w, 0, 0, _("Directory: %s"), opts.directory.c_str());
         wattroff(w, A_UNDERLINE);
         wclrtoeol(w);
         wnoutrefresh(w);

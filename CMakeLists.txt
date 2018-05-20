@@ -18,6 +18,7 @@ endif()
 
 option(PREFER_PDCURSES "Prefer PDCurses as terminal library" "OFF")
 option(ENABLE_VIRTUALMIDI "Enable virtualMIDI for Windows" "OFF")
+set(ENABLE_GETTEXT "" CACHE STRING "Enable gettext")
 
 set(WITH_MIDI_SEQUENCER OFF CACHE STRING "")
 set(WITH_MUS_SUPPORT OFF CACHE STRING "")
@@ -93,6 +94,18 @@ if(JACK_FOUND)
   pkg_check_modules(LIBLO "liblo")
 endif()
 
+if(ENABLE_GETTEXT STREQUAL "")
+  find_package(Intl)
+  find_package(Gettext)
+  if(Intl_FOUND AND GETTEXT_FOUND)
+    set(ENABLE_GETTEXT "ON" CACHE STRING "Enable gettext" FORCE)
+  endif()
+endif()
+if(ENABLE_GETTEXT)
+  find_package(Intl REQUIRED)
+  find_package(Gettext REQUIRED)
+endif()
+
 message("!! Feature summary:")
 macro(print_feature NAME VAR)
   if(${VAR})
@@ -107,6 +120,7 @@ print_feature("Jack" JACK_FOUND)
 print_feature("LibLO" LIBLO_FOUND)
 print_feature("Pulseaudio" PULSEAUDIO_FOUND)
 print_feature("virtualMIDI" ENABLE_VIRTUALMIDI)
+print_feature("gettext" ENABLE_GETTEXT)
 
 set(adl_sources
   "sources/tui.cc"
@@ -114,6 +128,7 @@ set(adl_sources
   "sources/insnames.cc"
   "sources/player_traits.cc"
   "sources/player.cc"
+  "sources/i18n.cc"
   "sources/common.cc")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND adl_sources
@@ -127,6 +142,7 @@ if(NOT JACK_FOUND)
   message(WARNING "Jack not found. Not building ADL-jack.")
 else()
   add_executable(adljack WIN32 "sources/jackmain.cc" ${adl_sources})
+  target_compile_definitions(adljack PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
   target_include_directories(adljack PRIVATE ${JACK_INCLUDE_DIRS})
   link_directories(${JACK_LIBRARY_DIRS})
   target_link_libraries(adljack PRIVATE ADLMIDI_static OPNMIDI_static ${JACK_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
@@ -148,6 +164,11 @@ else()
     target_sources(adljack PRIVATE "sources/state.cc")
     target_link_libraries(adljack PRIVATE flatbuffers)
     target_include_directories(adljack PRIVATE "thirdparty/flatbuffers/include")
+  endif()
+  if(ENABLE_GETTEXT)
+    target_compile_definitions(adljack PRIVATE "ADLJACK_I18N")
+    target_include_directories(adljack PRIVATE ${Intl_INCLUDE_DIRS})
+    target_link_libraries(adljack PRIVATE ${Intl_LIBRARIES})
   endif()
   install(TARGETS adljack DESTINATION "bin")
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -216,6 +237,7 @@ target_include_directories(ring_buffer PUBLIC "thirdparty/ring-buffer/include")
 
 ## Cross platform version
 add_executable(adlrt WIN32 "sources/rtmain.cc" ${adl_sources})
+target_compile_definitions(adlrt PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 target_link_libraries(adlrt PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer RtAudio RtMidi ${CMAKE_THREAD_LIBS_INIT})
 if(CURSES_FOUND)
   target_compile_definitions(adlrt PRIVATE "ADLJACK_USE_CURSES")
@@ -228,6 +250,11 @@ elseif(PDCURSES_FOUND)
 endif()
 if(ENABLE_VIRTUALMIDI)
   target_compile_definitions(adlrt PRIVATE "ADLJACK_ENABLE_VIRTUALMIDI")
+endif()
+if(ENABLE_GETTEXT)
+  target_compile_definitions(adlrt PRIVATE "ADLJACK_I18N")
+  target_include_directories(adlrt PRIVATE ${Intl_INCLUDE_DIRS})
+  target_link_libraries(adlrt PRIVATE ${Intl_LIBRARIES})
 endif()
 install(TARGETS adlrt DESTINATION "bin")
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -247,6 +274,14 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   install(FILES "${CMAKE_SOURCE_DIR}/resources/opn.png" DESTINATION "share/pixmaps" RENAME "opnjack.png")
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libADLMIDI/fm_banks/wopl_files/" DESTINATION "share/adljack/wopl_files")
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/thirdparty/libOPNMIDI/fm_banks/" DESTINATION "share/adljack/wopn_files")
+endif()
+
+## Translations
+if(ENABLE_GETTEXT)
+  set(TRANSLATIONS "fr")
+  foreach(translation ${TRANSLATIONS})
+    gettext_process_po_files("${translation}" ALL INSTALL_DESTINATION "share/locale" PO_FILES "po/${translation}/adljack.po")
+  endforeach()
 endif()
 
 ## Packaging

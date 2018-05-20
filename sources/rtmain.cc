@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "rtmain.h"
+#include "i18n.h"
 #include "common.h"
 #include "winmm_dialog.h"
 #include <stdio.h>
@@ -72,6 +73,8 @@ void midi_error_callback(RtMidiError::Type type, const std::string &text, void *
 
 int audio_main()
 {
+    i18n_setup();
+
     Audio_Context ctx;
     Ring_Buffer midi_rb(midi_buffer_size);
     ctx.midi_rb = &midi_rb;
@@ -83,7 +86,7 @@ int audio_main()
 
     unsigned num_audio_devices = audio_client.getDeviceCount();
     if (num_audio_devices == 0) {
-        fprintf(stderr, "No audio devices are present for output.\n");
+        fprintf(stderr, "%s\n", _("No audio devices are present for output."));
         return 1;
     }
 
@@ -101,7 +104,7 @@ int audio_main()
 
     double latency = ::arg_latency;
     unsigned buffer_size = ceil(latency * sample_rate);
-    fprintf(stderr, "Desired latency %f ms = buffer size %u\n",
+    fprintf(stderr, _("Desired latency %f ms = buffer size %u\n"),
             latency * 1e3, buffer_size);
 
     audio_client.openStream(
@@ -149,7 +152,7 @@ int audio_main()
     ::program_title = std::string("ADLrt") + " [" + midi_port_name + "]";
 
     latency = buffer_size / (double)sample_rate;
-    fprintf(stderr, "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n",
+    fprintf(stderr, _("RtAudio client \"%s\" fs=%u bs=%u latency=%f\n"),
             device_info.name.c_str(), sample_rate, buffer_size, latency);
 
     if (!initialize_player(arg_player_type, sample_rate, arg_nchip, arg_bankfile, arg_emulator))
@@ -173,7 +176,7 @@ int audio_main()
 
 static void usage()
 {
-    generic_usage("adlrt", " [-L latency-ms]");
+    generic_usage("adlrt", _(" [-L latency-ms]"));
 }
 
 std::string get_program_title()
@@ -188,7 +191,7 @@ int main(int argc, char *argv[])
         case 'L': {
             double latency = ::arg_latency = std::stod(optarg) * 1e-3;
             if (latency <= 0) {
-                fprintf(stderr, "Invalid latency.\n");
+                fprintf(stderr, "%s\n", _("Invalid latency."));
                 return 1;
             }
             break;
