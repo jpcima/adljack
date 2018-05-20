@@ -37,7 +37,7 @@ const char *midi_instrument_name[128] = {
     "Electric Guitar (clean)",
     "Electric Guitar (muted)",
     "Overdrive Guitar",
-    "Distorton Guitar",
+    "Distortion Guitar",
     "Guitar Harmonics",
     "Acoustic Bass",
     "Electric Bass (finger)",
