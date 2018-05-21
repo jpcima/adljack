@@ -1,13 +1,13 @@
 # French translations for PACKAGE package.
 # Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#  <jpc@quad>, 2018.
+# Jean Pierre Cimalando <jp-dev@inbox.ru>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-19 20:23+0200\n"
+"POT-Creation-Date: 2018-05-21 04:37+0200\n"
 "PO-Revision-Date: 2018-05-19 19:39+0200\n"
 "Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
 "Language-Team: French\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: sources/rtmain.cc:179
+#: sources/rtmain.cc:181
 msgid " [-L latency-ms]"
 msgstr " [-L latence-ms]"
 
@@ -31,7 +31,7 @@ msgstr "%s prêt avec %u circuits.\n"
 msgid "%s version %s\n"
 msgstr "%s version %s\n"
 
-#: sources/tui.cc:316
+#: sources/tui.cc:309
 msgid "(default)"
 msgstr "(par défaut)"
 
@@ -44,27 +44,27 @@ msgstr "Émulateurs disponibles pour %s :\n"
 msgid "Available players:"
 msgstr "Synthétiseurs disponibles :"
 
-#: sources/tui.cc:311
+#: sources/tui.cc:304
 msgid "Bank"
 msgstr "Banque"
 
-#: sources/tui.cc:135
+#: sources/tui.cc:128
 msgid "Bank has changed on disk. Reload!"
 msgstr "La banque a été modifiée sur le disque. Rechargement !"
 
-#: sources/tui.cc:137
+#: sources/tui.cc:130
 msgid "Bank has changed on disk. Reloading failed."
 msgstr "La banque a été modifiée sur le disque. Échec du rechargement."
 
-#: sources/tui.cc:583
+#: sources/tui.cc:576
 msgid "Bank loaded!"
 msgstr "Banque chargée !"
 
-#: sources/tui.cc:303
+#: sources/tui.cc:296
 msgid "CPU"
 msgstr "Processeur"
 
-#: sources/tui.cc:290
+#: sources/tui.cc:283
 msgid "Chips"
 msgstr "Circuits"
 
@@ -73,7 +73,7 @@ msgstr "Circuits"
 msgid "DC filter @ %f Hz, LV monitor @ %f ms\n"
 msgstr "Filtre DC @ %f Hz, Moniteur LV @ %f ms\n"
 
-#: sources/rtmain.cc:107
+#: sources/rtmain.cc:109
 #, c-format
 msgid "Desired latency %f ms = buffer size %u\n"
 msgstr "Latence souhaitée %f ms = taille de buffer %u\n"
@@ -83,7 +83,7 @@ msgstr "Latence souhaitée %f ms = taille de buffer %u\n"
 msgid "Directory: %s"
 msgstr "Dossier : %s"
 
-#: sources/tui.cc:281
+#: sources/tui.cc:274
 msgid "Emulator"
 msgstr "Émulateur"
 
@@ -95,7 +95,7 @@ msgstr "Erreur d'instanciation du synthétiseur."
 msgid "Error loading bank file."
 msgstr "Erreur de chargement du fichier de banques."
 
-#: sources/tui.cc:588
+#: sources/tui.cc:581
 msgid "Error loading the bank file."
 msgstr "Erreur de chargement du fichier de banques."
 
@@ -115,7 +115,7 @@ msgstr "Erreur de changement du nombre de cicuits."
 msgid "Interrupted."
 msgstr "Interrompu."
 
-#: sources/rtmain.cc:194
+#: sources/rtmain.cc:196
 msgid "Invalid latency."
 msgstr "Latence invalide."
 
@@ -127,35 +127,35 @@ msgstr "Nombre de circuits invalide."
 msgid "Invalid player name."
 msgstr "Nom de synthétiseur invalide."
 
-#: sources/tui.cc:333
+#: sources/tui.cc:326
 msgid "Left"
 msgstr "Gauche"
 
-#: sources/tui.cc:569
+#: sources/tui.cc:562
 msgid "Load bank"
 msgstr "Charger une banque"
 
-#: sources/rtmain.cc:89
+#: sources/rtmain.cc:91
 msgid "No audio devices are present for output."
 msgstr "Aucun périphérique de sortie audio n'est disponible."
 
-#: sources/tui.cc:404
+#: sources/tui.cc:397
 msgid "Percussion"
 msgstr "Percussion"
 
-#: sources/tui.cc:272
+#: sources/tui.cc:265
 msgid "Player"
 msgstr "Synthétiseur"
 
-#: sources/tui.cc:99
+#: sources/tui.cc:92
 msgid "Ready!"
 msgstr "Prêt !"
 
-#: sources/tui.cc:333
+#: sources/tui.cc:326
 msgid "Right"
 msgstr "Droite"
 
-#: sources/rtmain.cc:155
+#: sources/rtmain.cc:157
 #, c-format
 msgid "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n"
 msgstr "Client RtAudio \"%s\" fs=%u bs=%u latence=%f\n"
@@ -184,42 +184,42 @@ msgstr "Utilisation des banques par défaut."
 msgid "Using emulator \"%s\"\n"
 msgstr "Utilisation de l'émulateur \"%s\"\n"
 
-#: sources/tui.cc:340
+#: sources/tui.cc:333
 msgid "Volume"
 msgstr "Volume"
 
-#: sources/tui.cc:465
+#: sources/tui.cc:458
 msgid "chips +1"
 msgstr "circuits +1"
 
-#: sources/tui.cc:464
+#: sources/tui.cc:457
 msgid "chips -1"
 msgstr "circuits -1"
 
-#: sources/tui.cc:466
+#: sources/tui.cc:459
 msgid "load bank"
 msgstr "ch. banque"
 
-#: sources/tui.cc:463
+#: sources/tui.cc:456
 msgid "next emulator"
 msgstr "ému. suiv."
 
-#: sources/tui.cc:486
+#: sources/tui.cc:479
 msgid "panic"
 msgstr "silence"
 
-#: sources/tui.cc:462
+#: sources/tui.cc:455
 msgid "prev emulator"
 msgstr "ému. préc."
 
-#: sources/tui.cc:487
+#: sources/tui.cc:480
 msgid "quit"
 msgstr "quitter"
 
-#: sources/tui.cc:485
+#: sources/tui.cc:478
 msgid "volume +1"
 msgstr "volume +1"
 
-#: sources/tui.cc:484
+#: sources/tui.cc:477
 msgid "volume -1"
 msgstr "volume -1"

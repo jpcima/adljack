@@ -295,7 +295,11 @@ endif()
 if(ENABLE_GETTEXT)
   set(TRANSLATIONS "fr")
   foreach(translation ${TRANSLATIONS})
-    gettext_process_po_files("${translation}" ALL INSTALL_DESTINATION "share/locale" PO_FILES "po/${translation}/adljack.po")
+    gettext_process_po_files("${translation}" ALL INSTALL_DESTINATION "share/locale" PO_FILES
+      "po/${translation}/adljack.po"
+      "po/${translation}/adljack_inst.po"
+      "po/${translation}/adljack_perc.po"
+      "po/${translation}/adljack_ex.po")
   endforeach()
 endif()
 

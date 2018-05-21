@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
+#include <unordered_map>
 
 enum class Midi_Spec {
     GM, GS, SC88, MT32, XG,
@@ -20,8 +21,23 @@ struct Midi_Program_Ex {
     const char *name = nullptr;
 };
 
-extern const char *midi_instrument_name[128];
-extern const Midi_Program_Ex midi_percussion[128];
+class Midi_Db {
+public:
+    void init();
 
-const Midi_Program_Ex *midi_program_ex_find(
-    unsigned msb, unsigned lsb, unsigned pgm);
+    const char *inst(unsigned id7)
+        { return midi_inst_[id7]; }
+    const Midi_Program_Ex &perc(unsigned id7)
+        { return midi_perc_[id7]; }
+    const Midi_Program_Ex *find_ex(
+        unsigned msb, unsigned lsb, unsigned pgm);
+private:
+    const char *midi_inst_[128];
+    Midi_Program_Ex midi_perc_[128];
+    std::unordered_map<unsigned, Midi_Program_Ex> midi_ex_;
+    void init_midi_inst();
+    void init_midi_perc();
+    void init_midi_ex();
+};
+
+extern Midi_Db midi_db;

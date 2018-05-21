@@ -1,0 +1,530 @@
+# French translations for PACKAGE package.
+# Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Jean Pierre Cimalando <jp-dev@inbox.ru>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-21 09:55+0200\n"
+"PO-Revision-Date: 2018-05-21 04:40+0200\n"
+"Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: sources/insnames.cc:32
+msgid "Acoustic Grand Piano"
+msgstr "Grand piano acoustique"
+
+#: sources/insnames.cc:33
+msgid "Bright Acoustic Piano"
+msgstr "Piano acoustique"
+
+#: sources/insnames.cc:34
+msgid "Electric Grand Piano"
+msgstr "Grand piano électrique"
+
+#: sources/insnames.cc:35
+msgid "Honky-Tonk Piano"
+msgstr "Piano bastringue"
+
+#: sources/insnames.cc:36
+msgid "Rhodes Piano"
+msgstr "Rhodes"
+
+#: sources/insnames.cc:37
+msgid "Chorused Piano"
+msgstr "Piano avec effet chorus"
+
+#: sources/insnames.cc:38
+msgid "Harpsichord"
+msgstr "Clavecin"
+
+#: sources/insnames.cc:39
+msgid "Clavinet"
+msgstr "Clavinet"
+
+#: sources/insnames.cc:40
+msgid "Celesta"
+msgstr "Célesta"
+
+#: sources/insnames.cc:41
+msgid "Glockenspiel"
+msgstr "Glockenspiel"
+
+#: sources/insnames.cc:42
+msgid "Music box"
+msgstr "Boîte à musique"
+
+#: sources/insnames.cc:43
+msgid "Vibraphone"
+msgstr "Vibraphone"
+
+#: sources/insnames.cc:44
+msgid "Marimba"
+msgstr "Marimba"
+
+#: sources/insnames.cc:45
+msgid "Xylophone"
+msgstr "Xylophone"
+
+#: sources/insnames.cc:46
+msgid "Tubular Bells"
+msgstr "Cloches tubulaires"
+
+#: sources/insnames.cc:47
+msgid "Dulcimer"
+msgstr "Dulcimer"
+
+#: sources/insnames.cc:48
+msgid "Hammond Organ"
+msgstr "Orgue Hammond"
+
+#: sources/insnames.cc:49
+msgid "Percussive Organ"
+msgstr "Orgue percussif"
+
+#: sources/insnames.cc:50
+msgid "Rock Organ"
+msgstr "Orgue rock"
+
+#: sources/insnames.cc:51
+msgid "Church Organ"
+msgstr "Orgue d'église"
+
+#: sources/insnames.cc:52
+msgid "Reed Organ"
+msgstr "Harmonium"
+
+#: sources/insnames.cc:53
+msgid "Accordion"
+msgstr "Accordéon"
+
+#: sources/insnames.cc:54
+msgid "Harmonica"
+msgstr "Harmonica"
+
+#: sources/insnames.cc:55
+msgid "Tango Accordion"
+msgstr "Bandonéon"
+
+#: sources/insnames.cc:56
+msgid "Acoustic Guitar (nylon)"
+msgstr "Guitare classique"
+
+#: sources/insnames.cc:57
+msgid "Acoustic Guitar (steel)"
+msgstr "Guitare folk"
+
+#: sources/insnames.cc:58
+msgid "Electric Guitar (jazz)"
+msgstr "Guitare électrique - Jazz"
+
+#: sources/insnames.cc:59
+msgid "Electric Guitar (clean)"
+msgstr "Guitare électrique - son clair"
+
+#: sources/insnames.cc:60
+msgid "Electric Guitar (muted)"
+msgstr "Guitare électrique - sourdine"
+
+#: sources/insnames.cc:61
+msgid "Overdrive Guitar"
+msgstr "Guitare avec overdrive"
+
+#: sources/insnames.cc:62
+msgid "Distortion Guitar"
+msgstr "Guitare avec distorsion"
+
+#: sources/insnames.cc:63
+msgid "Guitar Harmonics"
+msgstr "Harmoniques de guitare"
+
+#: sources/insnames.cc:64
+msgid "Acoustic Bass"
+msgstr "Basse acoustique sans frettes"
+
+#: sources/insnames.cc:65
+msgid "Electric Bass (finger)"
+msgstr "Basse électrique jouée au doigt"
+
+#: sources/insnames.cc:66
+msgid "Electric Bass (pick)"
+msgstr "Basse électrique jouée au médiator"
+
+#: sources/insnames.cc:67
+msgid "Fretless Bass"
+msgstr "Basse sans frettes"
+
+#: sources/insnames.cc:68
+msgid "Slap Bass 1"
+msgstr "Basse slapée 1"
+
+#: sources/insnames.cc:69
+msgid "Slap Bass 2"
+msgstr "Basse slapée 2"
+
+#: sources/insnames.cc:70
+msgid "Synth Bass 1"
+msgstr "Synthétiseur basse 1"
+
+#: sources/insnames.cc:71
+msgid "Synth Bass 2"
+msgstr "Synthétiseur basse 2"
+
+#: sources/insnames.cc:72
+msgid "Violin"
+msgstr "Violon"
+
+#: sources/insnames.cc:73
+msgid "Viola"
+msgstr "Violon alto"
+
+#: sources/insnames.cc:74
+msgid "Cello"
+msgstr "Violoncelle"
+
+#: sources/insnames.cc:75
+msgid "Contrabass"
+msgstr "Contrebasse"
+
+#: sources/insnames.cc:76
+msgid "Tremolo Strings"
+msgstr "Cordes en trémolo"
+
+#: sources/insnames.cc:77
+msgid "Pizzicato String"
+msgstr "Cordes en pizzicato"
+
+#: sources/insnames.cc:78
+msgid "Orchestral Harp"
+msgstr "Harpe"
+
+#: sources/insnames.cc:79
+msgid "Timpany"
+msgstr "Timbales"
+
+#: sources/insnames.cc:80
+msgid "String Ensemble 1"
+msgstr "Ensemble acoustique à Cordes 1"
+
+#: sources/insnames.cc:81
+msgid "String Ensemble 2"
+msgstr "Ensemble acoustique à Cordes 2"
+
+#: sources/insnames.cc:82
+msgid "Synth Strings 1"
+msgstr "Synthétiseur de cordes 1"
+
+#: sources/insnames.cc:83
+msgid "Synth Strings 2"
+msgstr "Synthétiseur de cordes 2"
+
+#: sources/insnames.cc:84
+msgid "Choir Aahs"
+msgstr "Chœur - Aah"
+
+#: sources/insnames.cc:85
+msgid "Voice Oohs"
+msgstr "Chœur - Ooh"
+
+#: sources/insnames.cc:86
+msgid "Synth Voice"
+msgstr "Voix synthétique"
+
+#: sources/insnames.cc:87
+msgid "Orchestra Hit"
+msgstr "Coup d'orchestre"
+
+#: sources/insnames.cc:88
+msgid "Trumpet"
+msgstr "Trompette"
+
+#: sources/insnames.cc:89
+msgid "Trombone"
+msgstr "Trombone"
+
+#: sources/insnames.cc:90
+msgid "Tuba"
+msgstr "Tuba"
+
+#: sources/insnames.cc:91
+msgid "Muted Trumpet"
+msgstr "Trompette en sourdine"
+
+#: sources/insnames.cc:92
+msgid "French Horn"
+msgstr "Cor d'harmonie"
+
+#: sources/insnames.cc:93
+msgid "Brass Section"
+msgstr "Section de cuivres"
+
+#: sources/insnames.cc:94
+msgid "Synth Brass 1"
+msgstr "Synthétiseur de Cuivres 1"
+
+#: sources/insnames.cc:95
+msgid "Synth Brass 2"
+msgstr "Synthétiseur de Cuivres 2"
+
+#: sources/insnames.cc:96
+msgid "Soprano Sax"
+msgstr "Saxophone soprano"
+
+#: sources/insnames.cc:97
+msgid "Alto Sax"
+msgstr "Saxophone alto"
+
+#: sources/insnames.cc:98
+msgid "Tenor Sax"
+msgstr "Saxophone ténor"
+
+#: sources/insnames.cc:99
+msgid "Baritone Sax"
+msgstr "Saxophone baryton"
+
+#: sources/insnames.cc:100
+msgid "Oboe"
+msgstr "Hautbois"
+
+#: sources/insnames.cc:101
+msgid "English Horn"
+msgstr "Cor anglais"
+
+#: sources/insnames.cc:102
+msgid "Bassoon"
+msgstr "Basson"
+
+#: sources/insnames.cc:103
+msgid "Clarinet"
+msgstr "Clarinette"
+
+#: sources/insnames.cc:104
+msgid "Piccolo"
+msgstr "Piccolo"
+
+#: sources/insnames.cc:105
+msgid "Flute"
+msgstr "Flûte"
+
+#: sources/insnames.cc:106
+msgid "Recorder"
+msgstr "Flûte à bec"
+
+#: sources/insnames.cc:107
+msgid "Pan Flute"
+msgstr "Flûte de pan"
+
+#: sources/insnames.cc:108
+msgid "Bottle Blow"
+msgstr "Bouteille soufflée"
+
+#: sources/insnames.cc:109
+msgid "Shakuhachi"
+msgstr "Shakuhachi"
+
+#: sources/insnames.cc:110
+msgid "Whistle"
+msgstr "Sifflet"
+
+#: sources/insnames.cc:111
+msgid "Ocarina"
+msgstr "Ocarina"
+
+#: sources/insnames.cc:112
+msgid "Lead 1 (Square)"
+msgstr "Signal carré (Lead 1 (square))"
+
+#: sources/insnames.cc:113
+msgid "Lead 2 (Sawtooth)"
+msgstr "Signal en dents de scie (Lead 2 (sawtooth))"
+
+#: sources/insnames.cc:114
+msgid "Lead 3 (Calliope)"
+msgstr "Orgue à vapeur (Lead 3 (calliope lead))"
+
+#: sources/insnames.cc:115
+msgid "Lead 4 (Chiff)"
+msgstr "Chiffer (Lead 4 (chiff lead))"
+
+#: sources/insnames.cc:116
+msgid "Lead 5 (Charang)"
+msgstr "Charang (Lead 5 (charang))"
+
+#: sources/insnames.cc:117
+msgid "Lead 6 (Voice)"
+msgstr "Voix solo (Lead 6 (voice))"
+
+#: sources/insnames.cc:118
+msgid "Lead 7 (Fifths)"
+msgstr "Signal en dents de scie en quinte (Lead 7 (fifths))"
+
+#: sources/insnames.cc:119
+msgid "Lead 8 (Lead+Bass)"
+msgstr "Basse & Solo (Lead 8 (bass + lead))"
+
+#: sources/insnames.cc:120
+msgid "Pad 1 (New age)"
+msgstr "Fantaisie (Pad 1 (new age))"
+
+#: sources/insnames.cc:121
+msgid "Pad 2 (Warm)"
+msgstr "Son chaleureux (Pad 2 (warm))"
+
+#: sources/insnames.cc:122
+msgid "Pad 3 (Polysynth)"
+msgstr "Polysynthé (Pad 3 (polysynth))"
+
+#: sources/insnames.cc:123
+msgid "Pad 4 (Choir)"
+msgstr "Chœur (Pad 4 (choir))"
+
+#: sources/insnames.cc:124
+msgid "Pad 5 (Bowed)"
+msgstr "Archet (Pad 5 (bowed))"
+
+#: sources/insnames.cc:125
+msgid "Pad 6 (Metallic)"
+msgstr "Son métallique (Pad 6 (metallic))"
+
+#: sources/insnames.cc:126
+msgid "Pad 7 (Halo)"
+msgstr "Halo (Pad 7 (halo))"
+
+#: sources/insnames.cc:127
+msgid "Pad 8 (Sweep)"
+msgstr "Balai (Pad 8 (sweep))"
+
+#: sources/insnames.cc:128
+msgid "FX 1 (Rain)"
+msgstr "Pluie de glace"
+
+#: sources/insnames.cc:129
+msgid "FX 2 (Soundtrack)"
+msgstr "Trames sonores"
+
+#: sources/insnames.cc:130
+msgid "FX 3 (Crystal)"
+msgstr "Cristal"
+
+#: sources/insnames.cc:131
+msgid "FX 4 (Atmosphere)"
+msgstr "Atmosphère"
+
+#: sources/insnames.cc:132
+msgid "FX 5 (Brightness)"
+msgstr "Brillance"
+
+#: sources/insnames.cc:133
+msgid "FX 6 (Goblins)"
+msgstr "Gobelins (Goblins)"
+
+#: sources/insnames.cc:134
+msgid "FX 7 (Echoes)"
+msgstr "Échos"
+
+#: sources/insnames.cc:135
+msgid "FX 8 (Sci-fi)"
+msgstr "Espace (Sci-Fi)"
+
+#: sources/insnames.cc:136
+msgid "Sitar"
+msgstr "Sitar"
+
+#: sources/insnames.cc:137
+msgid "Banjo"
+msgstr "Banjo"
+
+#: sources/insnames.cc:138
+msgid "Shamisen"
+msgstr "Shamisen"
+
+#: sources/insnames.cc:139
+msgid "Koto"
+msgstr "Koto"
+
+#: sources/insnames.cc:140
+msgid "Kalimba"
+msgstr "Kalimba"
+
+#: sources/insnames.cc:141
+msgid "Bagpipe"
+msgstr "Cornemuse"
+
+#: sources/insnames.cc:142
+msgid "Fiddle"
+msgstr "Viole"
+
+#: sources/insnames.cc:143
+msgid "Shanai"
+msgstr "Shehnai"
+
+#: sources/insnames.cc:144
+msgid "Tinkle Bell"
+msgstr "Clochettes"
+
+#: sources/insnames.cc:145
+msgid "Agogo Bells"
+msgstr "Agogo"
+
+#: sources/insnames.cc:146
+msgid "Steel Drums"
+msgstr "Steel-drum"
+
+#: sources/insnames.cc:147
+msgid "Woodblock"
+msgstr "Wood-block"
+
+#: sources/insnames.cc:148
+msgid "Taiko Drum"
+msgstr "Timbales"
+
+#: sources/insnames.cc:149
+msgid "Melodic Tom"
+msgstr "Tom mélodique"
+
+#: sources/insnames.cc:150
+msgid "Synth Drum"
+msgstr "Tambour synthétique"
+
+#: sources/insnames.cc:151
+msgid "Reverse Cymbal"
+msgstr "Cymbale inversée"
+
+#: sources/insnames.cc:152
+msgid "Guitar Fret Noise"
+msgstr "Guitare - bruit de frette"
+
+#: sources/insnames.cc:153
+msgid "Breath Noise"
+msgstr "Respiration"
+
+#: sources/insnames.cc:154
+msgid "Seashore"
+msgstr "Rivage"
+
+#: sources/insnames.cc:155
+msgid "Bird Tweet"
+msgstr "Gazouillis"
+
+#: sources/insnames.cc:156
+msgid "Telephone"
+msgstr "Sonnerie de téléphone"
+
+#: sources/insnames.cc:157
+msgid "Helicopter"
+msgstr "Hélicoptère"
+
+#: sources/insnames.cc:158
+msgid "Applause/Noise"
+msgstr "Applaudissements"
+
+#: sources/insnames.cc:159
+msgid "Gunshot"
+msgstr "Coup de feu"

@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "rtmain.h"
+#include "insnames.h"
 #include "i18n.h"
 #include "common.h"
 #include "winmm_dialog.h"
@@ -74,6 +75,7 @@ void midi_error_callback(RtMidiError::Type type, const std::string &text, void *
 int audio_main()
 {
     i18n_setup();
+    midi_db.init();
 
     Audio_Context ctx;
     Ring_Buffer midi_rb(midi_buffer_size);

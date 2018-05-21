@@ -11,14 +11,21 @@
 #include <locale.h>
 
 inline const char *_(const char *x)
-{
-    return gettext(x);
-}
+    { return gettext(x); }
+inline const char *_INST(const char *x)
+    { return dgettext("adljack_inst", x); }
+inline const char *_PERC(const char *x)
+    { return dgettext("adljack_perc", x); }
+inline const char *_EX(const char *x)
+    { return dgettext("adljack_ex", x); }
 
 inline void i18n_setup()
 {
     setlocale(LC_ALL, "");
     bindtextdomain("adljack", ADLJACK_PREFIX "/share/locale/");
+    bindtextdomain("adljack_inst", ADLJACK_PREFIX "/share/locale/");
+    bindtextdomain("adljack_perc", ADLJACK_PREFIX "/share/locale/");
+    bindtextdomain("adljack_ex", ADLJACK_PREFIX "/share/locale/");
     textdomain("adljack");
 }
 
@@ -73,9 +80,13 @@ int pdc_ext_mvwaddnstr(WINDOW *, int, int, const char *, int);
 #else
 
 inline const char *_(const char *x)
-{
-    return x;
-}
+    { return x; }
+inline const char *_INST(const char *x)
+    { return x; }
+inline const char *_PERC(const char *x)
+    { return x; }
+inline const char *_EX(const char *x)
+    { return x; }
 
 inline void i18n_setup()
 {

@@ -200,7 +200,7 @@ static void setup_display(TUI_context &ctx)
         unsigned width = cols / 2;
         unsigned row2 = row + midichannel % 8;
         unsigned col = (midichannel < 8) ? 0 : width;
-        ctx.win.instrument[midichannel].reset(derwin_s(inner, 1, width, row2, col));
+        ctx.win.instrument[midichannel].reset(derwin_s(inner, 1, (int)width - 1, row2, col));
     }
     row += 8;
 
@@ -383,7 +383,7 @@ static void update_display(TUI_context &ctx)
                 if (unsigned pgm = ::midi_channel_last_note_p1[midichannel]) {
                     --pgm;
                     ctx.have_perc_display_program = true;
-                    ctx.perc_display_program = midi_percussion[pgm];
+                    ctx.perc_display_program = midi_db.perc(pgm);
                 }
             }
             if (!ctx.have_perc_display_program)
@@ -396,14 +396,14 @@ static void update_display(TUI_context &ctx)
         else {
             // melodic display
             if (pgm.bank_msb | pgm.bank_lsb) {
-                if (const Midi_Program_Ex *ex = midi_program_ex_find(
+                if (const Midi_Program_Ex *ex = midi_db.find_ex(
                         pgm.bank_msb, pgm.bank_lsb, pgm.gm)) {
                     spec = ex->spec;
                     name = ex->name;
                 }
             }
             if (!name)
-                name = midi_instrument_name[pgm.gm];
+                name = midi_db.inst(pgm.gm);
         }
 
         int attr = ms_attr[(unsigned)spec];

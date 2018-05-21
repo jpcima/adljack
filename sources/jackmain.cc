@@ -5,6 +5,7 @@
 
 #include "jackmain.h"
 #include "state.h"
+#include "insnames.h"
 #include "i18n.h"
 #include "common.h"
 #include <atomic>
@@ -342,6 +343,7 @@ std::string get_program_title()
 int main(int argc, char *argv[])
 {
     i18n_setup();
+    midi_db.init();
 
     for (int c; (c = generic_getopt(argc, argv, "", usage)) != -1;) {
         switch (c) {

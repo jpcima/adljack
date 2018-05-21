@@ -1,0 +1,2766 @@
+# French translations for PACKAGE package.
+# Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Jean Pierre Cimalando <jp-dev@inbox.ru>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-21 09:55+0200\n"
+"PO-Revision-Date: 2018-05-21 04:40+0200\n"
+"Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: sources/insnames.cc:302
+msgid "Synth Bass 101"
+msgstr ""
+
+#: sources/insnames.cc:303 sources/insnames.cc:681
+msgid "Trombone 2"
+msgstr ""
+
+#: sources/insnames.cc:304
+msgid "French Horn2"
+msgstr ""
+
+#: sources/insnames.cc:305
+msgid "Square"
+msgstr ""
+
+#: sources/insnames.cc:306
+msgid "Saw"
+msgstr ""
+
+#: sources/insnames.cc:307 sources/insnames.cc:689
+msgid "Syn Mallet"
+msgstr ""
+
+#: sources/insnames.cc:308 sources/insnames.cc:630
+msgid "Echo Bell"
+msgstr ""
+
+#: sources/insnames.cc:309 sources/insnames.cc:832
+msgid "Sitar 2"
+msgstr ""
+
+#: sources/insnames.cc:310
+msgid "Gt. Cut Noise"
+msgstr ""
+
+#: sources/insnames.cc:311
+msgid "Flute Key Click"
+msgstr ""
+
+#: sources/insnames.cc:312
+msgid "Rain"
+msgstr ""
+
+#: sources/insnames.cc:313
+msgid "Dog"
+msgstr ""
+
+#: sources/insnames.cc:314
+msgid "Telephone 2"
+msgstr ""
+
+#: sources/insnames.cc:315
+msgid "Car-Engine"
+msgstr ""
+
+#: sources/insnames.cc:316
+msgid "Laughing"
+msgstr ""
+
+#: sources/insnames.cc:317
+msgid "Machine Gun"
+msgstr ""
+
+#: sources/insnames.cc:318 sources/insnames.cc:633 sources/insnames.cc:746
+msgid "Echo Pan"
+msgstr ""
+
+#: sources/insnames.cc:319
+msgid "String Slap"
+msgstr ""
+
+#: sources/insnames.cc:320
+msgid "Thunder"
+msgstr ""
+
+#: sources/insnames.cc:321
+msgid "Horse-Gallop"
+msgstr ""
+
+#: sources/insnames.cc:322
+msgid "Door Creaking"
+msgstr ""
+
+#: sources/insnames.cc:323
+msgid "Car-Stop"
+msgstr ""
+
+#: sources/insnames.cc:324
+msgid "Screaming"
+msgstr ""
+
+#: sources/insnames.cc:325
+msgid "Lasergun"
+msgstr ""
+
+#: sources/insnames.cc:326
+msgid "Wind"
+msgstr ""
+
+#: sources/insnames.cc:327
+msgid "Bird 2"
+msgstr ""
+
+#: sources/insnames.cc:328
+msgid "Door Close"
+msgstr ""
+
+#: sources/insnames.cc:329
+msgid "Car-Pass"
+msgstr ""
+
+#: sources/insnames.cc:330
+msgid "Punch"
+msgstr ""
+
+#: sources/insnames.cc:331
+msgid "Explosion"
+msgstr ""
+
+#: sources/insnames.cc:332
+msgid "Stream"
+msgstr ""
+
+#: sources/insnames.cc:333
+msgid "Scratch"
+msgstr ""
+
+#: sources/insnames.cc:334
+msgid "Car-Crash"
+msgstr ""
+
+#: sources/insnames.cc:335
+msgid "Heart Beat"
+msgstr ""
+
+#: sources/insnames.cc:336
+msgid "Bubble"
+msgstr ""
+
+#: sources/insnames.cc:337
+msgid "Windchime"
+msgstr ""
+
+#: sources/insnames.cc:338
+msgid "Siren"
+msgstr ""
+
+#: sources/insnames.cc:339
+msgid "Footsteps"
+msgstr ""
+
+#: sources/insnames.cc:340
+msgid "Train"
+msgstr ""
+
+#: sources/insnames.cc:341
+msgid "Jetplane"
+msgstr ""
+
+#: sources/insnames.cc:342
+msgid "Piano 1w"
+msgstr ""
+
+#: sources/insnames.cc:343
+msgid "Piano 2w"
+msgstr ""
+
+#: sources/insnames.cc:344
+msgid "Piano 3w"
+msgstr ""
+
+#: sources/insnames.cc:345
+msgid "Honky-tonk w/Old Upright"
+msgstr ""
+
+#: sources/insnames.cc:346
+msgid "Detuned EP 1"
+msgstr ""
+
+#: sources/insnames.cc:347
+msgid "Detuned EP 2"
+msgstr ""
+
+#: sources/insnames.cc:348
+msgid "Coupled Hps."
+msgstr ""
+
+#: sources/insnames.cc:349
+msgid "Vib.w"
+msgstr ""
+
+#: sources/insnames.cc:350
+msgid "Marimba w"
+msgstr ""
+
+#: sources/insnames.cc:351 sources/insnames.cc:995
+msgid "Church Bell"
+msgstr ""
+
+#: sources/insnames.cc:352
+msgid "Detuned Or.1"
+msgstr ""
+
+#: sources/insnames.cc:353
+msgid "Detuned Or.2"
+msgstr ""
+
+#: sources/insnames.cc:354
+msgid "Church Org.2"
+msgstr ""
+
+#: sources/insnames.cc:355
+msgid "Accordion It"
+msgstr ""
+
+#: sources/insnames.cc:356
+msgid "Ukulele"
+msgstr ""
+
+#: sources/insnames.cc:357
+msgid "12-str Guitar"
+msgstr ""
+
+#: sources/insnames.cc:358
+msgid "Hawaiian Gt./Pedal Steel"
+msgstr ""
+
+#: sources/insnames.cc:359
+msgid "Chorus Gt."
+msgstr ""
+
+#: sources/insnames.cc:360
+msgid "Funk Gt/Funk Pop"
+msgstr ""
+
+#: sources/insnames.cc:361
+msgid "Feedback Gt."
+msgstr ""
+
+#: sources/insnames.cc:362
+msgid "Gt.Feedback"
+msgstr ""
+
+#: sources/insnames.cc:363
+msgid "Synth Bass 3/Acid Bass"
+msgstr ""
+
+#: sources/insnames.cc:364
+msgid "Synth Bass 4/Beef FM Bass"
+msgstr ""
+
+#: sources/insnames.cc:365
+msgid "Slow Violin"
+msgstr ""
+
+#: sources/insnames.cc:366 sources/insnames.cc:854
+msgid "Orchestra"
+msgstr ""
+
+#: sources/insnames.cc:367
+msgid "Syn.Strings 3"
+msgstr ""
+
+#: sources/insnames.cc:368
+msgid "Brass 2"
+msgstr ""
+
+#: sources/insnames.cc:369
+msgid "Synth Brass 3"
+msgstr ""
+
+#: sources/insnames.cc:370
+msgid "Synth Brass 4"
+msgstr ""
+
+#: sources/insnames.cc:371
+msgid "Sine Wave"
+msgstr ""
+
+#: sources/insnames.cc:372 sources/insnames.cc:634
+msgid "Doctor Solo"
+msgstr ""
+
+#: sources/insnames.cc:373
+msgid "Taisho Koto"
+msgstr ""
+
+#: sources/insnames.cc:374 sources/insnames.cc:710 sources/insnames.cc:1009
+msgid "Castanets"
+msgstr ""
+
+#: sources/insnames.cc:375
+msgid "Concert Bass Drum"
+msgstr ""
+
+#: sources/insnames.cc:376
+msgid "Melo. Tom 2"
+msgstr ""
+
+#: sources/insnames.cc:377
+msgid "808 Tom"
+msgstr ""
+
+#: sources/insnames.cc:378
+msgid "Starship"
+msgstr ""
+
+#: sources/insnames.cc:379 sources/insnames.cc:1012
+msgid "Carillon"
+msgstr ""
+
+#: sources/insnames.cc:380
+msgid "Elec Perc"
+msgstr ""
+
+#: sources/insnames.cc:381
+msgid "Burst Noise"
+msgstr ""
+
+#: sources/insnames.cc:382
+msgid "Piano 1d"
+msgstr ""
+
+#: sources/insnames.cc:383
+msgid "E.Piano 1w"
+msgstr ""
+
+#: sources/insnames.cc:384
+msgid "E.Piano 2w/Soft FM EP"
+msgstr ""
+
+#: sources/insnames.cc:385
+msgid "Harpsi.w"
+msgstr ""
+
+#: sources/insnames.cc:386
+msgid "60's Organ 1"
+msgstr ""
+
+#: sources/insnames.cc:387
+msgid "Church Org.3"
+msgstr ""
+
+#: sources/insnames.cc:388
+msgid "Nylon Gt.o"
+msgstr ""
+
+#: sources/insnames.cc:389 sources/insnames.cc:998
+msgid "Mandolin"
+msgstr ""
+
+#: sources/insnames.cc:390
+msgid "Funk Gt.2"
+msgstr ""
+
+#: sources/insnames.cc:391
+msgid "Rubber Bass"
+msgstr ""
+
+#: sources/insnames.cc:392
+msgid "Analog Brass1/Octave Brass"
+msgstr ""
+
+#: sources/insnames.cc:393
+msgid "Analog Brass 2/Velo Brass 1"
+msgstr ""
+
+#: sources/insnames.cc:394
+msgid "60's E.Piano"
+msgstr ""
+
+#: sources/insnames.cc:395
+msgid "Harpsi.o"
+msgstr ""
+
+#: sources/insnames.cc:396
+msgid "Organ 4"
+msgstr ""
+
+#: sources/insnames.cc:397
+msgid "Organ 5"
+msgstr ""
+
+#: sources/insnames.cc:398
+msgid "Nylon Gt.2"
+msgstr ""
+
+#: sources/insnames.cc:399
+msgid "Choir Aahs 2"
+msgstr ""
+
+#: sources/insnames.cc:400
+msgid "EG+Rhodes1"
+msgstr ""
+
+#: sources/insnames.cc:401
+msgid "Hard Vibe"
+msgstr ""
+
+#: sources/insnames.cc:402
+msgid "Santur 2"
+msgstr ""
+
+#: sources/insnames.cc:403
+msgid "Organ 101"
+msgstr ""
+
+#: sources/insnames.cc:404
+msgid "Organ 201"
+msgstr ""
+
+#: sources/insnames.cc:405
+msgid "Harmonica 2"
+msgstr ""
+
+#: sources/insnames.cc:406
+msgid "Mellow Gt."
+msgstr ""
+
+#: sources/insnames.cc:407
+msgid "Muted Dis.Gt"
+msgstr ""
+
+#: sources/insnames.cc:408
+msgid "Dist.Gt 2"
+msgstr ""
+
+#: sources/insnames.cc:409
+msgid "Fingered Bs2"
+msgstr ""
+
+#: sources/insnames.cc:410
+msgid "Fretless Bs2"
+msgstr ""
+
+#: sources/insnames.cc:411
+msgid "Synth Bass 201"
+msgstr ""
+
+#: sources/insnames.cc:412
+msgid "Strings 2"
+msgstr ""
+
+#: sources/insnames.cc:413
+msgid "SlowStrings2"
+msgstr ""
+
+#: sources/insnames.cc:414
+msgid "OB Strings"
+msgstr ""
+
+#: sources/insnames.cc:415 sources/insnames.cc:679
+msgid "Trumpet 2"
+msgstr ""
+
+#: sources/insnames.cc:416 sources/insnames.cc:751
+msgid "Tuba 2"
+msgstr ""
+
+#: sources/insnames.cc:417
+msgid "Poly Brass"
+msgstr ""
+
+#: sources/insnames.cc:418
+msgid "Soft Brass"
+msgstr ""
+
+#: sources/insnames.cc:419
+msgid "Vent Synth"
+msgstr ""
+
+#: sources/insnames.cc:420
+msgid "Big Fives"
+msgstr ""
+
+#: sources/insnames.cc:421
+msgid "Big & Raw"
+msgstr ""
+
+#: sources/insnames.cc:422
+msgid "Fantasia 2"
+msgstr ""
+
+#: sources/insnames.cc:423
+msgid "Thick Pad"
+msgstr ""
+
+#: sources/insnames.cc:424
+msgid "80's PolySyn"
+msgstr ""
+
+#: sources/insnames.cc:425
+msgid "Heaven II"
+msgstr ""
+
+#: sources/insnames.cc:426 sources/insnames.cc:928
+msgid "Tine Pad"
+msgstr ""
+
+#: sources/insnames.cc:427
+msgid "Polar Pad"
+msgstr ""
+
+#: sources/insnames.cc:428
+msgid "Harmo Rain"
+msgstr ""
+
+#: sources/insnames.cc:429
+msgid "Ancestral"
+msgstr ""
+
+#: sources/insnames.cc:430
+msgid "Warm Atmos"
+msgstr ""
+
+#: sources/insnames.cc:431
+msgid "Goblinson"
+msgstr ""
+
+#: sources/insnames.cc:432
+msgid "Star Theme 2"
+msgstr ""
+
+#: sources/insnames.cc:433
+msgid "Muted Banjo"
+msgstr ""
+
+#: sources/insnames.cc:434
+msgid "Tsugaru"
+msgstr ""
+
+#: sources/insnames.cc:435
+msgid "Shanai 2"
+msgstr ""
+
+#: sources/insnames.cc:436 sources/insnames.cc:962
+msgid "Real Tom"
+msgstr ""
+
+#: sources/insnames.cc:437
+msgid "Reverse Cym2"
+msgstr ""
+
+#: sources/insnames.cc:438
+msgid "EG+Rhodes2"
+msgstr ""
+
+#: sources/insnames.cc:439
+msgid "Dazed Guitar"
+msgstr ""
+
+#: sources/insnames.cc:440
+msgid "Jazz Bass"
+msgstr ""
+
+#: sources/insnames.cc:441
+msgid "Fretless Bs3"
+msgstr ""
+
+#: sources/insnames.cc:442 sources/insnames.cc:851
+msgid "Modular Bass"
+msgstr ""
+
+#: sources/insnames.cc:443
+msgid "Hollow Mini"
+msgstr ""
+
+#: sources/insnames.cc:444 sources/insnames.cc:862
+msgid "Pulse Saw"
+msgstr ""
+
+#: sources/insnames.cc:445
+msgid "Pure PanLead"
+msgstr ""
+
+#: sources/insnames.cc:446
+msgid "Fat & Perky"
+msgstr ""
+
+#: sources/insnames.cc:447 sources/insnames.cc:924
+msgid "Horn Pad"
+msgstr ""
+
+#: sources/insnames.cc:448
+msgid "Panner Pad"
+msgstr ""
+
+#: sources/insnames.cc:449
+msgid "African Wood"
+msgstr ""
+
+#: sources/insnames.cc:450 sources/insnames.cc:793
+msgid "Prologue"
+msgstr ""
+
+#: sources/insnames.cc:451
+msgid "Soft Crystal"
+msgstr ""
+
+#: sources/insnames.cc:452
+msgid "Nylon Harp"
+msgstr ""
+
+#: sources/insnames.cc:453
+msgid "50's Sci-Fi"
+msgstr ""
+
+#: sources/insnames.cc:454
+msgid "Detune Sitar"
+msgstr ""
+
+#: sources/insnames.cc:455
+msgid "Fretless Bs4"
+msgstr ""
+
+#: sources/insnames.cc:456 sources/insnames.cc:742
+msgid "Seq Bass"
+msgstr ""
+
+#: sources/insnames.cc:457
+msgid "Mellow FM"
+msgstr ""
+
+#: sources/insnames.cc:458
+msgid "Feline GR"
+msgstr ""
+
+#: sources/insnames.cc:459
+msgid "RotaryString"
+msgstr ""
+
+#: sources/insnames.cc:460
+msgid "Round Glock"
+msgstr ""
+
+#: sources/insnames.cc:461
+msgid "Harpvox"
+msgstr ""
+
+#: sources/insnames.cc:462
+msgid "Echo Pan 2"
+msgstr ""
+
+#: sources/insnames.cc:463
+msgid "Gt.CutNoise2"
+msgstr ""
+
+#: sources/insnames.cc:464
+msgid "CC Solo"
+msgstr ""
+
+#: sources/insnames.cc:465 sources/insnames.cc:776
+msgid "Big Lead"
+msgstr ""
+
+#: sources/insnames.cc:466 sources/insnames.cc:755
+msgid "Soft Pad"
+msgstr ""
+
+#: sources/insnames.cc:467
+msgid "Loud Glock"
+msgstr ""
+
+#: sources/insnames.cc:468
+msgid "HollowReleas"
+msgstr ""
+
+#: sources/insnames.cc:469
+msgid "Big Panner"
+msgstr ""
+
+#: sources/insnames.cc:470
+msgid "Dist.CutNoise"
+msgstr ""
+
+#: sources/insnames.cc:471
+msgid "Kitty"
+msgstr ""
+
+#: sources/insnames.cc:472
+msgid "Mr.Smooth"
+msgstr ""
+
+#: sources/insnames.cc:473 sources/insnames.cc:771
+msgid "Shmoog"
+msgstr ""
+
+#: sources/insnames.cc:474
+msgid "Velo Lead"
+msgstr ""
+
+#: sources/insnames.cc:475
+msgid "GlockenChime"
+msgstr ""
+
+#: sources/insnames.cc:476
+msgid "Nylon+Rhodes"
+msgstr ""
+
+#: sources/insnames.cc:477
+msgid "Reso Panner"
+msgstr ""
+
+#: sources/insnames.cc:478
+msgid "Bass Slide"
+msgstr ""
+
+#: sources/insnames.cc:479
+msgid "Growl"
+msgstr ""
+
+#: sources/insnames.cc:480
+msgid "LM Square"
+msgstr ""
+
+#: sources/insnames.cc:481
+msgid "GR-300"
+msgstr ""
+
+#: sources/insnames.cc:482
+msgid "Clear Bells"
+msgstr ""
+
+#: sources/insnames.cc:483
+msgid "Ambient Pad"
+msgstr ""
+
+#: sources/insnames.cc:484
+msgid "Water Piano"
+msgstr ""
+
+#: sources/insnames.cc:485
+msgid "Pick Scrape"
+msgstr ""
+
+#: sources/insnames.cc:486
+msgid "Applause 2"
+msgstr ""
+
+#: sources/insnames.cc:487
+msgid "LA Saw"
+msgstr ""
+
+#: sources/insnames.cc:488
+msgid "ChristmasBel"
+msgstr ""
+
+#: sources/insnames.cc:489
+msgid "Scratch 2"
+msgstr ""
+
+#: sources/insnames.cc:490 sources/insnames.cc:996
+msgid "Cimbalom"
+msgstr ""
+
+#: sources/insnames.cc:491
+msgid "Rotary Org."
+msgstr ""
+
+#: sources/insnames.cc:492
+msgid "Mute PickBs."
+msgstr ""
+
+#: sources/insnames.cc:493
+msgid "Reso Slap"
+msgstr ""
+
+#: sources/insnames.cc:494
+msgid "Slow Tremolo"
+msgstr ""
+
+#: sources/insnames.cc:495
+msgid "Legato Str."
+msgstr ""
+
+#: sources/insnames.cc:496
+msgid "St.Choir"
+msgstr ""
+
+#: sources/insnames.cc:497
+msgid "Syn.Voice"
+msgstr ""
+
+#: sources/insnames.cc:498
+msgid "Impact Hit"
+msgstr ""
+
+#: sources/insnames.cc:499
+msgid "Flugel Horn"
+msgstr ""
+
+#: sources/insnames.cc:500
+msgid "Fr.Horn Solo"
+msgstr ""
+
+#: sources/insnames.cc:501
+msgid "Hyper Alto"
+msgstr ""
+
+#: sources/insnames.cc:502
+msgid "BreathyTenor"
+msgstr ""
+
+#: sources/insnames.cc:503
+msgid "Bs.Clarinet"
+msgstr ""
+
+#: sources/insnames.cc:504
+msgid "Kawala"
+msgstr ""
+
+#: sources/insnames.cc:505
+msgid "Dist.Lead"
+msgstr ""
+
+#: sources/insnames.cc:506 sources/insnames.cc:792
+msgid "Converge"
+msgstr ""
+
+#: sources/insnames.cc:507
+msgid "Clavi Pad"
+msgstr ""
+
+#: sources/insnames.cc:508
+msgid "Rave"
+msgstr ""
+
+#: sources/insnames.cc:509
+msgid "Vibra Bells"
+msgstr ""
+
+#: sources/insnames.cc:510 sources/insnames.cc:1004
+msgid "Tambra"
+msgstr ""
+
+#: sources/insnames.cc:511 sources/insnames.cc:1005
+msgid "Rabab"
+msgstr ""
+
+#: sources/insnames.cc:512 sources/insnames.cc:1007
+msgid "Pungi"
+msgstr ""
+
+#: sources/insnames.cc:513 sources/insnames.cc:1008
+msgid "Bonang"
+msgstr ""
+
+#: sources/insnames.cc:514
+msgid "Atarigane"
+msgstr ""
+
+#: sources/insnames.cc:515
+msgid "Rev.Snare 1"
+msgstr ""
+
+#: sources/insnames.cc:516
+msgid "Organ 109"
+msgstr ""
+
+#: sources/insnames.cc:517
+msgid "Nylon+Steel"
+msgstr ""
+
+#: sources/insnames.cc:518
+msgid "Feedback Gt2"
+msgstr ""
+
+#: sources/insnames.cc:519
+msgid "X Wire Bass"
+msgstr ""
+
+#: sources/insnames.cc:520
+msgid "Suspense Str"
+msgstr ""
+
+#: sources/insnames.cc:521
+msgid "Orchestra 2"
+msgstr ""
+
+#: sources/insnames.cc:522
+msgid "Warm Strings"
+msgstr ""
+
+#: sources/insnames.cc:523
+msgid "Mello Choir"
+msgstr ""
+
+#: sources/insnames.cc:524
+msgid "Philly Hit"
+msgstr ""
+
+#: sources/insnames.cc:525
+msgid "Quack Brass"
+msgstr ""
+
+#: sources/insnames.cc:526 sources/insnames.cc:777
+msgid "Shwimmer"
+msgstr ""
+
+#: sources/insnames.cc:527
+msgid "Digi Bells"
+msgstr ""
+
+#: sources/insnames.cc:528 sources/insnames.cc:1019
+msgid "Gender"
+msgstr ""
+
+#: sources/insnames.cc:529 sources/insnames.cc:977
+msgid "Rock Tom"
+msgstr ""
+
+#: sources/insnames.cc:530
+msgid "Rev.Snare 2"
+msgstr ""
+
+#: sources/insnames.cc:531
+msgid "Tekno Bass"
+msgstr ""
+
+#: sources/insnames.cc:532
+msgid "Tremolo Orch"
+msgstr ""
+
+#: sources/insnames.cc:533
+msgid "St.Slow Str."
+msgstr ""
+
+#: sources/insnames.cc:534
+msgid "Double Hit"
+msgstr ""
+
+#: sources/insnames.cc:535
+msgid "Celestial Pd"
+msgstr ""
+
+#: sources/insnames.cc:536
+msgid "Gamelan Gong"
+msgstr ""
+
+#: sources/insnames.cc:537
+msgid "Choir Str."
+msgstr ""
+
+#: sources/insnames.cc:538
+msgid "St.Gamelan"
+msgstr ""
+
+#: sources/insnames.cc:539
+msgid "Barafon"
+msgstr ""
+
+#: sources/insnames.cc:540
+msgid "Rotary Org.S"
+msgstr ""
+
+#: sources/insnames.cc:541
+msgid "Power Guitar"
+msgstr ""
+
+#: sources/insnames.cc:542
+msgid "Ac.Gt.Harmonx"
+msgstr ""
+
+#: sources/insnames.cc:543
+msgid "Reso SH Bass"
+msgstr ""
+
+#: sources/insnames.cc:544
+msgid "St.Strings"
+msgstr ""
+
+#: sources/insnames.cc:545
+msgid "Lo Fi Rave"
+msgstr ""
+
+#: sources/insnames.cc:546
+msgid "Horn Orch"
+msgstr ""
+
+#: sources/insnames.cc:547
+msgid "Brass Fall"
+msgstr ""
+
+#: sources/insnames.cc:548
+msgid "Waspy Synth"
+msgstr ""
+
+#: sources/insnames.cc:549
+msgid "Choral Bells"
+msgstr ""
+
+#: sources/insnames.cc:550 sources/insnames.cc:1015
+msgid "Tamboura"
+msgstr ""
+
+#: sources/insnames.cc:551
+msgid "Gopichant"
+msgstr ""
+
+#: sources/insnames.cc:552 sources/insnames.cc:1017
+msgid "Kanoon"
+msgstr ""
+
+#: sources/insnames.cc:553
+msgid "Hichiriki"
+msgstr ""
+
+#: sources/insnames.cc:554
+msgid "RAMA Cymbal"
+msgstr ""
+
+#: sources/insnames.cc:555
+msgid "Rev.Kick 1"
+msgstr ""
+
+#: sources/insnames.cc:556
+msgid "Barafon 2"
+msgstr ""
+
+#: sources/insnames.cc:557
+msgid "60's Organ 2"
+msgstr ""
+
+#: sources/insnames.cc:558
+msgid "Power Gt.2"
+msgstr ""
+
+#: sources/insnames.cc:559
+msgid "SH101 Bass 1"
+msgstr ""
+
+#: sources/insnames.cc:560
+msgid "Velo Brass 2"
+msgstr ""
+
+#: sources/insnames.cc:561
+msgid "Air Bells"
+msgstr ""
+
+#: sources/insnames.cc:562
+msgid "Rev.ConBD"
+msgstr ""
+
+#: sources/insnames.cc:563
+msgid "60's Organ 3"
+msgstr ""
+
+#: sources/insnames.cc:564
+msgid "5th Dist."
+msgstr ""
+
+#: sources/insnames.cc:565
+msgid "SH101 Bass 2"
+msgstr ""
+
+#: sources/insnames.cc:566
+msgid "Bell Harp"
+msgstr ""
+
+#: sources/insnames.cc:567
+msgid "Smooth Bass"
+msgstr ""
+
+#: sources/insnames.cc:568
+msgid "Gamelimba"
+msgstr ""
+
+#: sources/insnames.cc:569
+msgid "Hard FM EP"
+msgstr ""
+
+#: sources/insnames.cc:570 sources/insnames.cc:1021
+msgid "Log Drum"
+msgstr ""
+
+#: sources/insnames.cc:571
+msgid "Cheese Organ"
+msgstr ""
+
+#: sources/insnames.cc:572
+msgid "Rotary Org.F"
+msgstr ""
+
+#: sources/insnames.cc:573
+msgid "Organ Flute"
+msgstr ""
+
+#: sources/insnames.cc:574
+msgid "Velo Harmnix"
+msgstr ""
+
+#: sources/insnames.cc:575
+msgid "Rock Rhythm"
+msgstr ""
+
+#: sources/insnames.cc:576
+msgid "Velo Strings"
+msgstr ""
+
+#: sources/insnames.cc:577
+msgid "Bright Tp."
+msgstr ""
+
+#: sources/insnames.cc:578 sources/insnames.cc:1022
+msgid "Oud"
+msgstr ""
+
+#: sources/insnames.cc:579
+msgid "Rev.Tom 1"
+msgstr ""
+
+#: sources/insnames.cc:580
+msgid "Hard Rhodes"
+msgstr ""
+
+#: sources/insnames.cc:581
+msgid "Rock Rhythm2"
+msgstr ""
+
+#: sources/insnames.cc:582
+msgid "Warm Tp."
+msgstr ""
+
+#: sources/insnames.cc:583
+msgid "Rev.Tom 2"
+msgstr ""
+
+#: sources/insnames.cc:584
+msgid "MellowRhodes"
+msgstr ""
+
+#: sources/insnames.cc:585
+msgid "Trem.Flute"
+msgstr ""
+
+#: sources/insnames.cc:586
+msgid "Steel Gt.2"
+msgstr ""
+
+#: sources/insnames.cc:587
+msgid "Even Bar"
+msgstr ""
+
+#: sources/insnames.cc:588
+msgid "Organ Bass"
+msgstr ""
+
+#: sources/insnames.cc:589
+msgid "Lequint Gt."
+msgstr ""
+
+#: sources/insnames.cc:590
+msgid "Acou Piano 1"
+msgstr ""
+
+#: sources/insnames.cc:591
+msgid "Acou Piano 2"
+msgstr ""
+
+#: sources/insnames.cc:592
+msgid "Acou Piano 3"
+msgstr ""
+
+#: sources/insnames.cc:593
+msgid "Elec Piano 1"
+msgstr ""
+
+#: sources/insnames.cc:594
+msgid "Elec Piano 2"
+msgstr ""
+
+#: sources/insnames.cc:595
+msgid "Elec Piano 3"
+msgstr ""
+
+#: sources/insnames.cc:596
+msgid "Elec Piano 4"
+msgstr ""
+
+#: sources/insnames.cc:597
+msgid "Honkytonk"
+msgstr ""
+
+#: sources/insnames.cc:598
+msgid "Elec Org 1"
+msgstr ""
+
+#: sources/insnames.cc:599
+msgid "Elec Org 2"
+msgstr ""
+
+#: sources/insnames.cc:600
+msgid "Elec Org 3"
+msgstr ""
+
+#: sources/insnames.cc:601
+msgid "Elec Org 4"
+msgstr ""
+
+#: sources/insnames.cc:602
+msgid "Pipe Org 1"
+msgstr ""
+
+#: sources/insnames.cc:603
+msgid "Pipe Org 2"
+msgstr ""
+
+#: sources/insnames.cc:604
+msgid "Pipe Org 3"
+msgstr ""
+
+#: sources/insnames.cc:605
+msgid "Accordion"
+msgstr ""
+
+#: sources/insnames.cc:606
+msgid "Harpsi 1"
+msgstr ""
+
+#: sources/insnames.cc:607
+msgid "Harpsi 2"
+msgstr ""
+
+#: sources/insnames.cc:608
+msgid "Harpsi 3"
+msgstr ""
+
+#: sources/insnames.cc:609
+msgid "Clavi 1"
+msgstr ""
+
+#: sources/insnames.cc:610
+msgid "Clavi 2"
+msgstr ""
+
+#: sources/insnames.cc:611
+msgid "Clavi 3"
+msgstr ""
+
+#: sources/insnames.cc:612
+msgid "Celesta 1"
+msgstr ""
+
+#: sources/insnames.cc:613
+msgid "Celesta 2"
+msgstr ""
+
+#: sources/insnames.cc:614
+msgid "Syn Brass 1"
+msgstr ""
+
+#: sources/insnames.cc:615
+msgid "Syn Brass 2"
+msgstr ""
+
+#: sources/insnames.cc:616
+msgid "Syn Brass 3"
+msgstr ""
+
+#: sources/insnames.cc:617
+msgid "Syn Brass 4"
+msgstr ""
+
+#: sources/insnames.cc:618
+msgid "Syn Bass 1"
+msgstr ""
+
+#: sources/insnames.cc:619
+msgid "Syn Bass 2"
+msgstr ""
+
+#: sources/insnames.cc:620
+msgid "Syn Bass 3"
+msgstr ""
+
+#: sources/insnames.cc:621
+msgid "Syn Bass 4"
+msgstr ""
+
+#: sources/insnames.cc:622
+msgid "Fantasy"
+msgstr ""
+
+#: sources/insnames.cc:623
+msgid "Harmo Pan"
+msgstr ""
+
+#: sources/insnames.cc:624
+msgid "Chorale"
+msgstr ""
+
+#: sources/insnames.cc:625
+msgid "Glasses"
+msgstr ""
+
+#: sources/insnames.cc:626
+msgid "Soundtrack"
+msgstr ""
+
+#: sources/insnames.cc:627
+msgid "Atmosphere"
+msgstr ""
+
+#: sources/insnames.cc:628
+msgid "Warm Bell"
+msgstr ""
+
+#: sources/insnames.cc:629
+msgid "Funny Vox"
+msgstr ""
+
+#: sources/insnames.cc:631
+msgid "Ice Rain"
+msgstr ""
+
+#: sources/insnames.cc:632
+msgid "Oboe 2001"
+msgstr ""
+
+#: sources/insnames.cc:635
+msgid "School Daze"
+msgstr ""
+
+#: sources/insnames.cc:636
+msgid "Bellsinger"
+msgstr ""
+
+#: sources/insnames.cc:637
+msgid "Square Wave"
+msgstr ""
+
+#: sources/insnames.cc:638
+msgid "Str Sect 1"
+msgstr ""
+
+#: sources/insnames.cc:639
+msgid "Str Sect 2"
+msgstr ""
+
+#: sources/insnames.cc:640
+msgid "Str Sect 3"
+msgstr ""
+
+#: sources/insnames.cc:641
+msgid "Pizzicato"
+msgstr ""
+
+#: sources/insnames.cc:642
+msgid "Violin 1"
+msgstr ""
+
+#: sources/insnames.cc:643
+msgid "Violin 2"
+msgstr ""
+
+#: sources/insnames.cc:644
+msgid "Cello 1"
+msgstr ""
+
+#: sources/insnames.cc:645
+msgid "Cello 2"
+msgstr ""
+
+#: sources/insnames.cc:646
+msgid "Contrabass"
+msgstr ""
+
+#: sources/insnames.cc:647
+msgid "Harp 1"
+msgstr ""
+
+#: sources/insnames.cc:648
+msgid "Harp 2"
+msgstr ""
+
+#: sources/insnames.cc:649
+msgid "Guitar 1"
+msgstr ""
+
+#: sources/insnames.cc:650
+msgid "Guitar 2"
+msgstr ""
+
+#: sources/insnames.cc:651
+msgid "Elec Gtr 1"
+msgstr ""
+
+#: sources/insnames.cc:652
+msgid "Elect Gtr 2"
+msgstr ""
+
+#: sources/insnames.cc:653
+msgid "Sitar"
+msgstr ""
+
+#: sources/insnames.cc:654
+msgid "Acou Bass 1"
+msgstr ""
+
+#: sources/insnames.cc:655
+msgid "Acou Bass 2"
+msgstr ""
+
+#: sources/insnames.cc:656
+msgid "Elec Bass 1"
+msgstr ""
+
+#: sources/insnames.cc:657
+msgid "Elec Bass 2"
+msgstr ""
+
+#: sources/insnames.cc:658
+msgid "Slap Bass 1"
+msgstr ""
+
+#: sources/insnames.cc:659
+msgid "Slap Bass 2"
+msgstr ""
+
+#: sources/insnames.cc:660
+msgid "Fretless 1"
+msgstr ""
+
+#: sources/insnames.cc:661
+msgid "Fretless 2"
+msgstr ""
+
+#: sources/insnames.cc:662
+msgid "Flute 1"
+msgstr ""
+
+#: sources/insnames.cc:663
+msgid "Flute 2"
+msgstr ""
+
+#: sources/insnames.cc:664
+msgid "Piccolo 1"
+msgstr ""
+
+#: sources/insnames.cc:665
+msgid "Piccolo 2"
+msgstr ""
+
+#: sources/insnames.cc:666
+msgid "Recorder"
+msgstr ""
+
+#: sources/insnames.cc:667
+msgid "Pan Pipes"
+msgstr ""
+
+#: sources/insnames.cc:668
+msgid "Sax 1"
+msgstr ""
+
+#: sources/insnames.cc:669
+msgid "Sax 2"
+msgstr ""
+
+#: sources/insnames.cc:670
+msgid "Sax 3"
+msgstr ""
+
+#: sources/insnames.cc:671
+msgid "Sax 4"
+msgstr ""
+
+#: sources/insnames.cc:672
+msgid "Clarinet 1"
+msgstr ""
+
+#: sources/insnames.cc:673
+msgid "Clarinet 2"
+msgstr ""
+
+#: sources/insnames.cc:674
+msgid "Oboe"
+msgstr ""
+
+#: sources/insnames.cc:675
+msgid "Engl Horn"
+msgstr ""
+
+#: sources/insnames.cc:676
+msgid "Bassoon"
+msgstr ""
+
+#: sources/insnames.cc:677
+msgid "Harmonica"
+msgstr ""
+
+#: sources/insnames.cc:678
+msgid "Trumpet 1"
+msgstr ""
+
+#: sources/insnames.cc:680
+msgid "Trombone 1"
+msgstr ""
+
+#: sources/insnames.cc:682
+msgid "Fr Horn 1"
+msgstr ""
+
+#: sources/insnames.cc:683
+msgid "Fr Horn 2"
+msgstr ""
+
+#: sources/insnames.cc:684
+msgid "Tuba"
+msgstr ""
+
+#: sources/insnames.cc:685
+msgid "Brs Sect 1"
+msgstr ""
+
+#: sources/insnames.cc:686
+msgid "Brs Sect 2"
+msgstr ""
+
+#: sources/insnames.cc:687
+msgid "Vibe 1"
+msgstr ""
+
+#: sources/insnames.cc:688
+msgid "Vibe 2"
+msgstr ""
+
+#: sources/insnames.cc:690
+msgid "Windbell"
+msgstr ""
+
+#: sources/insnames.cc:691
+msgid "Glock"
+msgstr ""
+
+#: sources/insnames.cc:692
+msgid "Tube Bell"
+msgstr ""
+
+#: sources/insnames.cc:693
+msgid "Xylophone"
+msgstr ""
+
+#: sources/insnames.cc:694
+msgid "Marimba"
+msgstr ""
+
+#: sources/insnames.cc:695
+msgid "Koto"
+msgstr ""
+
+#: sources/insnames.cc:696
+msgid "Sho"
+msgstr ""
+
+#: sources/insnames.cc:697
+msgid "Shakuhachi"
+msgstr ""
+
+#: sources/insnames.cc:698
+msgid "Whistle 1"
+msgstr ""
+
+#: sources/insnames.cc:699
+msgid "Whistle 2"
+msgstr ""
+
+#: sources/insnames.cc:700
+msgid "Bottleblow"
+msgstr ""
+
+#: sources/insnames.cc:701
+msgid "Breathpipe"
+msgstr ""
+
+#: sources/insnames.cc:702
+msgid "Timpani"
+msgstr ""
+
+#: sources/insnames.cc:703
+msgid "Melodic Tom"
+msgstr ""
+
+#: sources/insnames.cc:704
+msgid "Deep Snare"
+msgstr ""
+
+#: sources/insnames.cc:705
+msgid "Elec Perc 1"
+msgstr ""
+
+#: sources/insnames.cc:706
+msgid "Elec Perc 2"
+msgstr ""
+
+#: sources/insnames.cc:707
+msgid "Taiko"
+msgstr ""
+
+#: sources/insnames.cc:708
+msgid "Taiko Rim"
+msgstr ""
+
+#: sources/insnames.cc:709
+msgid "Cymbal"
+msgstr ""
+
+#: sources/insnames.cc:711
+msgid "Triangle"
+msgstr ""
+
+#: sources/insnames.cc:712
+msgid "Orche Hit"
+msgstr ""
+
+#: sources/insnames.cc:713
+msgid "Telephone"
+msgstr ""
+
+#: sources/insnames.cc:714
+msgid "Bird Tweet"
+msgstr ""
+
+#: sources/insnames.cc:715
+msgid "One Note Jam"
+msgstr ""
+
+#: sources/insnames.cc:716
+msgid "Water Bell"
+msgstr ""
+
+#: sources/insnames.cc:717
+msgid "Jungle Tune"
+msgstr ""
+
+#: sources/insnames.cc:718
+msgid "Grand PianoK"
+msgstr ""
+
+#: sources/insnames.cc:719
+msgid "Bright Piano K"
+msgstr ""
+
+#: sources/insnames.cc:720
+msgid "Electric Grand Piano K"
+msgstr ""
+
+#: sources/insnames.cc:721
+msgid "Honky Tonk K"
+msgstr ""
+
+#: sources/insnames.cc:722
+msgid "Electric Piano 1K"
+msgstr ""
+
+#: sources/insnames.cc:723
+msgid "Electric Piano2 K"
+msgstr ""
+
+#: sources/insnames.cc:724
+msgid "Harpsichord K"
+msgstr ""
+
+#: sources/insnames.cc:725
+msgid "Clavinet K"
+msgstr ""
+
+#: sources/insnames.cc:726
+msgid "VibesK"
+msgstr ""
+
+#: sources/insnames.cc:727
+msgid "Marimba K"
+msgstr ""
+
+#: sources/insnames.cc:728
+msgid "S.Strngs"
+msgstr ""
+
+#: sources/insnames.cc:729
+msgid "S.SlwStr"
+msgstr ""
+
+#: sources/insnames.cc:730
+msgid "S.Choir"
+msgstr ""
+
+#: sources/insnames.cc:731
+msgid "MelloSB1"
+msgstr ""
+
+#: sources/insnames.cc:732
+msgid "FrHrSolo"
+msgstr ""
+
+#: sources/insnames.cc:733
+msgid "Square 2"
+msgstr ""
+
+#: sources/insnames.cc:734
+msgid "Saw 2"
+msgstr ""
+
+#: sources/insnames.cc:735
+msgid "SlowVln"
+msgstr ""
+
+#: sources/insnames.cc:736
+msgid "SlowTrStr"
+msgstr ""
+
+#: sources/insnames.cc:737
+msgid "SlowStr"
+msgstr ""
+
+#: sources/insnames.cc:738
+msgid "LegatoSt"
+msgstr ""
+
+#: sources/insnames.cc:739
+msgid "LMSquare"
+msgstr ""
+
+#: sources/insnames.cc:740
+msgid "ThickSaw"
+msgstr ""
+
+#: sources/insnames.cc:741
+msgid "EchoPad2"
+msgstr ""
+
+#: sources/insnames.cc:743
+msgid "QuackBr"
+msgstr ""
+
+#: sources/insnames.cc:744
+msgid "SynDrCmp"
+msgstr ""
+
+#: sources/insnames.cc:745
+msgid "Popcorn"
+msgstr ""
+
+#: sources/insnames.cc:747
+msgid "NylonGt2"
+msgstr ""
+
+#: sources/insnames.cc:748
+msgid "SteelGt2"
+msgstr ""
+
+#: sources/insnames.cc:749
+msgid "Ch.Aahs2"
+msgstr ""
+
+#: sources/insnames.cc:750
+msgid "Trumpet2"
+msgstr ""
+
+#: sources/insnames.cc:752
+msgid "Big&Low"
+msgstr ""
+
+#: sources/insnames.cc:753
+msgid "ThickPad"
+msgstr ""
+
+#: sources/insnames.cc:754
+msgid "BriteTrp"
+msgstr ""
+
+#: sources/insnames.cc:756
+msgid "MelloGrP"
+msgstr ""
+
+#: sources/insnames.cc:757
+msgid "MelloEP1"
+msgstr ""
+
+#: sources/insnames.cc:758
+msgid "MelloGtr"
+msgstr ""
+
+#: sources/insnames.cc:759
+msgid "FingrDrk"
+msgstr ""
+
+#: sources/insnames.cc:760 sources/insnames.cc:761
+msgid "SynBa1Dk"
+msgstr ""
+
+#: sources/insnames.cc:762
+msgid "ClkSynBa"
+msgstr ""
+
+#: sources/insnames.cc:763
+msgid "Trmbone2"
+msgstr ""
+
+#: sources/insnames.cc:764
+msgid "Soft Brs"
+msgstr ""
+
+#: sources/insnames.cc:765
+msgid "Hollow"
+msgstr ""
+
+#: sources/insnames.cc:766
+msgid "DynaSaw"
+msgstr ""
+
+#: sources/insnames.cc:767
+msgid "SinePad"
+msgstr ""
+
+#: sources/insnames.cc:768
+msgid "TinyBell"
+msgstr ""
+
+#: sources/insnames.cc:769
+msgid "WarmAtms"
+msgstr ""
+
+#: sources/insnames.cc:770
+msgid "SynBa2Dk"
+msgstr ""
+
+#: sources/insnames.cc:772
+msgid "DigiSaw"
+msgstr ""
+
+#: sources/insnames.cc:773
+msgid "HollwRls"
+msgstr ""
+
+#: sources/insnames.cc:774
+msgid "FastResB"
+msgstr ""
+
+#: sources/insnames.cc:775
+msgid "RezSynBr"
+msgstr ""
+
+#: sources/insnames.cc:778
+msgid "70sPcOr1"
+msgstr ""
+
+#: sources/insnames.cc:779
+msgid "AcidBass"
+msgstr ""
+
+#: sources/insnames.cc:780
+msgid "ArcoStr"
+msgstr ""
+
+#: sources/insnames.cc:781
+msgid "PolyBrss"
+msgstr ""
+
+#: sources/insnames.cc:782
+msgid "HeavySyn"
+msgstr ""
+
+#: sources/insnames.cc:783
+msgid "SynthAah"
+msgstr ""
+
+#: sources/insnames.cc:784
+msgid "Harpsi.2"
+msgstr ""
+
+#: sources/insnames.cc:785
+msgid "NylonGt3"
+msgstr ""
+
+#: sources/insnames.cc:786
+msgid "WaspySyn"
+msgstr ""
+
+#: sources/insnames.cc:787
+msgid "ClaviWah"
+msgstr ""
+
+#: sources/insnames.cc:788
+msgid "FlangeBa"
+msgstr ""
+
+#: sources/insnames.cc:789
+msgid "ResoSlap"
+msgstr ""
+
+#: sources/insnames.cc:790
+msgid "ResoStr"
+msgstr ""
+
+#: sources/insnames.cc:791
+msgid "SynBras3"
+msgstr ""
+
+#: sources/insnames.cc:794
+msgid "MutePkBa"
+msgstr ""
+
+#: sources/insnames.cc:795
+msgid "MuteBnjo"
+msgstr ""
+
+#: sources/insnames.cc:796
+msgid "Det.CP80"
+msgstr ""
+
+#: sources/insnames.cc:797
+msgid "Chor.EP1"
+msgstr ""
+
+#: sources/insnames.cc:798
+msgid "Chor.EP2"
+msgstr ""
+
+#: sources/insnames.cc:799
+msgid "DetDrwOr"
+msgstr ""
+
+#: sources/insnames.cc:800
+msgid "DetPrcOr"
+msgstr ""
+
+#: sources/insnames.cc:801
+msgid "ChurOrg3"
+msgstr ""
+
+#: sources/insnames.cc:802
+msgid "AccordIt"
+msgstr ""
+
+#: sources/insnames.cc:803
+msgid "Harmo 2"
+msgstr ""
+
+#: sources/insnames.cc:804
+msgid "JazzAmp"
+msgstr ""
+
+#: sources/insnames.cc:805
+msgid "ChorusGt"
+msgstr ""
+
+#: sources/insnames.cc:806
+msgid "Fretles2"
+msgstr ""
+
+#: sources/insnames.cc:807
+msgid "PunchThm"
+msgstr ""
+
+#: sources/insnames.cc:808
+msgid "SmthBa 2"
+msgstr ""
+
+#: sources/insnames.cc:809
+msgid "MelChoir"
+msgstr ""
+
+#: sources/insnames.cc:810
+msgid "WarmTrp"
+msgstr ""
+
+#: sources/insnames.cc:811
+msgid "FrHorn2"
+msgstr ""
+
+#: sources/insnames.cc:812
+msgid "JumpBrss"
+msgstr ""
+
+#: sources/insnames.cc:813
+msgid "DetSitar"
+msgstr ""
+
+#: sources/insnames.cc:814
+msgid "DX Hard"
+msgstr ""
+
+#: sources/insnames.cc:815
+msgid "60sDrOr1"
+msgstr ""
+
+#: sources/insnames.cc:816
+msgid "LiteOrg"
+msgstr ""
+
+#: sources/insnames.cc:817
+msgid "Fretles3"
+msgstr ""
+
+#: sources/insnames.cc:818
+msgid "DXLegend"
+msgstr ""
+
+#: sources/insnames.cc:819
+msgid "60sDrOr2"
+msgstr ""
+
+#: sources/insnames.cc:820
+msgid "Fretles4"
+msgstr ""
+
+#: sources/insnames.cc:821
+msgid "Harpsi.3"
+msgstr ""
+
+#: sources/insnames.cc:822
+msgid "Dulcimr2"
+msgstr ""
+
+#: sources/insnames.cc:823
+msgid "70sDrOr1"
+msgstr ""
+
+#: sources/insnames.cc:824
+msgid "ChurOrg2"
+msgstr ""
+
+#: sources/insnames.cc:825
+msgid "12StrGtr"
+msgstr ""
+
+#: sources/insnames.cc:826
+msgid "Clv Bass"
+msgstr ""
+
+#: sources/insnames.cc:827
+msgid "60sStrng"
+msgstr ""
+
+#: sources/insnames.cc:828
+msgid "OrchHit2"
+msgstr ""
+
+#: sources/insnames.cc:829
+msgid "Tp&TbSec"
+msgstr ""
+
+#: sources/insnames.cc:830
+msgid "Big Five"
+msgstr ""
+
+#: sources/insnames.cc:831
+msgid "RndGlock"
+msgstr ""
+
+#: sources/insnames.cc:833
+msgid "DrawOrg2"
+msgstr ""
+
+#: sources/insnames.cc:834
+msgid "60sDrOr3"
+msgstr ""
+
+#: sources/insnames.cc:835
+msgid "PercOrg2"
+msgstr ""
+
+#: sources/insnames.cc:836
+msgid "HornOrch"
+msgstr ""
+
+#: sources/insnames.cc:837
+msgid "EvenBar"
+msgstr ""
+
+#: sources/insnames.cc:838
+msgid "PianoStr"
+msgstr ""
+
+#: sources/insnames.cc:839
+msgid "ElGrPno1"
+msgstr ""
+
+#: sources/insnames.cc:840
+msgid "HardEl.P"
+msgstr ""
+
+#: sources/insnames.cc:841
+msgid "DX Phase"
+msgstr ""
+
+#: sources/insnames.cc:842
+msgid "16+2\"2/3"
+msgstr ""
+
+#: sources/insnames.cc:843
+msgid "NotreDam"
+msgstr ""
+
+#: sources/insnames.cc:844
+msgid "Puff Org"
+msgstr ""
+
+#: sources/insnames.cc:845
+msgid "Nyln&Stl"
+msgstr ""
+
+#: sources/insnames.cc:846
+msgid "FunkGtr1"
+msgstr ""
+
+#: sources/insnames.cc:847
+msgid "FeedbkGt"
+msgstr ""
+
+#: sources/insnames.cc:848
+msgid "Jazz Rhythm"
+msgstr ""
+
+#: sources/insnames.cc:849
+msgid "Ba&DstEG"
+msgstr ""
+
+#: sources/insnames.cc:850
+msgid "Techno Bass"
+msgstr ""
+
+#: sources/insnames.cc:852
+msgid "Susp Str"
+msgstr ""
+
+#: sources/insnames.cc:853
+msgid "Yang Chin"
+msgstr ""
+
+#: sources/insnames.cc:855
+msgid "Warm Str"
+msgstr ""
+
+#: sources/insnames.cc:856
+msgid "ChoirStr"
+msgstr ""
+
+#: sources/insnames.cc:857
+msgid "SynVox2"
+msgstr ""
+
+#: sources/insnames.cc:858
+msgid "BrassSec2"
+msgstr ""
+
+#: sources/insnames.cc:859
+msgid "SynBras4"
+msgstr ""
+
+#: sources/insnames.cc:860
+msgid "Sax Sect"
+msgstr ""
+
+#: sources/insnames.cc:861
+msgid "BrthTnSx"
+msgstr ""
+
+#: sources/insnames.cc:863
+msgid "GlockChi"
+msgstr ""
+
+#: sources/insnames.cc:864
+msgid "NylonEP"
+msgstr ""
+
+#: sources/insnames.cc:865
+msgid "Dream"
+msgstr ""
+
+#: sources/insnames.cc:866
+msgid "ElGrPno2"
+msgstr ""
+
+#: sources/insnames.cc:867
+msgid "DX+Analg"
+msgstr ""
+
+#: sources/insnames.cc:868
+msgid "Stl&Body"
+msgstr ""
+
+#: sources/insnames.cc:869
+msgid "MuteStlG"
+msgstr ""
+
+#: sources/insnames.cc:870
+msgid "FeedbGt2"
+msgstr ""
+
+#: sources/insnames.cc:871
+msgid "DX Bass"
+msgstr ""
+
+#: sources/insnames.cc:872
+msgid "Orchstr2"
+msgstr ""
+
+#: sources/insnames.cc:873
+msgid "Kingdom"
+msgstr ""
+
+#: sources/insnames.cc:874
+msgid "Choral"
+msgstr ""
+
+#: sources/insnames.cc:875
+msgid "HiBrass"
+msgstr ""
+
+#: sources/insnames.cc:876
+msgid "ChorBrss"
+msgstr ""
+
+#: sources/insnames.cc:877
+msgid "SoftTenr"
+msgstr ""
+
+#: sources/insnames.cc:878
+msgid "Dr. Lead"
+msgstr ""
+
+#: sources/insnames.cc:879
+msgid "ClearBel"
+msgstr ""
+
+#: sources/insnames.cc:880
+msgid "DXKotoEP"
+msgstr ""
+
+#: sources/insnames.cc:881
+msgid "TremOrch"
+msgstr ""
+
+#: sources/insnames.cc:882
+msgid "MelloBrs"
+msgstr ""
+
+#: sources/insnames.cc:883
+msgid "ChorBell"
+msgstr ""
+
+#: sources/insnames.cc:884
+msgid "VelGtHrm"
+msgstr ""
+
+#: sources/insnames.cc:885
+msgid "FunkGtr2"
+msgstr ""
+
+#: sources/insnames.cc:886
+msgid "Gt.Pinch"
+msgstr ""
+
+#: sources/insnames.cc:887
+msgid "FngrSlap"
+msgstr ""
+
+#: sources/insnames.cc:888
+msgid "VeloSlap"
+msgstr ""
+
+#: sources/insnames.cc:889
+msgid "HyprAlto"
+msgstr ""
+
+#: sources/insnames.cc:890
+msgid "VX El.P1"
+msgstr ""
+
+#: sources/insnames.cc:891
+msgid "VX El.P2"
+msgstr ""
+
+#: sources/insnames.cc:892
+msgid "HardVibe"
+msgstr ""
+
+#: sources/insnames.cc:893
+msgid "Jazz Man"
+msgstr ""
+
+#: sources/insnames.cc:894
+msgid "VX Upright"
+msgstr ""
+
+#: sources/insnames.cc:895
+msgid "FngBass2"
+msgstr ""
+
+#: sources/insnames.cc:896
+msgid "VeloStr"
+msgstr ""
+
+#: sources/insnames.cc:897
+msgid "AnaVelBr"
+msgstr ""
+
+#: sources/insnames.cc:898
+msgid "VelBras2"
+msgstr ""
+
+#: sources/insnames.cc:899
+msgid "VeloLead"
+msgstr ""
+
+#: sources/insnames.cc:900
+msgid "ClaviPad"
+msgstr ""
+
+#: sources/insnames.cc:901
+msgid "60sEl.P"
+msgstr ""
+
+#: sources/insnames.cc:902
+msgid "PulseClv"
+msgstr ""
+
+#: sources/insnames.cc:903
+msgid "Orgel"
+msgstr ""
+
+#: sources/insnames.cc:904
+msgid "SineMrmb"
+msgstr ""
+
+#: sources/insnames.cc:905
+msgid "Organ Ba"
+msgstr ""
+
+#: sources/insnames.cc:906
+msgid "RotaryOr"
+msgstr ""
+
+#: sources/insnames.cc:907
+msgid "OrgFlute"
+msgstr ""
+
+#: sources/insnames.cc:908
+msgid "TngoAcd2"
+msgstr ""
+
+#: sources/insnames.cc:909
+msgid "Oscar"
+msgstr ""
+
+#: sources/insnames.cc:910
+msgid "X WireBa"
+msgstr ""
+
+#: sources/insnames.cc:911
+msgid "70s Str"
+msgstr ""
+
+#: sources/insnames.cc:912
+msgid "Syn Str4"
+msgstr ""
+
+#: sources/insnames.cc:913
+msgid "AnaVoice"
+msgstr ""
+
+#: sources/insnames.cc:914
+msgid "Impact"
+msgstr ""
+
+#: sources/insnames.cc:915
+msgid "AnaBrss1"
+msgstr ""
+
+#: sources/insnames.cc:916
+msgid "AnaBras2"
+msgstr ""
+
+#: sources/insnames.cc:917
+msgid "TnrSax 2"
+msgstr ""
+
+#: sources/insnames.cc:918
+msgid "Mellow"
+msgstr ""
+
+#: sources/insnames.cc:919
+msgid "Rubby"
+msgstr ""
+
+#: sources/insnames.cc:920
+msgid "DistLead"
+msgstr ""
+
+#: sources/insnames.cc:921
+msgid "VoxLead"
+msgstr ""
+
+#: sources/insnames.cc:922
+msgid "Fat&Prky"
+msgstr ""
+
+#: sources/insnames.cc:923
+msgid "Fantasy2"
+msgstr ""
+
+#: sources/insnames.cc:925
+msgid "PolyPd80"
+msgstr ""
+
+#: sources/insnames.cc:926
+msgid "Heaven2"
+msgstr ""
+
+#: sources/insnames.cc:927
+msgid "Glacier"
+msgstr ""
+
+#: sources/insnames.cc:929
+msgid "PolarPad"
+msgstr ""
+
+#: sources/insnames.cc:930
+msgid "HrmoRain"
+msgstr ""
+
+#: sources/insnames.cc:931
+msgid "Ancestrl"
+msgstr ""
+
+#: sources/insnames.cc:932
+msgid "SynMalet"
+msgstr ""
+
+#: sources/insnames.cc:933
+msgid "NylnHarp"
+msgstr ""
+
+#: sources/insnames.cc:934
+msgid "FantaBel"
+msgstr ""
+
+#: sources/insnames.cc:935
+msgid "GobSyn"
+msgstr ""
+
+#: sources/insnames.cc:936
+msgid "EchoBell"
+msgstr ""
+
+#: sources/insnames.cc:937
+msgid "Starz"
+msgstr ""
+
+#: sources/insnames.cc:938
+msgid "Shanai2"
+msgstr ""
+
+#: sources/insnames.cc:939
+msgid "Mel Tom2"
+msgstr ""
+
+#: sources/insnames.cc:940
+msgid "Ana Tom"
+msgstr ""
+
+#: sources/insnames.cc:941
+msgid "PierceCl"
+msgstr ""
+
+#: sources/insnames.cc:942
+msgid "70sDrOr2"
+msgstr ""
+
+#: sources/insnames.cc:943
+msgid "SlwRotar"
+msgstr ""
+
+#: sources/insnames.cc:944
+msgid "TrmOrgFl"
+msgstr ""
+
+#: sources/insnames.cc:945
+msgid "GtFeedbk"
+msgstr ""
+
+#: sources/insnames.cc:946
+msgid "ModAlem"
+msgstr ""
+
+#: sources/insnames.cc:947
+msgid "SqrBass"
+msgstr ""
+
+#: sources/insnames.cc:948
+msgid "SS Str"
+msgstr ""
+
+#: sources/insnames.cc:949
+msgid "SoloSine"
+msgstr ""
+
+#: sources/insnames.cc:950
+msgid "Pure Pad"
+msgstr ""
+
+#: sources/insnames.cc:951
+msgid "WireLead"
+msgstr ""
+
+#: sources/insnames.cc:952
+msgid "SoftWurl"
+msgstr ""
+
+#: sources/insnames.cc:953
+msgid "RotarStr"
+msgstr ""
+
+#: sources/insnames.cc:954
+msgid "ClickPad"
+msgstr ""
+
+#: sources/insnames.cc:955
+msgid "GlassPad"
+msgstr ""
+
+#: sources/insnames.cc:956
+msgid "Pan Pad"
+msgstr ""
+
+#: sources/insnames.cc:957
+msgid "AfrcnWod"
+msgstr ""
+
+#: sources/insnames.cc:958
+msgid "SftCryst"
+msgstr ""
+
+#: sources/insnames.cc:959
+msgid "Harp Vox"
+msgstr ""
+
+#: sources/insnames.cc:960
+msgid "50sSciFi"
+msgstr ""
+
+#: sources/insnames.cc:961
+msgid "Big Pan"
+msgstr ""
+
+#: sources/insnames.cc:963
+msgid "ElecPerc"
+msgstr ""
+
+#: sources/insnames.cc:964
+msgid "CheezOrg"
+msgstr ""
+
+#: sources/insnames.cc:965
+msgid "FstRotar"
+msgstr ""
+
+#: sources/insnames.cc:966
+msgid "GtrHrmo2"
+msgstr ""
+
+#: sources/insnames.cc:967
+msgid "RubberBa"
+msgstr ""
+
+#: sources/insnames.cc:968
+msgid "SineLead"
+msgstr ""
+
+#: sources/insnames.cc:969
+msgid "Ana Pad"
+msgstr ""
+
+#: sources/insnames.cc:970
+msgid "Itopia"
+msgstr ""
+
+#: sources/insnames.cc:971
+msgid "Celstial"
+msgstr ""
+
+#: sources/insnames.cc:972
+msgid "Caribean"
+msgstr ""
+
+#: sources/insnames.cc:973
+msgid "LoudGlok"
+msgstr ""
+
+#: sources/insnames.cc:974
+msgid "AtmosPad"
+msgstr ""
+
+#: sources/insnames.cc:975
+msgid "Ring Pad"
+msgstr ""
+
+#: sources/insnames.cc:976
+msgid "SynPiano"
+msgstr ""
+
+#: sources/insnames.cc:978
+msgid "DrawOrg3"
+msgstr ""
+
+#: sources/insnames.cc:979
+msgid "SquarPad"
+msgstr ""
+
+#: sources/insnames.cc:980
+msgid "CC Pad"
+msgstr ""
+
+#: sources/insnames.cc:981
+msgid "XmasBell"
+msgstr ""
+
+#: sources/insnames.cc:982
+msgid "Planet"
+msgstr ""
+
+#: sources/insnames.cc:983
+msgid "Ritual"
+msgstr ""
+
+#: sources/insnames.cc:984
+msgid "Creation"
+msgstr ""
+
+#: sources/insnames.cc:985
+msgid "VibeBell"
+msgstr ""
+
+#: sources/insnames.cc:986
+msgid "ToHeaven"
+msgstr ""
+
+#: sources/insnames.cc:987
+msgid "Stardust"
+msgstr ""
+
+#: sources/insnames.cc:988
+msgid "DigiBell"
+msgstr ""
+
+#: sources/insnames.cc:989
+msgid "Reso Pan"
+msgstr ""
+
+#: sources/insnames.cc:990
+msgid "AirBells"
+msgstr ""
+
+#: sources/insnames.cc:991
+msgid "Night"
+msgstr ""
+
+#: sources/insnames.cc:992
+msgid "BellHarp"
+msgstr ""
+
+#: sources/insnames.cc:993
+msgid "Glisten"
+msgstr ""
+
+#: sources/insnames.cc:994
+msgid "Gamelmba"
+msgstr ""
+
+#: sources/insnames.cc:997
+msgid "Ukelele"
+msgstr ""
+
+#: sources/insnames.cc:999
+msgid "SynFretl"
+msgstr ""
+
+#: sources/insnames.cc:1000
+msgid "Hammer"
+msgstr ""
+
+#: sources/insnames.cc:1001
+msgid "Seq Ana"
+msgstr ""
+
+#: sources/insnames.cc:1002
+msgid "Smokey"
+msgstr ""
+
+#: sources/insnames.cc:1003
+msgid "BelChoir"
+msgstr ""
+
+#: sources/insnames.cc:1006
+msgid "T.Koto"
+msgstr ""
+
+#: sources/insnames.cc:1010
+msgid "Gr.Cassa"
+msgstr ""
+
+#: sources/insnames.cc:1011
+msgid "Balafon2"
+msgstr ""
+
+#: sources/insnames.cc:1013
+msgid "Santur"
+msgstr ""
+
+#: sources/insnames.cc:1014
+msgid "Smooth"
+msgstr ""
+
+#: sources/insnames.cc:1016
+msgid "Gopichnt"
+msgstr ""
+
+#: sources/insnames.cc:1018
+msgid "Hichriki"
+msgstr ""
+
+#: sources/insnames.cc:1020
+msgid "GlasPerc"
+msgstr ""
+
+#: sources/insnames.cc:1023
+msgid "Gamelan"
+msgstr ""
+
+#: sources/insnames.cc:1024
+msgid "ThaiBell"
+msgstr ""
+
+#: sources/insnames.cc:1025
+msgid "S.Gamlan"
+msgstr ""
+
+#: sources/insnames.cc:1026
+msgid "Rama Cym"
+msgstr ""
+
+#: sources/insnames.cc:1027
+msgid "AsianBel"
+msgstr ""

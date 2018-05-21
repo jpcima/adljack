@@ -4,269 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "insnames.h"
-#include <unordered_map>
-
-const char *midi_instrument_name[128] = {
-    "Acoustic Grand Piano",
-    "Bright Acoustic Piano",
-    "Electric Grand Piano",
-    "Honky-Tonk Piano",
-    "Rhodes Piano",
-    "Chorused Piano",
-    "Harpsichord",
-    "Clavinet",
-    "Celesta",
-    "Glockenspiel",
-    "Music box",
-    "Vibraphone",
-    "Marimba",
-    "Xylophone",
-    "Tubular Bells",
-    "Dulcimer",
-    "Hammond Organ",
-    "Percussive Organ",
-    "Rock Organ",
-    "Church Organ",
-    "Reed Organ",
-    "Accordion",
-    "Harmonica",
-    "Tango Accordion",
-    "Acoustic Guitar (nylon)",
-    "Acoustic Guitar (steel)",
-    "Electric Guitar (jazz)",
-    "Electric Guitar (clean)",
-    "Electric Guitar (muted)",
-    "Overdrive Guitar",
-    "Distortion Guitar",
-    "Guitar Harmonics",
-    "Acoustic Bass",
-    "Electric Bass (finger)",
-    "Electric Bass (pick)",
-    "Fretless Bass",
-    "Slap Bass 1",
-    "Slap Bass 2",
-    "Synth Bass 1",
-    "Synth Bass 2",
-    "Violin",
-    "Viola",
-    "Cello",
-    "Contrabass",
-    "Tremolo Strings",
-    "Pizzicato String",
-    "Orchestral Harp",
-    "Timpany",
-    "String Ensemble 1",
-    "String Ensemble 2",
-    "Synth Strings 1",
-    "Synth Strings 2",
-    "Choir Aahs",
-    "Voice Oohs",
-    "Synth Voice",
-    "Orchestra Hit",
-    "Trumpet",
-    "Trombone",
-    "Tuba",
-    "Muted Trumpet",
-    "French Horn",
-    "Brass Section",
-    "Synth Brass 1",
-    "Synth Brass 2",
-    "Soprano Sax",
-    "Alto Sax",
-    "Tenor Sax",
-    "Baritone Sax",
-    "Oboe",
-    "English Horn",
-    "Bassoon",
-    "Clarinet",
-    "Piccolo",
-    "Flute",
-    "Recorder",
-    "Pan Flute",
-    "Bottle Blow",
-    "Shakuhachi",
-    "Whistle",
-    "Ocarina",
-    "Lead 1 (Square)",
-    "Lead 2 (Sawtooth)",
-    "Lead 3 (Calliope)",
-    "Lead 4 (Chiff)",
-    "Lead 5 (Charang)",
-    "Lead 6 (Voice)",
-    "Lead 7 (Fifths)",
-    "Lead 8 (Lead+Bass)",
-    "Pad 1 (New age)",
-    "Pad 2 (Warm)",
-    "Pad 3 (Polysynth)",
-    "Pad 4 (Choir)",
-    "Pad 5 (Bowed)",
-    "Pad 6 (Metallic)",
-    "Pad 7 (Halo)",
-    "Pad 8 (Sweep)",
-    "FX 1 (Rain)",
-    "FX 2 (Soundtrack)",
-    "FX 3 (Crystal)",
-    "FX 4 (Atmosphere)",
-    "FX 5 (Brightness)",
-    "FX 6 (Goblins)",
-    "FX 7 (Echoes)",
-    "FX 8 (Sci-fi)",
-    "Sitar",
-    "Banjo",
-    "Shamisen",
-    "Koto",
-    "Kalimba",
-    "Bagpipe",
-    "Fiddle",
-    "Shanai",
-    "Tinkle Bell",
-    "Agogo Bells",
-    "Steel Drums",
-    "Woodblock",
-    "Taiko Drum",
-    "Melodic Tom",
-    "Synth Drum",
-    "Reverse Cymbal",
-    "Guitar Fret Noise",
-    "Breath Noise",
-    "Seashore",
-    "Bird Tweet",
-    "Telephone",
-    "Helicopter",
-    "Applause/Noise",
-    "Gunshot"
-};
-
-const Midi_Program_Ex midi_percussion[128] = {
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 0>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 1>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 2>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 3>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 4>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 5>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 6>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 7>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 8>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 9>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 10>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 11>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 12>"},
-    Midi_Program_Ex{Midi_Spec::XG, "Surdo Mute"},
-    Midi_Program_Ex{Midi_Spec::XG, "Surdo Open"},
-    Midi_Program_Ex{Midi_Spec::XG, "High Q"},
-    Midi_Program_Ex{Midi_Spec::XG, "Whip Slap"},
-    Midi_Program_Ex{Midi_Spec::XG, "Scratch Push"},
-    Midi_Program_Ex{Midi_Spec::XG, "Scratch Pull"},
-    Midi_Program_Ex{Midi_Spec::XG, "Finger Snap"},
-    Midi_Program_Ex{Midi_Spec::XG, "Click Noise"},
-    Midi_Program_Ex{Midi_Spec::XG, "Metronome Click"},
-    Midi_Program_Ex{Midi_Spec::XG, "Metronome Bell"},
-    Midi_Program_Ex{Midi_Spec::XG, "Seq Click L"},
-    Midi_Program_Ex{Midi_Spec::XG, "Seq Click H"},
-    Midi_Program_Ex{Midi_Spec::XG, "Brush Tap"},
-    Midi_Program_Ex{Midi_Spec::XG, "Brush Swirl L"},
-    Midi_Program_Ex{Midi_Spec::GS, "High Q"},  // (XG) Brush Slap
-    Midi_Program_Ex{Midi_Spec::GS, "Slap"},  // (XG) Brush Swirl H
-    Midi_Program_Ex{Midi_Spec::GS, "Scratch Push"},  // (XG) Snare Roll
-    Midi_Program_Ex{Midi_Spec::GS, "Scratch Pull"},  // (XG) Castanet
-    Midi_Program_Ex{Midi_Spec::GS, "Sticks"},  // (XG) Snare L
-    Midi_Program_Ex{Midi_Spec::GS, "Square Click"},  // (XG) Sticks
-    Midi_Program_Ex{Midi_Spec::GS, "Metronome Click"},  // (XG) Bass Drum L
-    Midi_Program_Ex{Midi_Spec::GS, "Metronome Bell"},  // (XG) Open Rim Shot
-    Midi_Program_Ex{Midi_Spec::GM, "Acoustic Bass Drum"},
-    Midi_Program_Ex{Midi_Spec::GM, "Bass Drum 1"},
-    Midi_Program_Ex{Midi_Spec::GM, "Side Stick"},
-    Midi_Program_Ex{Midi_Spec::GM, "Acoustic Snare"},
-    Midi_Program_Ex{Midi_Spec::GM, "Hand Clap"},
-    Midi_Program_Ex{Midi_Spec::GM, "Electric Snare"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Floor Tom"},
-    Midi_Program_Ex{Midi_Spec::GM, "Closed High Hat"},
-    Midi_Program_Ex{Midi_Spec::GM, "High Floor Tom"},
-    Midi_Program_Ex{Midi_Spec::GM, "Pedal High Hat"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Tom"},
-    Midi_Program_Ex{Midi_Spec::GM, "Open High Hat"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low-Mid Tom"},
-    Midi_Program_Ex{Midi_Spec::GM, "High-Mid Tom"},
-    Midi_Program_Ex{Midi_Spec::GM, "Crash Cymbal 1"},
-    Midi_Program_Ex{Midi_Spec::GM, "High Tom"},
-    Midi_Program_Ex{Midi_Spec::GM, "Ride Cymbal 1"},
-    Midi_Program_Ex{Midi_Spec::GM, "Chinese Cymbal"},
-    Midi_Program_Ex{Midi_Spec::GM, "Ride Bell"},
-    Midi_Program_Ex{Midi_Spec::GM, "Tambourine"},
-    Midi_Program_Ex{Midi_Spec::GM, "Splash Cymbal"},
-    Midi_Program_Ex{Midi_Spec::GM, "Cow Bell"},
-    Midi_Program_Ex{Midi_Spec::GM, "Crash Cymbal 2"},
-    Midi_Program_Ex{Midi_Spec::GM, "Vibraslap"},
-    Midi_Program_Ex{Midi_Spec::GM, "Ride Cymbal 2"},
-    Midi_Program_Ex{Midi_Spec::GM, "High Bongo"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Bongo"},
-    Midi_Program_Ex{Midi_Spec::GM, "Mute High Conga"},
-    Midi_Program_Ex{Midi_Spec::GM, "Open High Conga"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Conga"},
-    Midi_Program_Ex{Midi_Spec::GM, "High Timbale"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Timbale"},
-    Midi_Program_Ex{Midi_Spec::GM, "High Agogo"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Agogo"},
-    Midi_Program_Ex{Midi_Spec::GM, "Cabasa"},
-    Midi_Program_Ex{Midi_Spec::GM, "Maracas"},
-    Midi_Program_Ex{Midi_Spec::GM, "Short Whistle"},
-    Midi_Program_Ex{Midi_Spec::GM, "Long Whistle"},
-    Midi_Program_Ex{Midi_Spec::GM, "Short Guiro"},
-    Midi_Program_Ex{Midi_Spec::GM, "Long Guiro"},
-    Midi_Program_Ex{Midi_Spec::GM, "Claves"},
-    Midi_Program_Ex{Midi_Spec::GM, "High Wood Block"},
-    Midi_Program_Ex{Midi_Spec::GM, "Low Wood Block"},
-    Midi_Program_Ex{Midi_Spec::GM, "Mute Cuica"},
-    Midi_Program_Ex{Midi_Spec::GM, "Open Cuica"},
-    Midi_Program_Ex{Midi_Spec::GM, "Mute Triangle"},
-    Midi_Program_Ex{Midi_Spec::GM, "Open Triangle"},
-    Midi_Program_Ex{Midi_Spec::GS, "Shaker"},
-    Midi_Program_Ex{Midi_Spec::GS, "Jingle Bell"},
-    Midi_Program_Ex{Midi_Spec::GS, "Bell Tree"},
-    Midi_Program_Ex{Midi_Spec::GS, "Castanets"},
-    Midi_Program_Ex{Midi_Spec::GS, "Mute Surdu"},
-    Midi_Program_Ex{Midi_Spec::GS, "Open Surdu"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 88>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 89>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 90>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 91>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 92>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 93>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 94>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 95>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 96>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 97>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 98>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 99>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 100>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 101>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 102>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 103>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 104>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 105>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 106>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 107>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 108>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 109>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 110>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 111>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 112>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 113>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 114>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 115>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 116>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 117>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 118>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 119>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 120>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 121>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 122>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 123>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 124>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 125>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 126>"},
-    Midi_Program_Ex{Midi_Spec::GM, "<Reserved 127>"},
-};
+#include "i18n.h"
 
 const char *midi_spec_name(Midi_Spec spec)
 {
@@ -280,745 +18,1018 @@ const char *midi_spec_name(Midi_Spec spec)
     return nullptr;
 }
 
-inline unsigned midi_program_ex_id(
+Midi_Db midi_db;
+
+void Midi_Db::init()
+{
+    init_midi_inst();
+    init_midi_perc();
+    init_midi_ex();
+}
+
+void Midi_Db::init_midi_inst()
+{
+    midi_inst_[0] = _INST("Acoustic Grand Piano");
+    midi_inst_[1] = _INST("Bright Acoustic Piano");
+    midi_inst_[2] = _INST("Electric Grand Piano");
+    midi_inst_[3] = _INST("Honky-Tonk Piano");
+    midi_inst_[4] = _INST("Rhodes Piano");
+    midi_inst_[5] = _INST("Chorused Piano");
+    midi_inst_[6] = _INST("Harpsichord");
+    midi_inst_[7] = _INST("Clavinet");
+    midi_inst_[8] = _INST("Celesta");
+    midi_inst_[9] = _INST("Glockenspiel");
+    midi_inst_[10] = _INST("Music box");
+    midi_inst_[11] = _INST("Vibraphone");
+    midi_inst_[12] = _INST("Marimba");
+    midi_inst_[13] = _INST("Xylophone");
+    midi_inst_[14] = _INST("Tubular Bells");
+    midi_inst_[15] = _INST("Dulcimer");
+    midi_inst_[16] = _INST("Hammond Organ");
+    midi_inst_[17] = _INST("Percussive Organ");
+    midi_inst_[18] = _INST("Rock Organ");
+    midi_inst_[19] = _INST("Church Organ");
+    midi_inst_[20] = _INST("Reed Organ");
+    midi_inst_[21] = _INST("Accordion");
+    midi_inst_[22] = _INST("Harmonica");
+    midi_inst_[23] = _INST("Tango Accordion");
+    midi_inst_[24] = _INST("Acoustic Guitar (nylon)");
+    midi_inst_[25] = _INST("Acoustic Guitar (steel)");
+    midi_inst_[26] = _INST("Electric Guitar (jazz)");
+    midi_inst_[27] = _INST("Electric Guitar (clean)");
+    midi_inst_[28] = _INST("Electric Guitar (muted)");
+    midi_inst_[29] = _INST("Overdrive Guitar");
+    midi_inst_[30] = _INST("Distortion Guitar");
+    midi_inst_[31] = _INST("Guitar Harmonics");
+    midi_inst_[32] = _INST("Acoustic Bass");
+    midi_inst_[33] = _INST("Electric Bass (finger)");
+    midi_inst_[34] = _INST("Electric Bass (pick)");
+    midi_inst_[35] = _INST("Fretless Bass");
+    midi_inst_[36] = _INST("Slap Bass 1");
+    midi_inst_[37] = _INST("Slap Bass 2");
+    midi_inst_[38] = _INST("Synth Bass 1");
+    midi_inst_[39] = _INST("Synth Bass 2");
+    midi_inst_[40] = _INST("Violin");
+    midi_inst_[41] = _INST("Viola");
+    midi_inst_[42] = _INST("Cello");
+    midi_inst_[43] = _INST("Contrabass");
+    midi_inst_[44] = _INST("Tremolo Strings");
+    midi_inst_[45] = _INST("Pizzicato String");
+    midi_inst_[46] = _INST("Orchestral Harp");
+    midi_inst_[47] = _INST("Timpany");
+    midi_inst_[48] = _INST("String Ensemble 1");
+    midi_inst_[49] = _INST("String Ensemble 2");
+    midi_inst_[50] = _INST("Synth Strings 1");
+    midi_inst_[51] = _INST("Synth Strings 2");
+    midi_inst_[52] = _INST("Choir Aahs");
+    midi_inst_[53] = _INST("Voice Oohs");
+    midi_inst_[54] = _INST("Synth Voice");
+    midi_inst_[55] = _INST("Orchestra Hit");
+    midi_inst_[56] = _INST("Trumpet");
+    midi_inst_[57] = _INST("Trombone");
+    midi_inst_[58] = _INST("Tuba");
+    midi_inst_[59] = _INST("Muted Trumpet");
+    midi_inst_[60] = _INST("French Horn");
+    midi_inst_[61] = _INST("Brass Section");
+    midi_inst_[62] = _INST("Synth Brass 1");
+    midi_inst_[63] = _INST("Synth Brass 2");
+    midi_inst_[64] = _INST("Soprano Sax");
+    midi_inst_[65] = _INST("Alto Sax");
+    midi_inst_[66] = _INST("Tenor Sax");
+    midi_inst_[67] = _INST("Baritone Sax");
+    midi_inst_[68] = _INST("Oboe");
+    midi_inst_[69] = _INST("English Horn");
+    midi_inst_[70] = _INST("Bassoon");
+    midi_inst_[71] = _INST("Clarinet");
+    midi_inst_[72] = _INST("Piccolo");
+    midi_inst_[73] = _INST("Flute");
+    midi_inst_[74] = _INST("Recorder");
+    midi_inst_[75] = _INST("Pan Flute");
+    midi_inst_[76] = _INST("Bottle Blow");
+    midi_inst_[77] = _INST("Shakuhachi");
+    midi_inst_[78] = _INST("Whistle");
+    midi_inst_[79] = _INST("Ocarina");
+    midi_inst_[80] = _INST("Lead 1 (Square)");
+    midi_inst_[81] = _INST("Lead 2 (Sawtooth)");
+    midi_inst_[82] = _INST("Lead 3 (Calliope)");
+    midi_inst_[83] = _INST("Lead 4 (Chiff)");
+    midi_inst_[84] = _INST("Lead 5 (Charang)");
+    midi_inst_[85] = _INST("Lead 6 (Voice)");
+    midi_inst_[86] = _INST("Lead 7 (Fifths)");
+    midi_inst_[87] = _INST("Lead 8 (Lead+Bass)");
+    midi_inst_[88] = _INST("Pad 1 (New age)");
+    midi_inst_[89] = _INST("Pad 2 (Warm)");
+    midi_inst_[90] = _INST("Pad 3 (Polysynth)");
+    midi_inst_[91] = _INST("Pad 4 (Choir)");
+    midi_inst_[92] = _INST("Pad 5 (Bowed)");
+    midi_inst_[93] = _INST("Pad 6 (Metallic)");
+    midi_inst_[94] = _INST("Pad 7 (Halo)");
+    midi_inst_[95] = _INST("Pad 8 (Sweep)");
+    midi_inst_[96] = _INST("FX 1 (Rain)");
+    midi_inst_[97] = _INST("FX 2 (Soundtrack)");
+    midi_inst_[98] = _INST("FX 3 (Crystal)");
+    midi_inst_[99] = _INST("FX 4 (Atmosphere)");
+    midi_inst_[100] = _INST("FX 5 (Brightness)");
+    midi_inst_[101] = _INST("FX 6 (Goblins)");
+    midi_inst_[102] = _INST("FX 7 (Echoes)");
+    midi_inst_[103] = _INST("FX 8 (Sci-fi)");
+    midi_inst_[104] = _INST("Sitar");
+    midi_inst_[105] = _INST("Banjo");
+    midi_inst_[106] = _INST("Shamisen");
+    midi_inst_[107] = _INST("Koto");
+    midi_inst_[108] = _INST("Kalimba");
+    midi_inst_[109] = _INST("Bagpipe");
+    midi_inst_[110] = _INST("Fiddle");
+    midi_inst_[111] = _INST("Shanai");
+    midi_inst_[112] = _INST("Tinkle Bell");
+    midi_inst_[113] = _INST("Agogo Bells");
+    midi_inst_[114] = _INST("Steel Drums");
+    midi_inst_[115] = _INST("Woodblock");
+    midi_inst_[116] = _INST("Taiko Drum");
+    midi_inst_[117] = _INST("Melodic Tom");
+    midi_inst_[118] = _INST("Synth Drum");
+    midi_inst_[119] = _INST("Reverse Cymbal");
+    midi_inst_[120] = _INST("Guitar Fret Noise");
+    midi_inst_[121] = _INST("Breath Noise");
+    midi_inst_[122] = _INST("Seashore");
+    midi_inst_[123] = _INST("Bird Tweet");
+    midi_inst_[124] = _INST("Telephone");
+    midi_inst_[125] = _INST("Helicopter");
+    midi_inst_[126] = _INST("Applause/Noise");
+    midi_inst_[127] = _INST("Gunshot");
+}
+
+void Midi_Db::init_midi_perc()
+{
+    midi_perc_[0] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 0>")};
+    midi_perc_[1] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 1>")};
+    midi_perc_[2] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 2>")};
+    midi_perc_[3] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 3>")};
+    midi_perc_[4] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 4>")};
+    midi_perc_[5] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 5>")};
+    midi_perc_[6] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 6>")};
+    midi_perc_[7] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 7>")};
+    midi_perc_[8] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 8>")};
+    midi_perc_[9] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 9>")};
+    midi_perc_[10] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 10>")};
+    midi_perc_[11] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 11>")};
+    midi_perc_[12] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 12>")};
+    midi_perc_[13] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Surdo Mute")};
+    midi_perc_[14] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Surdo Open")};
+    midi_perc_[15] = Midi_Program_Ex{Midi_Spec::XG, _PERC("High Q")};
+    midi_perc_[16] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Whip Slap")};
+    midi_perc_[17] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Scratch Push")};
+    midi_perc_[18] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Scratch Pull")};
+    midi_perc_[19] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Finger Snap")};
+    midi_perc_[20] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Click Noise")};
+    midi_perc_[21] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Metronome Click")};
+    midi_perc_[22] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Metronome Bell")};
+    midi_perc_[23] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Seq Click L")};
+    midi_perc_[24] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Seq Click H")};
+    midi_perc_[25] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Brush Tap")};
+    midi_perc_[26] = Midi_Program_Ex{Midi_Spec::XG, _PERC("Brush Swirl L")};
+    midi_perc_[27] = Midi_Program_Ex{Midi_Spec::GS, _PERC("High Q")},  // (XG) Brush Slap
+    midi_perc_[28] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Slap")},  // (XG) Brush Swirl H
+    midi_perc_[29] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Scratch Push")},  // (XG) Snare Roll
+    midi_perc_[30] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Scratch Pull")},  // (XG) Castanet
+    midi_perc_[31] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Sticks")},  // (XG) Snare L
+    midi_perc_[32] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Square Click")},  // (XG) Sticks
+    midi_perc_[33] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Metronome Click")},  // (XG) Bass Drum L
+    midi_perc_[34] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Metronome Bell")},  // (XG) Open Rim Shot
+    midi_perc_[35] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Acoustic Bass Drum")};
+    midi_perc_[36] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Bass Drum 1")};
+    midi_perc_[37] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Side Stick")};
+    midi_perc_[38] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Acoustic Snare")};
+    midi_perc_[39] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Hand Clap")};
+    midi_perc_[40] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Electric Snare")};
+    midi_perc_[41] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Floor Tom")};
+    midi_perc_[42] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Closed High Hat")};
+    midi_perc_[43] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High Floor Tom")};
+    midi_perc_[44] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Pedal High Hat")};
+    midi_perc_[45] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Tom")};
+    midi_perc_[46] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Open High Hat")};
+    midi_perc_[47] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low-Mid Tom")};
+    midi_perc_[48] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High-Mid Tom")};
+    midi_perc_[49] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Crash Cymbal 1")};
+    midi_perc_[50] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High Tom")};
+    midi_perc_[51] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Ride Cymbal 1")};
+    midi_perc_[52] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Chinese Cymbal")};
+    midi_perc_[53] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Ride Bell")};
+    midi_perc_[54] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Tambourine")};
+    midi_perc_[55] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Splash Cymbal")};
+    midi_perc_[56] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Cow Bell")};
+    midi_perc_[57] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Crash Cymbal 2")};
+    midi_perc_[58] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Vibraslap")};
+    midi_perc_[59] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Ride Cymbal 2")};
+    midi_perc_[60] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High Bongo")};
+    midi_perc_[61] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Bongo")};
+    midi_perc_[62] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Mute High Conga")};
+    midi_perc_[63] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Open High Conga")};
+    midi_perc_[64] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Conga")};
+    midi_perc_[65] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High Timbale")};
+    midi_perc_[66] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Timbale")};
+    midi_perc_[67] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High Agogo")};
+    midi_perc_[68] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Agogo")};
+    midi_perc_[69] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Cabasa")};
+    midi_perc_[70] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Maracas")};
+    midi_perc_[71] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Short Whistle")};
+    midi_perc_[72] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Long Whistle")};
+    midi_perc_[73] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Short Guiro")};
+    midi_perc_[74] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Long Guiro")};
+    midi_perc_[75] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Claves")};
+    midi_perc_[76] = Midi_Program_Ex{Midi_Spec::GM, _PERC("High Wood Block")};
+    midi_perc_[77] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Low Wood Block")};
+    midi_perc_[78] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Mute Cuica")};
+    midi_perc_[79] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Open Cuica")};
+    midi_perc_[80] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Mute Triangle")};
+    midi_perc_[81] = Midi_Program_Ex{Midi_Spec::GM, _PERC("Open Triangle")};
+    midi_perc_[82] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Shaker")};
+    midi_perc_[83] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Jingle Bell")};
+    midi_perc_[84] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Bell Tree")};
+    midi_perc_[85] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Castanets")};
+    midi_perc_[86] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Mute Surdu")};
+    midi_perc_[87] = Midi_Program_Ex{Midi_Spec::GS, _PERC("Open Surdu")};
+    midi_perc_[88] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 88>")};
+    midi_perc_[89] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 89>")};
+    midi_perc_[90] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 90>")};
+    midi_perc_[91] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 91>")};
+    midi_perc_[92] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 92>")};
+    midi_perc_[93] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 93>")};
+    midi_perc_[94] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 94>")};
+    midi_perc_[95] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 95>")};
+    midi_perc_[96] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 96>")};
+    midi_perc_[97] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 97>")};
+    midi_perc_[98] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 98>")};
+    midi_perc_[99] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 99>")};
+    midi_perc_[100] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 100>")};
+    midi_perc_[101] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 101>")};
+    midi_perc_[102] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 102>")};
+    midi_perc_[103] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 103>")};
+    midi_perc_[104] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 104>")};
+    midi_perc_[105] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 105>")};
+    midi_perc_[106] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 106>")};
+    midi_perc_[107] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 107>")};
+    midi_perc_[108] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 108>")};
+    midi_perc_[109] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 109>")};
+    midi_perc_[110] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 110>")};
+    midi_perc_[111] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 111>")};
+    midi_perc_[112] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 112>")};
+    midi_perc_[113] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 113>")};
+    midi_perc_[114] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 114>")};
+    midi_perc_[115] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 115>")};
+    midi_perc_[116] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 116>")};
+    midi_perc_[117] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 117>")};
+    midi_perc_[118] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 118>")};
+    midi_perc_[119] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 119>")};
+    midi_perc_[120] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 120>")};
+    midi_perc_[121] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 121>")};
+    midi_perc_[122] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 122>")};
+    midi_perc_[123] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 123>")};
+    midi_perc_[124] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 124>")};
+    midi_perc_[125] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 125>")};
+    midi_perc_[126] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 126>")};
+    midi_perc_[127] = Midi_Program_Ex{Midi_Spec::GM, _PERC("<Reserved 127>")};
+}
+
+static inline unsigned midi_ex_id(
     unsigned msb, unsigned lsb, unsigned pgm)
 {
     return ((msb & 0x7f) << 14) | ((lsb & 0x7f) << 7) | (pgm & 0x7f);
 }
 
-static const std::unordered_map<unsigned, Midi_Program_Ex> midi_program_ex_map = {
-    {midi_program_ex_id(0x1, 00, 0x26), Midi_Program_Ex{Midi_Spec::GS, "Synth Bass 101"}},
-    {midi_program_ex_id(0x1, 00, 0x39), Midi_Program_Ex{Midi_Spec::GS, "Trombone 2"}},
-    {midi_program_ex_id(0x1, 00, 0x3c), Midi_Program_Ex{Midi_Spec::GS, "French Horn2"}},
-    {midi_program_ex_id(0x1, 00, 0x50), Midi_Program_Ex{Midi_Spec::GS, "Square"}},
-    {midi_program_ex_id(0x1, 00, 0x51), Midi_Program_Ex{Midi_Spec::GS, "Saw"}},
-    {midi_program_ex_id(0x1, 00, 0x62), Midi_Program_Ex{Midi_Spec::GS, "Syn Mallet"}},
-    {midi_program_ex_id(0x1, 00, 0x66), Midi_Program_Ex{Midi_Spec::GS, "Echo Bell"}},
-    {midi_program_ex_id(0x1, 00, 0x68), Midi_Program_Ex{Midi_Spec::GS, "Sitar 2"}},
-    {midi_program_ex_id(0x1, 00, 0x78), Midi_Program_Ex{Midi_Spec::GS, "Gt. Cut Noise"}},
-    {midi_program_ex_id(0x1, 00, 0x79), Midi_Program_Ex{Midi_Spec::GS, "Flute Key Click"}},
-    {midi_program_ex_id(0x1, 00, 0x7a), Midi_Program_Ex{Midi_Spec::GS, "Rain"}},
-    {midi_program_ex_id(0x1, 00, 0x7b), Midi_Program_Ex{Midi_Spec::GS, "Dog"}},
-    {midi_program_ex_id(0x1, 00, 0x7c), Midi_Program_Ex{Midi_Spec::GS, "Telephone 2"}},
-    {midi_program_ex_id(0x1, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Car-Engine"}},
-    {midi_program_ex_id(0x1, 00, 0x7e), Midi_Program_Ex{Midi_Spec::GS, "Laughing"}},
-    {midi_program_ex_id(0x1, 00, 0x7f), Midi_Program_Ex{Midi_Spec::GS, "Machine Gun"}},
-    {midi_program_ex_id(0x2, 00, 0x66), Midi_Program_Ex{Midi_Spec::GS, "Echo Pan"}},
-    {midi_program_ex_id(0x2, 00, 0x78), Midi_Program_Ex{Midi_Spec::GS, "String Slap"}},
-    {midi_program_ex_id(0x2, 00, 0x7a), Midi_Program_Ex{Midi_Spec::GS, "Thunder"}},
-    {midi_program_ex_id(0x2, 00, 0x7b), Midi_Program_Ex{Midi_Spec::GS, "Horse-Gallop"}},
-    {midi_program_ex_id(0x2, 00, 0x7c), Midi_Program_Ex{Midi_Spec::GS, "Door Creaking"}},
-    {midi_program_ex_id(0x2, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Car-Stop"}},
-    {midi_program_ex_id(0x2, 00, 0x7e), Midi_Program_Ex{Midi_Spec::GS, "Screaming"}},
-    {midi_program_ex_id(0x2, 00, 0x7f), Midi_Program_Ex{Midi_Spec::GS, "Lasergun"}},
-    {midi_program_ex_id(0x3, 00, 0x7a), Midi_Program_Ex{Midi_Spec::GS, "Wind"}},
-    {midi_program_ex_id(0x3, 00, 0x7b), Midi_Program_Ex{Midi_Spec::GS, "Bird 2"}},
-    {midi_program_ex_id(0x3, 00, 0x7c), Midi_Program_Ex{Midi_Spec::GS, "Door Close"}},
-    {midi_program_ex_id(0x3, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Car-Pass"}},
-    {midi_program_ex_id(0x3, 00, 0x7e), Midi_Program_Ex{Midi_Spec::GS, "Punch"}},
-    {midi_program_ex_id(0x3, 00, 0x7f), Midi_Program_Ex{Midi_Spec::GS, "Explosion"}},
-    {midi_program_ex_id(0x4, 00, 0x7a), Midi_Program_Ex{Midi_Spec::GS, "Stream"}},
-    {midi_program_ex_id(0x4, 00, 0x7c), Midi_Program_Ex{Midi_Spec::GS, "Scratch"}},
-    {midi_program_ex_id(0x4, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Car-Crash"}},
-    {midi_program_ex_id(0x4, 00, 0x7e), Midi_Program_Ex{Midi_Spec::GS, "Heart Beat"}},
-    {midi_program_ex_id(0x5, 00, 0x7a), Midi_Program_Ex{Midi_Spec::GS, "Bubble"}},
-    {midi_program_ex_id(0x5, 00, 0x7c), Midi_Program_Ex{Midi_Spec::GS, "Windchime"}},
-    {midi_program_ex_id(0x5, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Siren"}},
-    {midi_program_ex_id(0x5, 00, 0x7e), Midi_Program_Ex{Midi_Spec::GS, "Footsteps"}},
-    {midi_program_ex_id(0x6, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Train"}},
-    {midi_program_ex_id(0x7, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Jetplane"}},
-    {midi_program_ex_id(0x8, 00, 00), Midi_Program_Ex{Midi_Spec::GS, "Piano 1w"}},
-    {midi_program_ex_id(0x8, 00, 0x1), Midi_Program_Ex{Midi_Spec::GS, "Piano 2w"}},
-    {midi_program_ex_id(0x8, 00, 0x2), Midi_Program_Ex{Midi_Spec::GS, "Piano 3w"}},
-    {midi_program_ex_id(0x8, 00, 0x3), Midi_Program_Ex{Midi_Spec::GS, "Honky-tonk w/Old Upright"}},
-    {midi_program_ex_id(0x8, 00, 0x4), Midi_Program_Ex{Midi_Spec::GS, "Detuned EP 1"}},
-    {midi_program_ex_id(0x8, 00, 0x5), Midi_Program_Ex{Midi_Spec::GS, "Detuned EP 2"}},
-    {midi_program_ex_id(0x8, 00, 0x6), Midi_Program_Ex{Midi_Spec::GS, "Coupled Hps."}},
-    {midi_program_ex_id(0x8, 00, 0xb), Midi_Program_Ex{Midi_Spec::GS, "Vib.w"}},
-    {midi_program_ex_id(0x8, 00, 0xc), Midi_Program_Ex{Midi_Spec::GS, "Marimba w"}},
-    {midi_program_ex_id(0x8, 00, 0xe), Midi_Program_Ex{Midi_Spec::GS, "Church Bell"}},
-    {midi_program_ex_id(0x8, 00, 0x10), Midi_Program_Ex{Midi_Spec::GS, "Detuned Or.1"}},
-    {midi_program_ex_id(0x8, 00, 0x11), Midi_Program_Ex{Midi_Spec::GS, "Detuned Or.2"}},
-    {midi_program_ex_id(0x8, 00, 0x13), Midi_Program_Ex{Midi_Spec::GS, "Church Org.2"}},
-    {midi_program_ex_id(0x8, 00, 0x15), Midi_Program_Ex{Midi_Spec::GS, "Accordion It"}},
-    {midi_program_ex_id(0x8, 00, 0x18), Midi_Program_Ex{Midi_Spec::GS, "Ukulele"}},
-    {midi_program_ex_id(0x8, 00, 0x19), Midi_Program_Ex{Midi_Spec::GS, "12-str Guitar"}},
-    {midi_program_ex_id(0x8, 00, 0x1a), Midi_Program_Ex{Midi_Spec::GS, "Hawaiian Gt./Pedal Steel"}},
-    {midi_program_ex_id(0x8, 00, 0x1b), Midi_Program_Ex{Midi_Spec::GS, "Chorus Gt."}},
-    {midi_program_ex_id(0x8, 00, 0x1c), Midi_Program_Ex{Midi_Spec::GS, "Funk Gt/Funk Pop"}},
-    {midi_program_ex_id(0x8, 00, 0x1e), Midi_Program_Ex{Midi_Spec::GS, "Feedback Gt."}},
-    {midi_program_ex_id(0x8, 00, 0x1f), Midi_Program_Ex{Midi_Spec::GS, "Gt.Feedback"}},
-    {midi_program_ex_id(0x8, 00, 0x26), Midi_Program_Ex{Midi_Spec::GS, "Synth Bass 3/Acid Bass"}},
-    {midi_program_ex_id(0x8, 00, 0x27), Midi_Program_Ex{Midi_Spec::GS, "Synth Bass 4/Beef FM Bass"}},
-    {midi_program_ex_id(0x8, 00, 0x28), Midi_Program_Ex{Midi_Spec::GS, "Slow Violin"}},
-    {midi_program_ex_id(0x8, 00, 0x30), Midi_Program_Ex{Midi_Spec::GS, "Orchestra"}},
-    {midi_program_ex_id(0x8, 00, 0x32), Midi_Program_Ex{Midi_Spec::GS, "Syn.Strings 3"}},
-    {midi_program_ex_id(0x8, 00, 0x3d), Midi_Program_Ex{Midi_Spec::GS, "Brass 2"}},
-    {midi_program_ex_id(0x8, 00, 0x3e), Midi_Program_Ex{Midi_Spec::GS, "Synth Brass 3"}},
-    {midi_program_ex_id(0x8, 00, 0x3f), Midi_Program_Ex{Midi_Spec::GS, "Synth Brass 4"}},
-    {midi_program_ex_id(0x8, 00, 0x50), Midi_Program_Ex{Midi_Spec::GS, "Sine Wave"}},
-    {midi_program_ex_id(0x8, 00, 0x51), Midi_Program_Ex{Midi_Spec::GS, "Doctor Solo"}},
-    {midi_program_ex_id(0x8, 00, 0x6b), Midi_Program_Ex{Midi_Spec::GS, "Taisho Koto"}},
-    {midi_program_ex_id(0x8, 00, 0x73), Midi_Program_Ex{Midi_Spec::GS, "Castanets"}},
-    {midi_program_ex_id(0x8, 00, 0x74), Midi_Program_Ex{Midi_Spec::GS, "Concert Bass Drum"}},
-    {midi_program_ex_id(0x8, 00, 0x75), Midi_Program_Ex{Midi_Spec::GS, "Melo. Tom 2"}},
-    {midi_program_ex_id(0x8, 00, 0x76), Midi_Program_Ex{Midi_Spec::GS, "808 Tom"}},
-    {midi_program_ex_id(0x8, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Starship"}},
-    {midi_program_ex_id(0x9, 00, 0xe), Midi_Program_Ex{Midi_Spec::GS, "Carillon"}},
-    {midi_program_ex_id(0x9, 00, 0x76), Midi_Program_Ex{Midi_Spec::GS, "Elec Perc"}},
-    {midi_program_ex_id(0x9, 00, 0x7d), Midi_Program_Ex{Midi_Spec::GS, "Burst Noise"}},
-    {midi_program_ex_id(0x10, 00, 00), Midi_Program_Ex{Midi_Spec::GS, "Piano 1d"}},
-    {midi_program_ex_id(0x10, 00, 0x4), Midi_Program_Ex{Midi_Spec::GS, "E.Piano 1w"}},
-    {midi_program_ex_id(0x10, 00, 0x5), Midi_Program_Ex{Midi_Spec::GS, "E.Piano 2w/Soft FM EP"}},
-    {midi_program_ex_id(0x10, 00, 0x6), Midi_Program_Ex{Midi_Spec::GS, "Harpsi.w"}},
-    {midi_program_ex_id(0x10, 00, 0x10), Midi_Program_Ex{Midi_Spec::GS, "60's Organ 1"}},
-    {midi_program_ex_id(0x10, 00, 0x13), Midi_Program_Ex{Midi_Spec::GS, "Church Org.3"}},
-    {midi_program_ex_id(0x10, 00, 0x18), Midi_Program_Ex{Midi_Spec::GS, "Nylon Gt.o"}},
-    {midi_program_ex_id(0x10, 00, 0x19), Midi_Program_Ex{Midi_Spec::GS, "Mandolin"}},
-    {midi_program_ex_id(0x10, 00, 0x1c), Midi_Program_Ex{Midi_Spec::GS, "Funk Gt.2"}},
-    {midi_program_ex_id(0x10, 00, 0x27), Midi_Program_Ex{Midi_Spec::GS, "Rubber Bass"}},
-    {midi_program_ex_id(0x10, 00, 0x3e), Midi_Program_Ex{Midi_Spec::GS, "Analog Brass1/Octave Brass"}},
-    {midi_program_ex_id(0x10, 00, 0x3f), Midi_Program_Ex{Midi_Spec::GS, "Analog Brass 2/Velo Brass 1"}},
-    {midi_program_ex_id(0x18, 00, 0x4), Midi_Program_Ex{Midi_Spec::GS, "60's E.Piano"}},
-    {midi_program_ex_id(0x18, 00, 0x6), Midi_Program_Ex{Midi_Spec::GS, "Harpsi.o"}},
-    {midi_program_ex_id(0x20, 00, 0x10), Midi_Program_Ex{Midi_Spec::GS, "Organ 4"}},
-    {midi_program_ex_id(0x20, 00, 0x11), Midi_Program_Ex{Midi_Spec::GS, "Organ 5"}},
-    {midi_program_ex_id(0x20, 00, 0x18), Midi_Program_Ex{Midi_Spec::GS, "Nylon Gt.2"}},
-    {midi_program_ex_id(0x20, 00, 0x34), Midi_Program_Ex{Midi_Spec::GS, "Choir Aahs 2"}},
-    {midi_program_ex_id(0x1, 00, 0x2), Midi_Program_Ex{Midi_Spec::SC88, "EG+Rhodes1"}},
-    {midi_program_ex_id(0x1, 00, 0xb), Midi_Program_Ex{Midi_Spec::SC88, "Hard Vibe"}},
-    {midi_program_ex_id(0x1, 00, 0xf), Midi_Program_Ex{Midi_Spec::SC88, "Santur 2"}},
-    {midi_program_ex_id(0x1, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "Organ 101"}},
-    {midi_program_ex_id(0x1, 00, 0x11), Midi_Program_Ex{Midi_Spec::SC88, "Organ 201"}},
-    {midi_program_ex_id(0x1, 00, 0x16), Midi_Program_Ex{Midi_Spec::SC88, "Harmonica 2"}},
-    {midi_program_ex_id(0x1, 00, 0x1a), Midi_Program_Ex{Midi_Spec::SC88, "Mellow Gt."}},
-    {midi_program_ex_id(0x1, 00, 0x1c), Midi_Program_Ex{Midi_Spec::SC88, "Muted Dis.Gt"}},
-    {midi_program_ex_id(0x1, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Dist.Gt 2"}},
-    {midi_program_ex_id(0x1, 00, 0x21), Midi_Program_Ex{Midi_Spec::SC88, "Fingered Bs2"}},
-    {midi_program_ex_id(0x1, 00, 0x23), Midi_Program_Ex{Midi_Spec::SC88, "Fretless Bs2"}},
-    {midi_program_ex_id(0x1, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "Synth Bass 201"}},
-    {midi_program_ex_id(0x1, 00, 0x30), Midi_Program_Ex{Midi_Spec::SC88, "Strings 2"}},
-    {midi_program_ex_id(0x1, 00, 0x31), Midi_Program_Ex{Midi_Spec::SC88, "SlowStrings2"}},
-    {midi_program_ex_id(0x1, 00, 0x32), Midi_Program_Ex{Midi_Spec::SC88, "OB Strings"}},
-    {midi_program_ex_id(0x1, 00, 0x38), Midi_Program_Ex{Midi_Spec::SC88, "Trumpet 2"}},
-    {midi_program_ex_id(0x1, 00, 0x3a), Midi_Program_Ex{Midi_Spec::SC88, "Tuba 2"}},
-    {midi_program_ex_id(0x1, 00, 0x3e), Midi_Program_Ex{Midi_Spec::SC88, "Poly Brass"}},
-    {midi_program_ex_id(0x1, 00, 0x3f), Midi_Program_Ex{Midi_Spec::SC88, "Soft Brass"}},
-    {midi_program_ex_id(0x1, 00, 0x52), Midi_Program_Ex{Midi_Spec::SC88, "Vent Synth"}},
-    {midi_program_ex_id(0x1, 00, 0x56), Midi_Program_Ex{Midi_Spec::SC88, "Big Fives"}},
-    {midi_program_ex_id(0x1, 00, 0x57), Midi_Program_Ex{Midi_Spec::SC88, "Big & Raw"}},
-    {midi_program_ex_id(0x1, 00, 0x58), Midi_Program_Ex{Midi_Spec::SC88, "Fantasia 2"}},
-    {midi_program_ex_id(0x1, 00, 0x59), Midi_Program_Ex{Midi_Spec::SC88, "Thick Pad"}},
-    {midi_program_ex_id(0x1, 00, 0x5a), Midi_Program_Ex{Midi_Spec::SC88, "80's PolySyn"}},
-    {midi_program_ex_id(0x1, 00, 0x5b), Midi_Program_Ex{Midi_Spec::SC88, "Heaven II"}},
-    {midi_program_ex_id(0x1, 00, 0x5d), Midi_Program_Ex{Midi_Spec::SC88, "Tine Pad"}},
-    {midi_program_ex_id(0x1, 00, 0x5f), Midi_Program_Ex{Midi_Spec::SC88, "Polar Pad"}},
-    {midi_program_ex_id(0x1, 00, 0x60), Midi_Program_Ex{Midi_Spec::SC88, "Harmo Rain"}},
-    {midi_program_ex_id(0x1, 00, 0x61), Midi_Program_Ex{Midi_Spec::SC88, "Ancestral"}},
-    {midi_program_ex_id(0x1, 00, 0x63), Midi_Program_Ex{Midi_Spec::SC88, "Warm Atmos"}},
-    {midi_program_ex_id(0x1, 00, 0x65), Midi_Program_Ex{Midi_Spec::SC88, "Goblinson"}},
-    {midi_program_ex_id(0x1, 00, 0x67), Midi_Program_Ex{Midi_Spec::SC88, "Star Theme 2"}},
-    {midi_program_ex_id(0x1, 00, 0x69), Midi_Program_Ex{Midi_Spec::SC88, "Muted Banjo"}},
-    {midi_program_ex_id(0x1, 00, 0x6a), Midi_Program_Ex{Midi_Spec::SC88, "Tsugaru"}},
-    {midi_program_ex_id(0x1, 00, 0x6f), Midi_Program_Ex{Midi_Spec::SC88, "Shanai 2"}},
-    {midi_program_ex_id(0x1, 00, 0x75), Midi_Program_Ex{Midi_Spec::SC88, "Real Tom"}},
-    {midi_program_ex_id(0x1, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Reverse Cym2"}},
-    {midi_program_ex_id(0x2, 00, 0x2), Midi_Program_Ex{Midi_Spec::SC88, "EG+Rhodes2"}},
-    {midi_program_ex_id(0x2, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Dazed Guitar"}},
-    {midi_program_ex_id(0x2, 00, 0x21), Midi_Program_Ex{Midi_Spec::SC88, "Jazz Bass"}},
-    {midi_program_ex_id(0x2, 00, 0x23), Midi_Program_Ex{Midi_Spec::SC88, "Fretless Bs3"}},
-    {midi_program_ex_id(0x2, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "Modular Bass"}},
-    {midi_program_ex_id(0x2, 00, 0x50), Midi_Program_Ex{Midi_Spec::SC88, "Hollow Mini"}},
-    {midi_program_ex_id(0x2, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "Pulse Saw"}},
-    {midi_program_ex_id(0x2, 00, 0x52), Midi_Program_Ex{Midi_Spec::SC88, "Pure PanLead"}},
-    {midi_program_ex_id(0x2, 00, 0x57), Midi_Program_Ex{Midi_Spec::SC88, "Fat & Perky"}},
-    {midi_program_ex_id(0x2, 00, 0x59), Midi_Program_Ex{Midi_Spec::SC88, "Horn Pad"}},
-    {midi_program_ex_id(0x2, 00, 0x5d), Midi_Program_Ex{Midi_Spec::SC88, "Panner Pad"}},
-    {midi_program_ex_id(0x2, 00, 0x60), Midi_Program_Ex{Midi_Spec::SC88, "African Wood"}},
-    {midi_program_ex_id(0x2, 00, 0x61), Midi_Program_Ex{Midi_Spec::SC88, "Prologue"}},
-    {midi_program_ex_id(0x2, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Soft Crystal"}},
-    {midi_program_ex_id(0x2, 00, 0x63), Midi_Program_Ex{Midi_Spec::SC88, "Nylon Harp"}},
-    {midi_program_ex_id(0x2, 00, 0x65), Midi_Program_Ex{Midi_Spec::SC88, "50's Sci-Fi"}},
-    {midi_program_ex_id(0x2, 00, 0x68), Midi_Program_Ex{Midi_Spec::SC88, "Detune Sitar"}},
-    {midi_program_ex_id(0x3, 00, 0x23), Midi_Program_Ex{Midi_Spec::SC88, "Fretless Bs4"}},
-    {midi_program_ex_id(0x3, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "Seq Bass"}},
-    {midi_program_ex_id(0x3, 00, 0x50), Midi_Program_Ex{Midi_Spec::SC88, "Mellow FM"}},
-    {midi_program_ex_id(0x3, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "Feline GR"}},
-    {midi_program_ex_id(0x3, 00, 0x59), Midi_Program_Ex{Midi_Spec::SC88, "RotaryString"}},
-    {midi_program_ex_id(0x3, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Round Glock"}},
-    {midi_program_ex_id(0x3, 00, 0x63), Midi_Program_Ex{Midi_Spec::SC88, "Harpvox"}},
-    {midi_program_ex_id(0x3, 00, 0x66), Midi_Program_Ex{Midi_Spec::SC88, "Echo Pan 2"}},
-    {midi_program_ex_id(0x3, 00, 0x78), Midi_Program_Ex{Midi_Spec::SC88, "Gt.CutNoise2"}},
-    {midi_program_ex_id(0x4, 00, 0x50), Midi_Program_Ex{Midi_Spec::SC88, "CC Solo"}},
-    {midi_program_ex_id(0x4, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "Big Lead"}},
-    {midi_program_ex_id(0x4, 00, 0x59), Midi_Program_Ex{Midi_Spec::SC88, "Soft Pad"}},
-    {midi_program_ex_id(0x4, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Loud Glock"}},
-    {midi_program_ex_id(0x4, 00, 0x63), Midi_Program_Ex{Midi_Spec::SC88, "HollowReleas"}},
-    {midi_program_ex_id(0x4, 00, 0x66), Midi_Program_Ex{Midi_Spec::SC88, "Big Panner"}},
-    {midi_program_ex_id(0x4, 00, 0x78), Midi_Program_Ex{Midi_Spec::SC88, "Dist.CutNoise"}},
-    {midi_program_ex_id(0x4, 00, 0x7b), Midi_Program_Ex{Midi_Spec::SC88, "Kitty"}},
-    {midi_program_ex_id(0x5, 00, 0x23), Midi_Program_Ex{Midi_Spec::SC88, "Mr.Smooth"}},
-    {midi_program_ex_id(0x5, 00, 0x50), Midi_Program_Ex{Midi_Spec::SC88, "Shmoog"}},
-    {midi_program_ex_id(0x5, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "Velo Lead"}},
-    {midi_program_ex_id(0x5, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "GlockenChime"}},
-    {midi_program_ex_id(0x5, 00, 0x63), Midi_Program_Ex{Midi_Spec::SC88, "Nylon+Rhodes"}},
-    {midi_program_ex_id(0x5, 00, 0x66), Midi_Program_Ex{Midi_Spec::SC88, "Reso Panner"}},
-    {midi_program_ex_id(0x5, 00, 0x78), Midi_Program_Ex{Midi_Spec::SC88, "Bass Slide"}},
-    {midi_program_ex_id(0x5, 00, 0x7b), Midi_Program_Ex{Midi_Spec::SC88, "Growl"}},
-    {midi_program_ex_id(0x6, 00, 0x50), Midi_Program_Ex{Midi_Spec::SC88, "LM Square"}},
-    {midi_program_ex_id(0x6, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "GR-300"}},
-    {midi_program_ex_id(0x6, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Clear Bells"}},
-    {midi_program_ex_id(0x6, 00, 0x63), Midi_Program_Ex{Midi_Spec::SC88, "Ambient Pad"}},
-    {midi_program_ex_id(0x6, 00, 0x66), Midi_Program_Ex{Midi_Spec::SC88, "Water Piano"}},
-    {midi_program_ex_id(0x6, 00, 0x78), Midi_Program_Ex{Midi_Spec::SC88, "Pick Scrape"}},
-    {midi_program_ex_id(0x6, 00, 0x7e), Midi_Program_Ex{Midi_Spec::SC88, "Applause 2"}},
-    {midi_program_ex_id(0x7, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "LA Saw"}},
-    {midi_program_ex_id(0x7, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "ChristmasBel"}},
-    {midi_program_ex_id(0x7, 00, 0x7c), Midi_Program_Ex{Midi_Spec::SC88, "Scratch 2"}},
-    {midi_program_ex_id(0x8, 00, 0xf), Midi_Program_Ex{Midi_Spec::SC88, "Cimbalom"}},
-    {midi_program_ex_id(0x8, 00, 0x12), Midi_Program_Ex{Midi_Spec::SC88, "Rotary Org."}},
-    {midi_program_ex_id(0x8, 00, 0x22), Midi_Program_Ex{Midi_Spec::SC88, "Mute PickBs."}},
-    {midi_program_ex_id(0x8, 00, 0x24), Midi_Program_Ex{Midi_Spec::SC88, "Reso Slap"}},
-    {midi_program_ex_id(0x8, 00, 0x2c), Midi_Program_Ex{Midi_Spec::SC88, "Slow Tremolo"}},
-    {midi_program_ex_id(0x8, 00, 0x31), Midi_Program_Ex{Midi_Spec::SC88, "Legato Str."}},
-    {midi_program_ex_id(0x8, 00, 0x34), Midi_Program_Ex{Midi_Spec::SC88, "St.Choir"}},
-    {midi_program_ex_id(0x8, 00, 0x36), Midi_Program_Ex{Midi_Spec::SC88, "Syn.Voice"}},
-    {midi_program_ex_id(0x8, 00, 0x37), Midi_Program_Ex{Midi_Spec::SC88, "Impact Hit"}},
-    {midi_program_ex_id(0x8, 00, 0x38), Midi_Program_Ex{Midi_Spec::SC88, "Flugel Horn"}},
-    {midi_program_ex_id(0x8, 00, 0x3c), Midi_Program_Ex{Midi_Spec::SC88, "Fr.Horn Solo"}},
-    {midi_program_ex_id(0x8, 00, 0x41), Midi_Program_Ex{Midi_Spec::SC88, "Hyper Alto"}},
-    {midi_program_ex_id(0x8, 00, 0x42), Midi_Program_Ex{Midi_Spec::SC88, "BreathyTenor"}},
-    {midi_program_ex_id(0x8, 00, 0x47), Midi_Program_Ex{Midi_Spec::SC88, "Bs.Clarinet"}},
-    {midi_program_ex_id(0x8, 00, 0x4b), Midi_Program_Ex{Midi_Spec::SC88, "Kawala"}},
-    {midi_program_ex_id(0x8, 00, 0x54), Midi_Program_Ex{Midi_Spec::SC88, "Dist.Lead"}},
-    {midi_program_ex_id(0x8, 00, 0x5f), Midi_Program_Ex{Midi_Spec::SC88, "Converge"}},
-    {midi_program_ex_id(0x8, 00, 0x60), Midi_Program_Ex{Midi_Spec::SC88, "Clavi Pad"}},
-    {midi_program_ex_id(0x8, 00, 0x61), Midi_Program_Ex{Midi_Spec::SC88, "Rave"}},
-    {midi_program_ex_id(0x8, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Vibra Bells"}},
-    {midi_program_ex_id(0x8, 00, 0x68), Midi_Program_Ex{Midi_Spec::SC88, "Tambra"}},
-    {midi_program_ex_id(0x8, 00, 0x69), Midi_Program_Ex{Midi_Spec::SC88, "Rabab"}},
-    {midi_program_ex_id(0x8, 00, 0x6f), Midi_Program_Ex{Midi_Spec::SC88, "Pungi"}},
-    {midi_program_ex_id(0x8, 00, 0x70), Midi_Program_Ex{Midi_Spec::SC88, "Bonang"}},
-    {midi_program_ex_id(0x8, 00, 0x71), Midi_Program_Ex{Midi_Spec::SC88, "Atarigane"}},
-    {midi_program_ex_id(0x8, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Rev.Snare 1"}},
-    {midi_program_ex_id(0x9, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "Organ 109"}},
-    {midi_program_ex_id(0x9, 00, 0x19), Midi_Program_Ex{Midi_Spec::SC88, "Nylon+Steel"}},
-    {midi_program_ex_id(0x9, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Feedback Gt2"}},
-    {midi_program_ex_id(0x9, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "X Wire Bass"}},
-    {midi_program_ex_id(0x9, 00, 0x2c), Midi_Program_Ex{Midi_Spec::SC88, "Suspense Str"}},
-    {midi_program_ex_id(0x9, 00, 0x30), Midi_Program_Ex{Midi_Spec::SC88, "Orchestra 2"}},
-    {midi_program_ex_id(0x9, 00, 0x31), Midi_Program_Ex{Midi_Spec::SC88, "Warm Strings"}},
-    {midi_program_ex_id(0x9, 00, 0x34), Midi_Program_Ex{Midi_Spec::SC88, "Mello Choir"}},
-    {midi_program_ex_id(0x9, 00, 0x37), Midi_Program_Ex{Midi_Spec::SC88, "Philly Hit"}},
-    {midi_program_ex_id(0x9, 00, 0x3e), Midi_Program_Ex{Midi_Spec::SC88, "Quack Brass"}},
-    {midi_program_ex_id(0x9, 00, 0x5f), Midi_Program_Ex{Midi_Spec::SC88, "Shwimmer"}},
-    {midi_program_ex_id(0x9, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Digi Bells"}},
-    {midi_program_ex_id(0x9, 00, 0x70), Midi_Program_Ex{Midi_Spec::SC88, "Gender"}},
-    {midi_program_ex_id(0x9, 00, 0x75), Midi_Program_Ex{Midi_Spec::SC88, "Rock Tom"}},
-    {midi_program_ex_id(0x9, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Rev.Snare 2"}},
-    {midi_program_ex_id(0xa, 00, 0x26), Midi_Program_Ex{Midi_Spec::SC88, "Tekno Bass"}},
-    {midi_program_ex_id(0xa, 00, 0x30), Midi_Program_Ex{Midi_Spec::SC88, "Tremolo Orch"}},
-    {midi_program_ex_id(0xa, 00, 0x31), Midi_Program_Ex{Midi_Spec::SC88, "St.Slow Str."}},
-    {midi_program_ex_id(0xa, 00, 0x37), Midi_Program_Ex{Midi_Spec::SC88, "Double Hit"}},
-    {midi_program_ex_id(0xa, 00, 0x5f), Midi_Program_Ex{Midi_Spec::SC88, "Celestial Pd"}},
-    {midi_program_ex_id(0xa, 00, 0x70), Midi_Program_Ex{Midi_Spec::SC88, "Gamelan Gong"}},
-    {midi_program_ex_id(0xb, 00, 0x30), Midi_Program_Ex{Midi_Spec::SC88, "Choir Str."}},
-    {midi_program_ex_id(0xb, 00, 0x70), Midi_Program_Ex{Midi_Spec::SC88, "St.Gamelan"}},
-    {midi_program_ex_id(0x10, 00, 0xc), Midi_Program_Ex{Midi_Spec::SC88, "Barafon"}},
-    {midi_program_ex_id(0x10, 00, 0x12), Midi_Program_Ex{Midi_Spec::SC88, "Rotary Org.S"}},
-    {midi_program_ex_id(0x10, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Power Guitar"}},
-    {midi_program_ex_id(0x10, 00, 0x1f), Midi_Program_Ex{Midi_Spec::SC88, "Ac.Gt.Harmonx"}},
-    {midi_program_ex_id(0x10, 00, 0x26), Midi_Program_Ex{Midi_Spec::SC88, "Reso SH Bass"}},
-    {midi_program_ex_id(0x10, 00, 0x30), Midi_Program_Ex{Midi_Spec::SC88, "St.Strings"}},
-    {midi_program_ex_id(0x10, 00, 0x37), Midi_Program_Ex{Midi_Spec::SC88, "Lo Fi Rave"}},
-    {midi_program_ex_id(0x10, 00, 0x3c), Midi_Program_Ex{Midi_Spec::SC88, "Horn Orch"}},
-    {midi_program_ex_id(0x10, 00, 0x3d), Midi_Program_Ex{Midi_Spec::SC88, "Brass Fall"}},
-    {midi_program_ex_id(0x10, 00, 0x51), Midi_Program_Ex{Midi_Spec::SC88, "Waspy Synth"}},
-    {midi_program_ex_id(0x10, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Choral Bells"}},
-    {midi_program_ex_id(0x10, 00, 0x68), Midi_Program_Ex{Midi_Spec::SC88, "Tamboura"}},
-    {midi_program_ex_id(0x10, 00, 0x69), Midi_Program_Ex{Midi_Spec::SC88, "Gopichant"}},
-    {midi_program_ex_id(0x10, 00, 0x6b), Midi_Program_Ex{Midi_Spec::SC88, "Kanoon"}},
-    {midi_program_ex_id(0x10, 00, 0x6f), Midi_Program_Ex{Midi_Spec::SC88, "Hichiriki"}},
-    {midi_program_ex_id(0x10, 00, 0x70), Midi_Program_Ex{Midi_Spec::SC88, "RAMA Cymbal"}},
-    {midi_program_ex_id(0x10, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Rev.Kick 1"}},
-    {midi_program_ex_id(0x11, 00, 0xc), Midi_Program_Ex{Midi_Spec::SC88, "Barafon 2"}},
-    {midi_program_ex_id(0x11, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "60's Organ 2"}},
-    {midi_program_ex_id(0x11, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Power Gt.2"}},
-    {midi_program_ex_id(0x11, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "SH101 Bass 1"}},
-    {midi_program_ex_id(0x11, 00, 0x3f), Midi_Program_Ex{Midi_Spec::SC88, "Velo Brass 2"}},
-    {midi_program_ex_id(0x11, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Air Bells"}},
-    {midi_program_ex_id(0x11, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Rev.ConBD"}},
-    {midi_program_ex_id(0x12, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "60's Organ 3"}},
-    {midi_program_ex_id(0x12, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "5th Dist."}},
-    {midi_program_ex_id(0x12, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "SH101 Bass 2"}},
-    {midi_program_ex_id(0x12, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Bell Harp"}},
-    {midi_program_ex_id(0x13, 00, 0x27), Midi_Program_Ex{Midi_Spec::SC88, "Smooth Bass"}},
-    {midi_program_ex_id(0x13, 00, 0x62), Midi_Program_Ex{Midi_Spec::SC88, "Gamelimba"}},
-    {midi_program_ex_id(0x18, 00, 0x5), Midi_Program_Ex{Midi_Spec::SC88, "Hard FM EP"}},
-    {midi_program_ex_id(0x18, 00, 0xc), Midi_Program_Ex{Midi_Spec::SC88, "Log Drum"}},
-    {midi_program_ex_id(0x18, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "Cheese Organ"}},
-    {midi_program_ex_id(0x18, 00, 0x12), Midi_Program_Ex{Midi_Spec::SC88, "Rotary Org.F"}},
-    {midi_program_ex_id(0x18, 00, 0x13), Midi_Program_Ex{Midi_Spec::SC88, "Organ Flute"}},
-    {midi_program_ex_id(0x18, 00, 0x18), Midi_Program_Ex{Midi_Spec::SC88, "Velo Harmnix"}},
-    {midi_program_ex_id(0x18, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Rock Rhythm"}},
-    {midi_program_ex_id(0x18, 00, 0x30), Midi_Program_Ex{Midi_Spec::SC88, "Velo Strings"}},
-    {midi_program_ex_id(0x18, 00, 0x38), Midi_Program_Ex{Midi_Spec::SC88, "Bright Tp."}},
-    {midi_program_ex_id(0x18, 00, 0x69), Midi_Program_Ex{Midi_Spec::SC88, "Oud"}},
-    {midi_program_ex_id(0x18, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Rev.Tom 1"}},
-    {midi_program_ex_id(0x19, 00, 0x4), Midi_Program_Ex{Midi_Spec::SC88, "Hard Rhodes"}},
-    {midi_program_ex_id(0x19, 00, 0x1e), Midi_Program_Ex{Midi_Spec::SC88, "Rock Rhythm2"}},
-    {midi_program_ex_id(0x19, 00, 0x38), Midi_Program_Ex{Midi_Spec::SC88, "Warm Tp."}},
-    {midi_program_ex_id(0x19, 00, 0x77), Midi_Program_Ex{Midi_Spec::SC88, "Rev.Tom 2"}},
-    {midi_program_ex_id(0x1a, 00, 0x4), Midi_Program_Ex{Midi_Spec::SC88, "MellowRhodes"}},
-    {midi_program_ex_id(0x20, 00, 0x13), Midi_Program_Ex{Midi_Spec::SC88, "Trem.Flute"}},
-    {midi_program_ex_id(0x20, 00, 0x19), Midi_Program_Ex{Midi_Spec::SC88, "Steel Gt.2"}},
-    {midi_program_ex_id(0x21, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "Even Bar"}},
-    {midi_program_ex_id(0x28, 00, 0x10), Midi_Program_Ex{Midi_Spec::SC88, "Organ Bass"}},
-    {midi_program_ex_id(0x28, 00, 0x18), Midi_Program_Ex{Midi_Spec::SC88, "Lequint Gt."}},
-    {midi_program_ex_id(0x7f, 00, 00), Midi_Program_Ex{Midi_Spec::MT32, "Acou Piano 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x1), Midi_Program_Ex{Midi_Spec::MT32, "Acou Piano 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x2), Midi_Program_Ex{Midi_Spec::MT32, "Acou Piano 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x3), Midi_Program_Ex{Midi_Spec::MT32, "Elec Piano 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x4), Midi_Program_Ex{Midi_Spec::MT32, "Elec Piano 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x5), Midi_Program_Ex{Midi_Spec::MT32, "Elec Piano 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x6), Midi_Program_Ex{Midi_Spec::MT32, "Elec Piano 4"}},
-    {midi_program_ex_id(0x7f, 00, 0x7), Midi_Program_Ex{Midi_Spec::MT32, "Honkytonk"}},
-    {midi_program_ex_id(0x7f, 00, 0x8), Midi_Program_Ex{Midi_Spec::MT32, "Elec Org 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x9), Midi_Program_Ex{Midi_Spec::MT32, "Elec Org 2"}},
-    {midi_program_ex_id(0x7f, 00, 0xa), Midi_Program_Ex{Midi_Spec::MT32, "Elec Org 3"}},
-    {midi_program_ex_id(0x7f, 00, 0xb), Midi_Program_Ex{Midi_Spec::MT32, "Elec Org 4"}},
-    {midi_program_ex_id(0x7f, 00, 0xc), Midi_Program_Ex{Midi_Spec::MT32, "Pipe Org 1"}},
-    {midi_program_ex_id(0x7f, 00, 0xd), Midi_Program_Ex{Midi_Spec::MT32, "Pipe Org 2"}},
-    {midi_program_ex_id(0x7f, 00, 0xe), Midi_Program_Ex{Midi_Spec::MT32, "Pipe Org 3"}},
-    {midi_program_ex_id(0x7f, 00, 0xf), Midi_Program_Ex{Midi_Spec::MT32, "Accordion"}},
-    {midi_program_ex_id(0x7f, 00, 0x10), Midi_Program_Ex{Midi_Spec::MT32, "Harpsi 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x11), Midi_Program_Ex{Midi_Spec::MT32, "Harpsi 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x12), Midi_Program_Ex{Midi_Spec::MT32, "Harpsi 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x13), Midi_Program_Ex{Midi_Spec::MT32, "Clavi 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x14), Midi_Program_Ex{Midi_Spec::MT32, "Clavi 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x15), Midi_Program_Ex{Midi_Spec::MT32, "Clavi 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x16), Midi_Program_Ex{Midi_Spec::MT32, "Celesta 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x17), Midi_Program_Ex{Midi_Spec::MT32, "Celesta 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x18), Midi_Program_Ex{Midi_Spec::MT32, "Syn Brass 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x19), Midi_Program_Ex{Midi_Spec::MT32, "Syn Brass 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x1a), Midi_Program_Ex{Midi_Spec::MT32, "Syn Brass 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x1b), Midi_Program_Ex{Midi_Spec::MT32, "Syn Brass 4"}},
-    {midi_program_ex_id(0x7f, 00, 0x1c), Midi_Program_Ex{Midi_Spec::MT32, "Syn Bass 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x1d), Midi_Program_Ex{Midi_Spec::MT32, "Syn Bass 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x1e), Midi_Program_Ex{Midi_Spec::MT32, "Syn Bass 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x1f), Midi_Program_Ex{Midi_Spec::MT32, "Syn Bass 4"}},
-    {midi_program_ex_id(0x7f, 00, 0x20), Midi_Program_Ex{Midi_Spec::MT32, "Fantasy"}},
-    {midi_program_ex_id(0x7f, 00, 0x21), Midi_Program_Ex{Midi_Spec::MT32, "Harmo Pan"}},
-    {midi_program_ex_id(0x7f, 00, 0x22), Midi_Program_Ex{Midi_Spec::MT32, "Chorale"}},
-    {midi_program_ex_id(0x7f, 00, 0x23), Midi_Program_Ex{Midi_Spec::MT32, "Glasses"}},
-    {midi_program_ex_id(0x7f, 00, 0x24), Midi_Program_Ex{Midi_Spec::MT32, "Soundtrack"}},
-    {midi_program_ex_id(0x7f, 00, 0x25), Midi_Program_Ex{Midi_Spec::MT32, "Atmosphere"}},
-    {midi_program_ex_id(0x7f, 00, 0x26), Midi_Program_Ex{Midi_Spec::MT32, "Warm Bell"}},
-    {midi_program_ex_id(0x7f, 00, 0x27), Midi_Program_Ex{Midi_Spec::MT32, "Funny Vox"}},
-    {midi_program_ex_id(0x7f, 00, 0x28), Midi_Program_Ex{Midi_Spec::MT32, "Echo Bell"}},
-    {midi_program_ex_id(0x7f, 00, 0x29), Midi_Program_Ex{Midi_Spec::MT32, "Ice Rain"}},
-    {midi_program_ex_id(0x7f, 00, 0x2a), Midi_Program_Ex{Midi_Spec::MT32, "Oboe 2001"}},
-    {midi_program_ex_id(0x7f, 00, 0x2b), Midi_Program_Ex{Midi_Spec::MT32, "Echo Pan"}},
-    {midi_program_ex_id(0x7f, 00, 0x2c), Midi_Program_Ex{Midi_Spec::MT32, "Doctor Solo"}},
-    {midi_program_ex_id(0x7f, 00, 0x2d), Midi_Program_Ex{Midi_Spec::MT32, "School Daze"}},
-    {midi_program_ex_id(0x7f, 00, 0x2e), Midi_Program_Ex{Midi_Spec::MT32, "Bellsinger"}},
-    {midi_program_ex_id(0x7f, 00, 0x2f), Midi_Program_Ex{Midi_Spec::MT32, "Square Wave"}},
-    {midi_program_ex_id(0x7f, 00, 0x30), Midi_Program_Ex{Midi_Spec::MT32, "Str Sect 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x31), Midi_Program_Ex{Midi_Spec::MT32, "Str Sect 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x32), Midi_Program_Ex{Midi_Spec::MT32, "Str Sect 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x33), Midi_Program_Ex{Midi_Spec::MT32, "Pizzicato"}},
-    {midi_program_ex_id(0x7f, 00, 0x34), Midi_Program_Ex{Midi_Spec::MT32, "Violin 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x35), Midi_Program_Ex{Midi_Spec::MT32, "Violin 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x36), Midi_Program_Ex{Midi_Spec::MT32, "Cello 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x37), Midi_Program_Ex{Midi_Spec::MT32, "Cello 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x38), Midi_Program_Ex{Midi_Spec::MT32, "Contrabass"}},
-    {midi_program_ex_id(0x7f, 00, 0x39), Midi_Program_Ex{Midi_Spec::MT32, "Harp 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x3a), Midi_Program_Ex{Midi_Spec::MT32, "Harp 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x3b), Midi_Program_Ex{Midi_Spec::MT32, "Guitar 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x3c), Midi_Program_Ex{Midi_Spec::MT32, "Guitar 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x3d), Midi_Program_Ex{Midi_Spec::MT32, "Elec Gtr 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x3e), Midi_Program_Ex{Midi_Spec::MT32, "Elect Gtr 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x3f), Midi_Program_Ex{Midi_Spec::MT32, "Sitar"}},
-    {midi_program_ex_id(0x7f, 00, 0x40), Midi_Program_Ex{Midi_Spec::MT32, "Acou Bass 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x41), Midi_Program_Ex{Midi_Spec::MT32, "Acou Bass 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x42), Midi_Program_Ex{Midi_Spec::MT32, "Elec Bass 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x43), Midi_Program_Ex{Midi_Spec::MT32, "Elec Bass 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x44), Midi_Program_Ex{Midi_Spec::MT32, "Slap Bass 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x45), Midi_Program_Ex{Midi_Spec::MT32, "Slap Bass 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x46), Midi_Program_Ex{Midi_Spec::MT32, "Fretless 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x47), Midi_Program_Ex{Midi_Spec::MT32, "Fretless 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x48), Midi_Program_Ex{Midi_Spec::MT32, "Flute 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x49), Midi_Program_Ex{Midi_Spec::MT32, "Flute 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x4a), Midi_Program_Ex{Midi_Spec::MT32, "Piccolo 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x4b), Midi_Program_Ex{Midi_Spec::MT32, "Piccolo 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x4c), Midi_Program_Ex{Midi_Spec::MT32, "Recorder"}},
-    {midi_program_ex_id(0x7f, 00, 0x4d), Midi_Program_Ex{Midi_Spec::MT32, "Pan Pipes"}},
-    {midi_program_ex_id(0x7f, 00, 0x4e), Midi_Program_Ex{Midi_Spec::MT32, "Sax 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x4f), Midi_Program_Ex{Midi_Spec::MT32, "Sax 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x50), Midi_Program_Ex{Midi_Spec::MT32, "Sax 3"}},
-    {midi_program_ex_id(0x7f, 00, 0x51), Midi_Program_Ex{Midi_Spec::MT32, "Sax 4"}},
-    {midi_program_ex_id(0x7f, 00, 0x52), Midi_Program_Ex{Midi_Spec::MT32, "Clarinet 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x53), Midi_Program_Ex{Midi_Spec::MT32, "Clarinet 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x54), Midi_Program_Ex{Midi_Spec::MT32, "Oboe"}},
-    {midi_program_ex_id(0x7f, 00, 0x55), Midi_Program_Ex{Midi_Spec::MT32, "Engl Horn"}},
-    {midi_program_ex_id(0x7f, 00, 0x56), Midi_Program_Ex{Midi_Spec::MT32, "Bassoon"}},
-    {midi_program_ex_id(0x7f, 00, 0x57), Midi_Program_Ex{Midi_Spec::MT32, "Harmonica"}},
-    {midi_program_ex_id(0x7f, 00, 0x58), Midi_Program_Ex{Midi_Spec::MT32, "Trumpet 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x59), Midi_Program_Ex{Midi_Spec::MT32, "Trumpet 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x5a), Midi_Program_Ex{Midi_Spec::MT32, "Trombone 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x5b), Midi_Program_Ex{Midi_Spec::MT32, "Trombone 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x5c), Midi_Program_Ex{Midi_Spec::MT32, "Fr Horn 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x5d), Midi_Program_Ex{Midi_Spec::MT32, "Fr Horn 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x5e), Midi_Program_Ex{Midi_Spec::MT32, "Tuba"}},
-    {midi_program_ex_id(0x7f, 00, 0x5f), Midi_Program_Ex{Midi_Spec::MT32, "Brs Sect 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x60), Midi_Program_Ex{Midi_Spec::MT32, "Brs Sect 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x61), Midi_Program_Ex{Midi_Spec::MT32, "Vibe 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x62), Midi_Program_Ex{Midi_Spec::MT32, "Vibe 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x63), Midi_Program_Ex{Midi_Spec::MT32, "Syn Mallet"}},
-    {midi_program_ex_id(0x7f, 00, 0x64), Midi_Program_Ex{Midi_Spec::MT32, "Windbell"}},
-    {midi_program_ex_id(0x7f, 00, 0x65), Midi_Program_Ex{Midi_Spec::MT32, "Glock"}},
-    {midi_program_ex_id(0x7f, 00, 0x66), Midi_Program_Ex{Midi_Spec::MT32, "Tube Bell"}},
-    {midi_program_ex_id(0x7f, 00, 0x67), Midi_Program_Ex{Midi_Spec::MT32, "Xylophone"}},
-    {midi_program_ex_id(0x7f, 00, 0x68), Midi_Program_Ex{Midi_Spec::MT32, "Marimba"}},
-    {midi_program_ex_id(0x7f, 00, 0x69), Midi_Program_Ex{Midi_Spec::MT32, "Koto"}},
-    {midi_program_ex_id(0x7f, 00, 0x6a), Midi_Program_Ex{Midi_Spec::MT32, "Sho"}},
-    {midi_program_ex_id(0x7f, 00, 0x6b), Midi_Program_Ex{Midi_Spec::MT32, "Shakuhachi"}},
-    {midi_program_ex_id(0x7f, 00, 0x6c), Midi_Program_Ex{Midi_Spec::MT32, "Whistle 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x6d), Midi_Program_Ex{Midi_Spec::MT32, "Whistle 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x6e), Midi_Program_Ex{Midi_Spec::MT32, "Bottleblow"}},
-    {midi_program_ex_id(0x7f, 00, 0x6f), Midi_Program_Ex{Midi_Spec::MT32, "Breathpipe"}},
-    {midi_program_ex_id(0x7f, 00, 0x70), Midi_Program_Ex{Midi_Spec::MT32, "Timpani"}},
-    {midi_program_ex_id(0x7f, 00, 0x71), Midi_Program_Ex{Midi_Spec::MT32, "Melodic Tom"}},
-    {midi_program_ex_id(0x7f, 00, 0x72), Midi_Program_Ex{Midi_Spec::MT32, "Deep Snare"}},
-    {midi_program_ex_id(0x7f, 00, 0x73), Midi_Program_Ex{Midi_Spec::MT32, "Elec Perc 1"}},
-    {midi_program_ex_id(0x7f, 00, 0x74), Midi_Program_Ex{Midi_Spec::MT32, "Elec Perc 2"}},
-    {midi_program_ex_id(0x7f, 00, 0x75), Midi_Program_Ex{Midi_Spec::MT32, "Taiko"}},
-    {midi_program_ex_id(0x7f, 00, 0x76), Midi_Program_Ex{Midi_Spec::MT32, "Taiko Rim"}},
-    {midi_program_ex_id(0x7f, 00, 0x77), Midi_Program_Ex{Midi_Spec::MT32, "Cymbal"}},
-    {midi_program_ex_id(0x7f, 00, 0x78), Midi_Program_Ex{Midi_Spec::MT32, "Castanets"}},
-    {midi_program_ex_id(0x7f, 00, 0x79), Midi_Program_Ex{Midi_Spec::MT32, "Triangle"}},
-    {midi_program_ex_id(0x7f, 00, 0x7a), Midi_Program_Ex{Midi_Spec::MT32, "Orche Hit"}},
-    {midi_program_ex_id(0x7f, 00, 0x7b), Midi_Program_Ex{Midi_Spec::MT32, "Telephone"}},
-    {midi_program_ex_id(0x7f, 00, 0x7c), Midi_Program_Ex{Midi_Spec::MT32, "Bird Tweet"}},
-    {midi_program_ex_id(0x7f, 00, 0x7d), Midi_Program_Ex{Midi_Spec::MT32, "One Note Jam"}},
-    {midi_program_ex_id(0x7f, 00, 0x7e), Midi_Program_Ex{Midi_Spec::MT32, "Water Bell"}},
-    {midi_program_ex_id(0x7f, 00, 0x7f), Midi_Program_Ex{Midi_Spec::MT32, "Jungle Tune"}},
-    {midi_program_ex_id(00, 0x1, 00), Midi_Program_Ex{Midi_Spec::XG, "Grand PianoK"}},
-    {midi_program_ex_id(00, 0x1, 0x1), Midi_Program_Ex{Midi_Spec::XG, "Bright Piano K"}},
-    {midi_program_ex_id(00, 0x1, 0x2), Midi_Program_Ex{Midi_Spec::XG, "Electric Grand Piano K"}},
-    {midi_program_ex_id(00, 0x1, 0x3), Midi_Program_Ex{Midi_Spec::XG, "Honky Tonk K"}},
-    {midi_program_ex_id(00, 0x1, 0x4), Midi_Program_Ex{Midi_Spec::XG, "Electric Piano 1K"}},
-    {midi_program_ex_id(00, 0x1, 0x5), Midi_Program_Ex{Midi_Spec::XG, "Electric Piano2 K"}},
-    {midi_program_ex_id(00, 0x1, 0x6), Midi_Program_Ex{Midi_Spec::XG, "Harpsichord K"}},
-    {midi_program_ex_id(00, 0x1, 0x7), Midi_Program_Ex{Midi_Spec::XG, "Clavinet K"}},
-    {midi_program_ex_id(00, 0x1, 0xb), Midi_Program_Ex{Midi_Spec::XG, "VibesK"}},
-    {midi_program_ex_id(00, 0x1, 0xc), Midi_Program_Ex{Midi_Spec::XG, "Marimba K"}},
-    {midi_program_ex_id(00, 0x3, 0x30), Midi_Program_Ex{Midi_Spec::XG, "S.Strngs"}},
-    {midi_program_ex_id(00, 0x3, 0x31), Midi_Program_Ex{Midi_Spec::XG, "S.SlwStr"}},
-    {midi_program_ex_id(00, 0x3, 0x34), Midi_Program_Ex{Midi_Spec::XG, "S.Choir"}},
-    {midi_program_ex_id(00, 0x6, 0x27), Midi_Program_Ex{Midi_Spec::XG, "MelloSB1"}},
-    {midi_program_ex_id(00, 0x6, 0x3c), Midi_Program_Ex{Midi_Spec::XG, "FrHrSolo"}},
-    {midi_program_ex_id(00, 0x6, 0x50), Midi_Program_Ex{Midi_Spec::XG, "Square 2"}},
-    {midi_program_ex_id(00, 0x6, 0x51), Midi_Program_Ex{Midi_Spec::XG, "Saw 2"}},
-    {midi_program_ex_id(00, 0x8, 0x28), Midi_Program_Ex{Midi_Spec::XG, "SlowVln"}},
-    {midi_program_ex_id(00, 0x8, 0x2c), Midi_Program_Ex{Midi_Spec::XG, "SlowTrStr"}},
-    {midi_program_ex_id(00, 0x8, 0x30), Midi_Program_Ex{Midi_Spec::XG, "SlowStr"}},
-    {midi_program_ex_id(00, 0x8, 0x31), Midi_Program_Ex{Midi_Spec::XG, "LegatoSt"}},
-    {midi_program_ex_id(00, 0x8, 0x50), Midi_Program_Ex{Midi_Spec::XG, "LMSquare"}},
-    {midi_program_ex_id(00, 0x8, 0x51), Midi_Program_Ex{Midi_Spec::XG, "ThickSaw"}},
-    {midi_program_ex_id(00, 0x8, 0x66), Midi_Program_Ex{Midi_Spec::XG, "EchoPad2"}},
-    {midi_program_ex_id(00, 0xc, 0x27), Midi_Program_Ex{Midi_Spec::XG, "Seq Bass"}},
-    {midi_program_ex_id(00, 0xc, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "QuackBr"}},
-    {midi_program_ex_id(00, 0xc, 0x62), Midi_Program_Ex{Midi_Spec::XG, "SynDrCmp"}},
-    {midi_program_ex_id(00, 0xe, 0x62), Midi_Program_Ex{Midi_Spec::XG, "Popcorn"}},
-    {midi_program_ex_id(00, 0xe, 0x66), Midi_Program_Ex{Midi_Spec::XG, "Echo Pan"}},
-    {midi_program_ex_id(00, 0x10, 0x18), Midi_Program_Ex{Midi_Spec::XG, "NylonGt2"}},
-    {midi_program_ex_id(00, 0x10, 0x19), Midi_Program_Ex{Midi_Spec::XG, "SteelGt2"}},
-    {midi_program_ex_id(00, 0x10, 0x34), Midi_Program_Ex{Midi_Spec::XG, "Ch.Aahs2"}},
-    {midi_program_ex_id(00, 0x10, 0x38), Midi_Program_Ex{Midi_Spec::XG, "Trumpet2"}},
-    {midi_program_ex_id(00, 0x10, 0x3a), Midi_Program_Ex{Midi_Spec::XG, "Tuba 2"}},
-    {midi_program_ex_id(00, 0x10, 0x57), Midi_Program_Ex{Midi_Spec::XG, "Big&Low"}},
-    {midi_program_ex_id(00, 0x10, 0x59), Midi_Program_Ex{Midi_Spec::XG, "ThickPad"}},
-    {midi_program_ex_id(00, 0x11, 0x38), Midi_Program_Ex{Midi_Spec::XG, "BriteTrp"}},
-    {midi_program_ex_id(00, 0x11, 0x59), Midi_Program_Ex{Midi_Spec::XG, "Soft Pad"}},
-    {midi_program_ex_id(00, 0x12, 00), Midi_Program_Ex{Midi_Spec::XG, "MelloGrP"}},
-    {midi_program_ex_id(00, 0x12, 0x4), Midi_Program_Ex{Midi_Spec::XG, "MelloEP1"}},
-    {midi_program_ex_id(00, 0x12, 0x1a), Midi_Program_Ex{Midi_Spec::XG, "MelloGtr"}},
-    {midi_program_ex_id(00, 0x12, 0x21), Midi_Program_Ex{Midi_Spec::XG, "FingrDrk"}},
-    {midi_program_ex_id(00, 0x12, 0x26), Midi_Program_Ex{Midi_Spec::XG, "SynBa1Dk"}},
-    {midi_program_ex_id(00, 0x12, 0x27), Midi_Program_Ex{Midi_Spec::XG, "SynBa1Dk"}},
-    {midi_program_ex_id(00, 0x12, 0x28), Midi_Program_Ex{Midi_Spec::XG, "ClkSynBa"}},
-    {midi_program_ex_id(00, 0x12, 0x39), Midi_Program_Ex{Midi_Spec::XG, "Trmbone2"}},
-    {midi_program_ex_id(00, 0x12, 0x3f), Midi_Program_Ex{Midi_Spec::XG, "Soft Brs"}},
-    {midi_program_ex_id(00, 0x12, 0x50), Midi_Program_Ex{Midi_Spec::XG, "Hollow"}},
-    {midi_program_ex_id(00, 0x12, 0x51), Midi_Program_Ex{Midi_Spec::XG, "DynaSaw"}},
-    {midi_program_ex_id(00, 0x12, 0x59), Midi_Program_Ex{Midi_Spec::XG, "SinePad"}},
-    {midi_program_ex_id(00, 0x12, 0x62), Midi_Program_Ex{Midi_Spec::XG, "TinyBell"}},
-    {midi_program_ex_id(00, 0x12, 0x63), Midi_Program_Ex{Midi_Spec::XG, "WarmAtms"}},
-    {midi_program_ex_id(00, 0x13, 0x27), Midi_Program_Ex{Midi_Spec::XG, "SynBa2Dk"}},
-    {midi_program_ex_id(00, 0x13, 0x50), Midi_Program_Ex{Midi_Spec::XG, "Shmoog"}},
-    {midi_program_ex_id(00, 0x13, 0x51), Midi_Program_Ex{Midi_Spec::XG, "DigiSaw"}},
-    {midi_program_ex_id(00, 0x13, 0x63), Midi_Program_Ex{Midi_Spec::XG, "HollwRls"}},
-    {midi_program_ex_id(00, 0x14, 0x26), Midi_Program_Ex{Midi_Spec::XG, "FastResB"}},
-    {midi_program_ex_id(00, 0x14, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "RezSynBr"}},
-    {midi_program_ex_id(00, 0x14, 0x51), Midi_Program_Ex{Midi_Spec::XG, "Big Lead"}},
-    {midi_program_ex_id(00, 0x14, 0x5f), Midi_Program_Ex{Midi_Spec::XG, "Shwimmer"}},
-    {midi_program_ex_id(00, 0x18, 0x11), Midi_Program_Ex{Midi_Spec::XG, "70sPcOr1"}},
-    {midi_program_ex_id(00, 0x18, 0x26), Midi_Program_Ex{Midi_Spec::XG, "AcidBass"}},
-    {midi_program_ex_id(00, 0x18, 0x30), Midi_Program_Ex{Midi_Spec::XG, "ArcoStr"}},
-    {midi_program_ex_id(00, 0x18, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "PolyBrss"}},
-    {midi_program_ex_id(00, 0x18, 0x51), Midi_Program_Ex{Midi_Spec::XG, "HeavySyn"}},
-    {midi_program_ex_id(00, 0x18, 0x55), Midi_Program_Ex{Midi_Spec::XG, "SynthAah"}},
-    {midi_program_ex_id(00, 0x19, 0x6), Midi_Program_Ex{Midi_Spec::XG, "Harpsi.2"}},
-    {midi_program_ex_id(00, 0x19, 0x18), Midi_Program_Ex{Midi_Spec::XG, "NylonGt3"}},
-    {midi_program_ex_id(00, 0x19, 0x51), Midi_Program_Ex{Midi_Spec::XG, "WaspySyn"}},
-    {midi_program_ex_id(00, 0x1b, 0x7), Midi_Program_Ex{Midi_Spec::XG, "ClaviWah"}},
-    {midi_program_ex_id(00, 0x1b, 0x21), Midi_Program_Ex{Midi_Spec::XG, "FlangeBa"}},
-    {midi_program_ex_id(00, 0x1b, 0x24), Midi_Program_Ex{Midi_Spec::XG, "ResoSlap"}},
-    {midi_program_ex_id(00, 0x1b, 0x32), Midi_Program_Ex{Midi_Spec::XG, "ResoStr"}},
-    {midi_program_ex_id(00, 0x1b, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "SynBras3"}},
-    {midi_program_ex_id(00, 0x1b, 0x5f), Midi_Program_Ex{Midi_Spec::XG, "Converge"}},
-    {midi_program_ex_id(00, 0x1b, 0x61), Midi_Program_Ex{Midi_Spec::XG, "Prologue"}},
-    {midi_program_ex_id(00, 0x1c, 0x22), Midi_Program_Ex{Midi_Spec::XG, "MutePkBa"}},
-    {midi_program_ex_id(00, 0x1c, 0x69), Midi_Program_Ex{Midi_Spec::XG, "MuteBnjo"}},
-    {midi_program_ex_id(00, 0x20, 0x2), Midi_Program_Ex{Midi_Spec::XG, "Det.CP80"}},
-    {midi_program_ex_id(00, 0x20, 0x4), Midi_Program_Ex{Midi_Spec::XG, "Chor.EP1"}},
-    {midi_program_ex_id(00, 0x20, 0x5), Midi_Program_Ex{Midi_Spec::XG, "Chor.EP2"}},
-    {midi_program_ex_id(00, 0x20, 0x10), Midi_Program_Ex{Midi_Spec::XG, "DetDrwOr"}},
-    {midi_program_ex_id(00, 0x20, 0x11), Midi_Program_Ex{Midi_Spec::XG, "DetPrcOr"}},
-    {midi_program_ex_id(00, 0x20, 0x13), Midi_Program_Ex{Midi_Spec::XG, "ChurOrg3"}},
-    {midi_program_ex_id(00, 0x20, 0x15), Midi_Program_Ex{Midi_Spec::XG, "AccordIt"}},
-    {midi_program_ex_id(00, 0x20, 0x16), Midi_Program_Ex{Midi_Spec::XG, "Harmo 2"}},
-    {midi_program_ex_id(00, 0x20, 0x1a), Midi_Program_Ex{Midi_Spec::XG, "JazzAmp"}},
-    {midi_program_ex_id(00, 0x20, 0x1b), Midi_Program_Ex{Midi_Spec::XG, "ChorusGt"}},
-    {midi_program_ex_id(00, 0x20, 0x23), Midi_Program_Ex{Midi_Spec::XG, "Fretles2"}},
-    {midi_program_ex_id(00, 0x20, 0x24), Midi_Program_Ex{Midi_Spec::XG, "PunchThm"}},
-    {midi_program_ex_id(00, 0x20, 0x27), Midi_Program_Ex{Midi_Spec::XG, "SmthBa 2"}},
-    {midi_program_ex_id(00, 0x20, 0x34), Midi_Program_Ex{Midi_Spec::XG, "MelChoir"}},
-    {midi_program_ex_id(00, 0x20, 0x38), Midi_Program_Ex{Midi_Spec::XG, "WarmTrp"}},
-    {midi_program_ex_id(00, 0x20, 0x3c), Midi_Program_Ex{Midi_Spec::XG, "FrHorn2"}},
-    {midi_program_ex_id(00, 0x20, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "JumpBrss"}},
-    {midi_program_ex_id(00, 0x20, 0x68), Midi_Program_Ex{Midi_Spec::XG, "DetSitar"}},
-    {midi_program_ex_id(00, 0x21, 0x5), Midi_Program_Ex{Midi_Spec::XG, "DX Hard"}},
-    {midi_program_ex_id(00, 0x21, 0x10), Midi_Program_Ex{Midi_Spec::XG, "60sDrOr1"}},
-    {midi_program_ex_id(00, 0x21, 0x11), Midi_Program_Ex{Midi_Spec::XG, "LiteOrg"}},
-    {midi_program_ex_id(00, 0x21, 0x23), Midi_Program_Ex{Midi_Spec::XG, "Fretles3"}},
-    {midi_program_ex_id(00, 0x22, 0x5), Midi_Program_Ex{Midi_Spec::XG, "DXLegend"}},
-    {midi_program_ex_id(00, 0x22, 0x10), Midi_Program_Ex{Midi_Spec::XG, "60sDrOr2"}},
-    {midi_program_ex_id(00, 0x22, 0x23), Midi_Program_Ex{Midi_Spec::XG, "Fretles4"}},
-    {midi_program_ex_id(00, 0x23, 0x6), Midi_Program_Ex{Midi_Spec::XG, "Harpsi.3"}},
-    {midi_program_ex_id(00, 0x23, 0xf), Midi_Program_Ex{Midi_Spec::XG, "Dulcimr2"}},
-    {midi_program_ex_id(00, 0x23, 0x10), Midi_Program_Ex{Midi_Spec::XG, "70sDrOr1"}},
-    {midi_program_ex_id(00, 0x23, 0x13), Midi_Program_Ex{Midi_Spec::XG, "ChurOrg2"}},
-    {midi_program_ex_id(00, 0x23, 0x19), Midi_Program_Ex{Midi_Spec::XG, "12StrGtr"}},
-    {midi_program_ex_id(00, 0x23, 0x26), Midi_Program_Ex{Midi_Spec::XG, "Clv Bass"}},
-    {midi_program_ex_id(00, 0x23, 0x30), Midi_Program_Ex{Midi_Spec::XG, "60sStrng"}},
-    {midi_program_ex_id(00, 0x23, 0x37), Midi_Program_Ex{Midi_Spec::XG, "OrchHit2"}},
-    {midi_program_ex_id(00, 0x23, 0x3d), Midi_Program_Ex{Midi_Spec::XG, "Tp&TbSec"}},
-    {midi_program_ex_id(00, 0x23, 0x56), Midi_Program_Ex{Midi_Spec::XG, "Big Five"}},
-    {midi_program_ex_id(00, 0x23, 0x62), Midi_Program_Ex{Midi_Spec::XG, "RndGlock"}},
-    {midi_program_ex_id(00, 0x23, 0x68), Midi_Program_Ex{Midi_Spec::XG, "Sitar 2"}},
-    {midi_program_ex_id(00, 0x24, 0x10), Midi_Program_Ex{Midi_Spec::XG, "DrawOrg2"}},
-    {midi_program_ex_id(00, 0x25, 0x10), Midi_Program_Ex{Midi_Spec::XG, "60sDrOr3"}},
-    {midi_program_ex_id(00, 0x25, 0x11), Midi_Program_Ex{Midi_Spec::XG, "PercOrg2"}},
-    {midi_program_ex_id(00, 0x25, 0x3c), Midi_Program_Ex{Midi_Spec::XG, "HornOrch"}},
-    {midi_program_ex_id(00, 0x26, 0x10), Midi_Program_Ex{Midi_Spec::XG, "EvenBar"}},
-    {midi_program_ex_id(00, 0x28, 00), Midi_Program_Ex{Midi_Spec::XG, "PianoStr"}},
-    {midi_program_ex_id(00, 0x28, 0x2), Midi_Program_Ex{Midi_Spec::XG, "ElGrPno1"}},
-    {midi_program_ex_id(00, 0x28, 0x4), Midi_Program_Ex{Midi_Spec::XG, "HardEl.P"}},
-    {midi_program_ex_id(00, 0x28, 0x5), Midi_Program_Ex{Midi_Spec::XG, "DX Phase"}},
-    {midi_program_ex_id(00, 0x28, 0x10), Midi_Program_Ex{Midi_Spec::XG, "16+2\"2/3"}},
-    {midi_program_ex_id(00, 0x28, 0x13), Midi_Program_Ex{Midi_Spec::XG, "NotreDam"}},
-    {midi_program_ex_id(00, 0x28, 0x14), Midi_Program_Ex{Midi_Spec::XG, "Puff Org"}},
-    {midi_program_ex_id(00, 0x28, 0x19), Midi_Program_Ex{Midi_Spec::XG, "Nyln&Stl"}},
-    {midi_program_ex_id(00, 0x28, 0x1c), Midi_Program_Ex{Midi_Spec::XG, "FunkGtr1"}},
-    {midi_program_ex_id(00, 0x28, 0x1e), Midi_Program_Ex{Midi_Spec::XG, "FeedbkGt"}},
-    {midi_program_ex_id(00, 0x28, 0x20), Midi_Program_Ex{Midi_Spec::XG, "Jazz Rhythm"}},
-    {midi_program_ex_id(00, 0x28, 0x21), Midi_Program_Ex{Midi_Spec::XG, "Ba&DstEG"}},
-    {midi_program_ex_id(00, 0x28, 0x26), Midi_Program_Ex{Midi_Spec::XG, "Techno Bass"}},
-    {midi_program_ex_id(00, 0x28, 0x27), Midi_Program_Ex{Midi_Spec::XG, "Modular Bass"}},
-    {midi_program_ex_id(00, 0x28, 0x2c), Midi_Program_Ex{Midi_Spec::XG, "Susp Str"}},
-    {midi_program_ex_id(00, 0x28, 0x2e), Midi_Program_Ex{Midi_Spec::XG, "Yang Chin"}},
-    {midi_program_ex_id(00, 0x28, 0x30), Midi_Program_Ex{Midi_Spec::XG, "Orchestra"}},
-    {midi_program_ex_id(00, 0x28, 0x31), Midi_Program_Ex{Midi_Spec::XG, "Warm Str"}},
-    {midi_program_ex_id(00, 0x28, 0x34), Midi_Program_Ex{Midi_Spec::XG, "ChoirStr"}},
-    {midi_program_ex_id(00, 0x28, 0x36), Midi_Program_Ex{Midi_Spec::XG, "SynVox2"}},
-    {midi_program_ex_id(00, 0x28, 0x3d), Midi_Program_Ex{Midi_Spec::XG, "BrassSec2"}},
-    {midi_program_ex_id(00, 0x28, 0x3f), Midi_Program_Ex{Midi_Spec::XG, "SynBras4"}},
-    {midi_program_ex_id(00, 0x28, 0x41), Midi_Program_Ex{Midi_Spec::XG, "Sax Sect"}},
-    {midi_program_ex_id(00, 0x28, 0x42), Midi_Program_Ex{Midi_Spec::XG, "BrthTnSx"}},
-    {midi_program_ex_id(00, 0x28, 0x51), Midi_Program_Ex{Midi_Spec::XG, "Pulse Saw"}},
-    {midi_program_ex_id(00, 0x28, 0x62), Midi_Program_Ex{Midi_Spec::XG, "GlockChi"}},
-    {midi_program_ex_id(00, 0x28, 0x63), Midi_Program_Ex{Midi_Spec::XG, "NylonEP"}},
-    {midi_program_ex_id(00, 0x29, 00), Midi_Program_Ex{Midi_Spec::XG, "Dream"}},
-    {midi_program_ex_id(00, 0x29, 0x2), Midi_Program_Ex{Midi_Spec::XG, "ElGrPno2"}},
-    {midi_program_ex_id(00, 0x29, 0x5), Midi_Program_Ex{Midi_Spec::XG, "DX+Analg"}},
-    {midi_program_ex_id(00, 0x29, 0x19), Midi_Program_Ex{Midi_Spec::XG, "Stl&Body"}},
-    {midi_program_ex_id(00, 0x29, 0x1c), Midi_Program_Ex{Midi_Spec::XG, "MuteStlG"}},
-    {midi_program_ex_id(00, 0x29, 0x1e), Midi_Program_Ex{Midi_Spec::XG, "FeedbGt2"}},
-    {midi_program_ex_id(00, 0x29, 0x27), Midi_Program_Ex{Midi_Spec::XG, "DX Bass"}},
-    {midi_program_ex_id(00, 0x29, 0x30), Midi_Program_Ex{Midi_Spec::XG, "Orchstr2"}},
-    {midi_program_ex_id(00, 0x29, 0x31), Midi_Program_Ex{Midi_Spec::XG, "Kingdom"}},
-    {midi_program_ex_id(00, 0x29, 0x36), Midi_Program_Ex{Midi_Spec::XG, "Choral"}},
-    {midi_program_ex_id(00, 0x29, 0x3d), Midi_Program_Ex{Midi_Spec::XG, "HiBrass"}},
-    {midi_program_ex_id(00, 0x29, 0x3f), Midi_Program_Ex{Midi_Spec::XG, "ChorBrss"}},
-    {midi_program_ex_id(00, 0x29, 0x42), Midi_Program_Ex{Midi_Spec::XG, "SoftTenr"}},
-    {midi_program_ex_id(00, 0x29, 0x51), Midi_Program_Ex{Midi_Spec::XG, "Dr. Lead"}},
-    {midi_program_ex_id(00, 0x29, 0x62), Midi_Program_Ex{Midi_Spec::XG, "ClearBel"}},
-    {midi_program_ex_id(00, 0x2a, 0x5), Midi_Program_Ex{Midi_Spec::XG, "DXKotoEP"}},
-    {midi_program_ex_id(00, 0x2a, 0x30), Midi_Program_Ex{Midi_Spec::XG, "TremOrch"}},
-    {midi_program_ex_id(00, 0x2a, 0x3d), Midi_Program_Ex{Midi_Spec::XG, "MelloBrs"}},
-    {midi_program_ex_id(00, 0x2a, 0x62), Midi_Program_Ex{Midi_Spec::XG, "ChorBell"}},
-    {midi_program_ex_id(00, 0x2b, 0x18), Midi_Program_Ex{Midi_Spec::XG, "VelGtHrm"}},
-    {midi_program_ex_id(00, 0x2b, 0x1c), Midi_Program_Ex{Midi_Spec::XG, "FunkGtr2"}},
-    {midi_program_ex_id(00, 0x2b, 0x1d), Midi_Program_Ex{Midi_Spec::XG, "Gt.Pinch"}},
-    {midi_program_ex_id(00, 0x2b, 0x21), Midi_Program_Ex{Midi_Spec::XG, "FngrSlap"}},
-    {midi_program_ex_id(00, 0x2b, 0x25), Midi_Program_Ex{Midi_Spec::XG, "VeloSlap"}},
-    {midi_program_ex_id(00, 0x2b, 0x41), Midi_Program_Ex{Midi_Spec::XG, "HyprAlto"}},
-    {midi_program_ex_id(00, 0x2d, 0x4), Midi_Program_Ex{Midi_Spec::XG, "VX El.P1"}},
-    {midi_program_ex_id(00, 0x2d, 0x5), Midi_Program_Ex{Midi_Spec::XG, "VX El.P2"}},
-    {midi_program_ex_id(00, 0x2d, 0xb), Midi_Program_Ex{Midi_Spec::XG, "HardVibe"}},
-    {midi_program_ex_id(00, 0x2d, 0x1c), Midi_Program_Ex{Midi_Spec::XG, "Jazz Man"}},
-    {midi_program_ex_id(00, 0x2d, 0x20), Midi_Program_Ex{Midi_Spec::XG, "VX Upright"}},
-    {midi_program_ex_id(00, 0x2d, 0x21), Midi_Program_Ex{Midi_Spec::XG, "FngBass2"}},
-    {midi_program_ex_id(00, 0x2d, 0x30), Midi_Program_Ex{Midi_Spec::XG, "VeloStr"}},
-    {midi_program_ex_id(00, 0x2d, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "AnaVelBr"}},
-    {midi_program_ex_id(00, 0x2d, 0x3f), Midi_Program_Ex{Midi_Spec::XG, "VelBras2"}},
-    {midi_program_ex_id(00, 0x2d, 0x51), Midi_Program_Ex{Midi_Spec::XG, "VeloLead"}},
-    {midi_program_ex_id(00, 0x2d, 0x60), Midi_Program_Ex{Midi_Spec::XG, "ClaviPad"}},
-    {midi_program_ex_id(00, 0x40, 0x4), Midi_Program_Ex{Midi_Spec::XG, "60sEl.P"}},
-    {midi_program_ex_id(00, 0x40, 0x7), Midi_Program_Ex{Midi_Spec::XG, "PulseClv"}},
-    {midi_program_ex_id(00, 0x40, 0xa), Midi_Program_Ex{Midi_Spec::XG, "Orgel"}},
-    {midi_program_ex_id(00, 0x40, 0xc), Midi_Program_Ex{Midi_Spec::XG, "SineMrmb"}},
-    {midi_program_ex_id(00, 0x40, 0x10), Midi_Program_Ex{Midi_Spec::XG, "Organ Ba"}},
-    {midi_program_ex_id(00, 0x40, 0x12), Midi_Program_Ex{Midi_Spec::XG, "RotaryOr"}},
-    {midi_program_ex_id(00, 0x40, 0x13), Midi_Program_Ex{Midi_Spec::XG, "OrgFlute"}},
-    {midi_program_ex_id(00, 0x40, 0x17), Midi_Program_Ex{Midi_Spec::XG, "TngoAcd2"}},
-    {midi_program_ex_id(00, 0x40, 0x26), Midi_Program_Ex{Midi_Spec::XG, "Oscar"}},
-    {midi_program_ex_id(00, 0x40, 0x27), Midi_Program_Ex{Midi_Spec::XG, "X WireBa"}},
-    {midi_program_ex_id(00, 0x40, 0x31), Midi_Program_Ex{Midi_Spec::XG, "70s Str"}},
-    {midi_program_ex_id(00, 0x40, 0x32), Midi_Program_Ex{Midi_Spec::XG, "Syn Str4"}},
-    {midi_program_ex_id(00, 0x40, 0x36), Midi_Program_Ex{Midi_Spec::XG, "AnaVoice"}},
-    {midi_program_ex_id(00, 0x40, 0x37), Midi_Program_Ex{Midi_Spec::XG, "Impact"}},
-    {midi_program_ex_id(00, 0x40, 0x3e), Midi_Program_Ex{Midi_Spec::XG, "AnaBrss1"}},
-    {midi_program_ex_id(00, 0x40, 0x3f), Midi_Program_Ex{Midi_Spec::XG, "AnaBras2"}},
-    {midi_program_ex_id(00, 0x40, 0x42), Midi_Program_Ex{Midi_Spec::XG, "TnrSax 2"}},
-    {midi_program_ex_id(00, 0x40, 0x50), Midi_Program_Ex{Midi_Spec::XG, "Mellow"}},
-    {midi_program_ex_id(00, 0x40, 0x53), Midi_Program_Ex{Midi_Spec::XG, "Rubby"}},
-    {midi_program_ex_id(00, 0x40, 0x54), Midi_Program_Ex{Midi_Spec::XG, "DistLead"}},
-    {midi_program_ex_id(00, 0x40, 0x55), Midi_Program_Ex{Midi_Spec::XG, "VoxLead"}},
-    {midi_program_ex_id(00, 0x40, 0x57), Midi_Program_Ex{Midi_Spec::XG, "Fat&Prky"}},
-    {midi_program_ex_id(00, 0x40, 0x58), Midi_Program_Ex{Midi_Spec::XG, "Fantasy2"}},
-    {midi_program_ex_id(00, 0x40, 0x59), Midi_Program_Ex{Midi_Spec::XG, "Horn Pad"}},
-    {midi_program_ex_id(00, 0x40, 0x5a), Midi_Program_Ex{Midi_Spec::XG, "PolyPd80"}},
-    {midi_program_ex_id(00, 0x40, 0x5b), Midi_Program_Ex{Midi_Spec::XG, "Heaven2"}},
-    {midi_program_ex_id(00, 0x40, 0x5c), Midi_Program_Ex{Midi_Spec::XG, "Glacier"}},
-    {midi_program_ex_id(00, 0x40, 0x5d), Midi_Program_Ex{Midi_Spec::XG, "Tine Pad"}},
-    {midi_program_ex_id(00, 0x40, 0x5f), Midi_Program_Ex{Midi_Spec::XG, "PolarPad"}},
-    {midi_program_ex_id(00, 0x40, 0x60), Midi_Program_Ex{Midi_Spec::XG, "HrmoRain"}},
-    {midi_program_ex_id(00, 0x40, 0x61), Midi_Program_Ex{Midi_Spec::XG, "Ancestrl"}},
-    {midi_program_ex_id(00, 0x40, 0x62), Midi_Program_Ex{Midi_Spec::XG, "SynMalet"}},
-    {midi_program_ex_id(00, 0x40, 0x63), Midi_Program_Ex{Midi_Spec::XG, "NylnHarp"}},
-    {midi_program_ex_id(00, 0x40, 0x64), Midi_Program_Ex{Midi_Spec::XG, "FantaBel"}},
-    {midi_program_ex_id(00, 0x40, 0x65), Midi_Program_Ex{Midi_Spec::XG, "GobSyn"}},
-    {midi_program_ex_id(00, 0x40, 0x66), Midi_Program_Ex{Midi_Spec::XG, "EchoBell"}},
-    {midi_program_ex_id(00, 0x40, 0x67), Midi_Program_Ex{Midi_Spec::XG, "Starz"}},
-    {midi_program_ex_id(00, 0x40, 0x6f), Midi_Program_Ex{Midi_Spec::XG, "Shanai2"}},
-    {midi_program_ex_id(00, 0x40, 0x75), Midi_Program_Ex{Midi_Spec::XG, "Mel Tom2"}},
-    {midi_program_ex_id(00, 0x40, 0x76), Midi_Program_Ex{Midi_Spec::XG, "Ana Tom"}},
-    {midi_program_ex_id(00, 0x41, 0x7), Midi_Program_Ex{Midi_Spec::XG, "PierceCl"}},
-    {midi_program_ex_id(00, 0x41, 0x10), Midi_Program_Ex{Midi_Spec::XG, "70sDrOr2"}},
-    {midi_program_ex_id(00, 0x41, 0x12), Midi_Program_Ex{Midi_Spec::XG, "SlwRotar"}},
-    {midi_program_ex_id(00, 0x41, 0x13), Midi_Program_Ex{Midi_Spec::XG, "TrmOrgFl"}},
-    {midi_program_ex_id(00, 0x41, 0x1f), Midi_Program_Ex{Midi_Spec::XG, "GtFeedbk"}},
-    {midi_program_ex_id(00, 0x41, 0x21), Midi_Program_Ex{Midi_Spec::XG, "ModAlem"}},
-    {midi_program_ex_id(00, 0x41, 0x26), Midi_Program_Ex{Midi_Spec::XG, "SqrBass"}},
-    {midi_program_ex_id(00, 0x41, 0x32), Midi_Program_Ex{Midi_Spec::XG, "SS Str"}},
-    {midi_program_ex_id(00, 0x41, 0x50), Midi_Program_Ex{Midi_Spec::XG, "SoloSine"}},
-    {midi_program_ex_id(00, 0x41, 0x52), Midi_Program_Ex{Midi_Spec::XG, "Pure Pad"}},
-    {midi_program_ex_id(00, 0x41, 0x54), Midi_Program_Ex{Midi_Spec::XG, "WireLead"}},
-    {midi_program_ex_id(00, 0x41, 0x57), Midi_Program_Ex{Midi_Spec::XG, "SoftWurl"}},
-    {midi_program_ex_id(00, 0x41, 0x59), Midi_Program_Ex{Midi_Spec::XG, "RotarStr"}},
-    {midi_program_ex_id(00, 0x41, 0x5a), Midi_Program_Ex{Midi_Spec::XG, "ClickPad"}},
-    {midi_program_ex_id(00, 0x41, 0x5c), Midi_Program_Ex{Midi_Spec::XG, "GlassPad"}},
-    {midi_program_ex_id(00, 0x41, 0x5d), Midi_Program_Ex{Midi_Spec::XG, "Pan Pad"}},
-    {midi_program_ex_id(00, 0x41, 0x60), Midi_Program_Ex{Midi_Spec::XG, "AfrcnWod"}},
-    {midi_program_ex_id(00, 0x41, 0x62), Midi_Program_Ex{Midi_Spec::XG, "SftCryst"}},
-    {midi_program_ex_id(00, 0x41, 0x63), Midi_Program_Ex{Midi_Spec::XG, "Harp Vox"}},
-    {midi_program_ex_id(00, 0x41, 0x65), Midi_Program_Ex{Midi_Spec::XG, "50sSciFi"}},
-    {midi_program_ex_id(00, 0x41, 0x66), Midi_Program_Ex{Midi_Spec::XG, "Big Pan"}},
-    {midi_program_ex_id(00, 0x41, 0x75), Midi_Program_Ex{Midi_Spec::XG, "Real Tom"}},
-    {midi_program_ex_id(00, 0x41, 0x76), Midi_Program_Ex{Midi_Spec::XG, "ElecPerc"}},
-    {midi_program_ex_id(00, 0x42, 0x10), Midi_Program_Ex{Midi_Spec::XG, "CheezOrg"}},
-    {midi_program_ex_id(00, 0x42, 0x12), Midi_Program_Ex{Midi_Spec::XG, "FstRotar"}},
-    {midi_program_ex_id(00, 0x42, 0x1f), Midi_Program_Ex{Midi_Spec::XG, "GtrHrmo2"}},
-    {midi_program_ex_id(00, 0x42, 0x26), Midi_Program_Ex{Midi_Spec::XG, "RubberBa"}},
-    {midi_program_ex_id(00, 0x42, 0x50), Midi_Program_Ex{Midi_Spec::XG, "SineLead"}},
-    {midi_program_ex_id(00, 0x42, 0x5a), Midi_Program_Ex{Midi_Spec::XG, "Ana Pad"}},
-    {midi_program_ex_id(00, 0x42, 0x5b), Midi_Program_Ex{Midi_Spec::XG, "Itopia"}},
-    {midi_program_ex_id(00, 0x42, 0x5f), Midi_Program_Ex{Midi_Spec::XG, "Celstial"}},
-    {midi_program_ex_id(00, 0x42, 0x60), Midi_Program_Ex{Midi_Spec::XG, "Caribean"}},
-    {midi_program_ex_id(00, 0x42, 0x62), Midi_Program_Ex{Midi_Spec::XG, "LoudGlok"}},
-    {midi_program_ex_id(00, 0x42, 0x63), Midi_Program_Ex{Midi_Spec::XG, "AtmosPad"}},
-    {midi_program_ex_id(00, 0x42, 0x65), Midi_Program_Ex{Midi_Spec::XG, "Ring Pad"}},
-    {midi_program_ex_id(00, 0x42, 0x66), Midi_Program_Ex{Midi_Spec::XG, "SynPiano"}},
-    {midi_program_ex_id(00, 0x42, 0x75), Midi_Program_Ex{Midi_Spec::XG, "Rock Tom"}},
-    {midi_program_ex_id(00, 0x43, 0x10), Midi_Program_Ex{Midi_Spec::XG, "DrawOrg3"}},
-    {midi_program_ex_id(00, 0x43, 0x5a), Midi_Program_Ex{Midi_Spec::XG, "SquarPad"}},
-    {midi_program_ex_id(00, 0x43, 0x5b), Midi_Program_Ex{Midi_Spec::XG, "CC Pad"}},
-    {midi_program_ex_id(00, 0x43, 0x62), Midi_Program_Ex{Midi_Spec::XG, "XmasBell"}},
-    {midi_program_ex_id(00, 0x43, 0x63), Midi_Program_Ex{Midi_Spec::XG, "Planet"}},
-    {midi_program_ex_id(00, 0x43, 0x65), Midi_Program_Ex{Midi_Spec::XG, "Ritual"}},
-    {midi_program_ex_id(00, 0x43, 0x66), Midi_Program_Ex{Midi_Spec::XG, "Creation"}},
-    {midi_program_ex_id(00, 0x44, 0x62), Midi_Program_Ex{Midi_Spec::XG, "VibeBell"}},
-    {midi_program_ex_id(00, 0x44, 0x65), Midi_Program_Ex{Midi_Spec::XG, "ToHeaven"}},
-    {midi_program_ex_id(00, 0x44, 0x66), Midi_Program_Ex{Midi_Spec::XG, "Stardust"}},
-    {midi_program_ex_id(00, 0x45, 0x62), Midi_Program_Ex{Midi_Spec::XG, "DigiBell"}},
-    {midi_program_ex_id(00, 0x45, 0x66), Midi_Program_Ex{Midi_Spec::XG, "Reso Pan"}},
-    {midi_program_ex_id(00, 0x46, 0x62), Midi_Program_Ex{Midi_Spec::XG, "AirBells"}},
-    {midi_program_ex_id(00, 0x46, 0x65), Midi_Program_Ex{Midi_Spec::XG, "Night"}},
-    {midi_program_ex_id(00, 0x47, 0x62), Midi_Program_Ex{Midi_Spec::XG, "BellHarp"}},
-    {midi_program_ex_id(00, 0x47, 0x65), Midi_Program_Ex{Midi_Spec::XG, "Glisten"}},
-    {midi_program_ex_id(00, 0x48, 0x62), Midi_Program_Ex{Midi_Spec::XG, "Gamelmba"}},
-    {midi_program_ex_id(00, 0x60, 0xe), Midi_Program_Ex{Midi_Spec::XG, "Church Bell"}},
-    {midi_program_ex_id(00, 0x60, 0xf), Midi_Program_Ex{Midi_Spec::XG, "Cimbalom"}},
-    {midi_program_ex_id(00, 0x60, 0x18), Midi_Program_Ex{Midi_Spec::XG, "Ukelele"}},
-    {midi_program_ex_id(00, 0x60, 0x19), Midi_Program_Ex{Midi_Spec::XG, "Mandolin"}},
-    {midi_program_ex_id(00, 0x60, 0x23), Midi_Program_Ex{Midi_Spec::XG, "SynFretl"}},
-    {midi_program_ex_id(00, 0x60, 0x26), Midi_Program_Ex{Midi_Spec::XG, "Hammer"}},
-    {midi_program_ex_id(00, 0x60, 0x51), Midi_Program_Ex{Midi_Spec::XG, "Seq Ana"}},
-    {midi_program_ex_id(00, 0x60, 0x64), Midi_Program_Ex{Midi_Spec::XG, "Smokey"}},
-    {midi_program_ex_id(00, 0x60, 0x65), Midi_Program_Ex{Midi_Spec::XG, "BelChoir"}},
-    {midi_program_ex_id(00, 0x60, 0x68), Midi_Program_Ex{Midi_Spec::XG, "Tambra"}},
-    {midi_program_ex_id(00, 0x60, 0x69), Midi_Program_Ex{Midi_Spec::XG, "Rabab"}},
-    {midi_program_ex_id(00, 0x60, 0x6b), Midi_Program_Ex{Midi_Spec::XG, "T.Koto"}},
-    {midi_program_ex_id(00, 0x60, 0x6f), Midi_Program_Ex{Midi_Spec::XG, "Pungi"}},
-    {midi_program_ex_id(00, 0x60, 0x70), Midi_Program_Ex{Midi_Spec::XG, "Bonang"}},
-    {midi_program_ex_id(00, 0x60, 0x73), Midi_Program_Ex{Midi_Spec::XG, "Castanets"}},
-    {midi_program_ex_id(00, 0x60, 0x74), Midi_Program_Ex{Midi_Spec::XG, "Gr.Cassa"}},
-    {midi_program_ex_id(00, 0x61, 0xc), Midi_Program_Ex{Midi_Spec::XG, "Balafon2"}},
-    {midi_program_ex_id(00, 0x61, 0xe), Midi_Program_Ex{Midi_Spec::XG, "Carillon"}},
-    {midi_program_ex_id(00, 0x61, 0xf), Midi_Program_Ex{Midi_Spec::XG, "Santur"}},
-    {midi_program_ex_id(00, 0x61, 0x23), Midi_Program_Ex{Midi_Spec::XG, "Smooth"}},
-    {midi_program_ex_id(00, 0x61, 0x68), Midi_Program_Ex{Midi_Spec::XG, "Tamboura"}},
-    {midi_program_ex_id(00, 0x61, 0x69), Midi_Program_Ex{Midi_Spec::XG, "Gopichnt"}},
-    {midi_program_ex_id(00, 0x61, 0x6b), Midi_Program_Ex{Midi_Spec::XG, "Kanoon"}},
-    {midi_program_ex_id(00, 0x61, 0x6f), Midi_Program_Ex{Midi_Spec::XG, "Hichriki"}},
-    {midi_program_ex_id(00, 0x61, 0x70), Midi_Program_Ex{Midi_Spec::XG, "Gender"}},
-    {midi_program_ex_id(00, 0x61, 0x72), Midi_Program_Ex{Midi_Spec::XG, "GlasPerc"}},
-    {midi_program_ex_id(00, 0x62, 0xc), Midi_Program_Ex{Midi_Spec::XG, "Log Drum"}},
-    {midi_program_ex_id(00, 0x62, 0x69), Midi_Program_Ex{Midi_Spec::XG, "Oud"}},
-    {midi_program_ex_id(00, 0x62, 0x70), Midi_Program_Ex{Midi_Spec::XG, "Gamelan"}},
-    {midi_program_ex_id(00, 0x62, 0x72), Midi_Program_Ex{Midi_Spec::XG, "ThaiBell"}},
-    {midi_program_ex_id(00, 0x63, 0x70), Midi_Program_Ex{Midi_Spec::XG, "S.Gamlan"}},
-    {midi_program_ex_id(00, 0x64, 0x70), Midi_Program_Ex{Midi_Spec::XG, "Rama Cym"}},
-    {midi_program_ex_id(00, 0x65, 0x70), Midi_Program_Ex{Midi_Spec::XG, "AsianBel"}},
-};
+void Midi_Db::init_midi_ex()
+{
+    midi_ex_[midi_ex_id(0x1, 00, 0x26)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Synth Bass 101")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x39)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Trombone 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x3c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("French Horn2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Square")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Saw")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Syn Mallet")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Echo Bell")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x68)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Sitar 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Gt. Cut Noise")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x79)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Flute Key Click")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x7a)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Rain")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x7b)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Dog")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Telephone 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Car-Engine")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Laughing")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x7f)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Machine Gun")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Echo Pan")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::GS, _EX("String Slap")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x7a)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Thunder")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x7b)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Horse-Gallop")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Door Creaking")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Car-Stop")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Screaming")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x7f)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Lasergun")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x7a)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Wind")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x7b)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Bird 2")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Door Close")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Car-Pass")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Punch")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x7f)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Explosion")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x7a)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Stream")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Scratch")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Car-Crash")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Heart Beat")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x7a)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Bubble")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Windchime")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Siren")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Footsteps")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Train")};
+    midi_ex_[midi_ex_id(0x7, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Jetplane")};
+    midi_ex_[midi_ex_id(0x8, 00, 00)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Piano 1w")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x1)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Piano 2w")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x2)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Piano 3w")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x3)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Honky-tonk w/Old Upright")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x4)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Detuned EP 1")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x5)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Detuned EP 2")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x6)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Coupled Hps.")};
+    midi_ex_[midi_ex_id(0x8, 00, 0xb)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Vib.w")};
+    midi_ex_[midi_ex_id(0x8, 00, 0xc)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Marimba w")};
+    midi_ex_[midi_ex_id(0x8, 00, 0xe)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Church Bell")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Detuned Or.1")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x11)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Detuned Or.2")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x13)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Church Org.2")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x15)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Accordion It")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x18)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Ukulele")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x19)] = Midi_Program_Ex{Midi_Spec::GS, _EX("12-str Guitar")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x1a)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Hawaiian Gt./Pedal Steel")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x1b)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Chorus Gt.")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x1c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Funk Gt/Funk Pop")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Feedback Gt.")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x1f)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Gt.Feedback")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x26)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Synth Bass 3/Acid Bass")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Synth Bass 4/Beef FM Bass")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x28)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Slow Violin")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Orchestra")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x32)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Syn.Strings 3")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x3d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Brass 2")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x3e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Synth Brass 3")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x3f)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Synth Brass 4")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Sine Wave")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Doctor Solo")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x6b)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Taisho Koto")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x73)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Castanets")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x74)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Concert Bass Drum")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x75)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Melo. Tom 2")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x76)] = Midi_Program_Ex{Midi_Spec::GS, _EX("808 Tom")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Starship")};
+    midi_ex_[midi_ex_id(0x9, 00, 0xe)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Carillon")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x76)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Elec Perc")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Burst Noise")};
+    midi_ex_[midi_ex_id(0x10, 00, 00)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Piano 1d")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x4)] = Midi_Program_Ex{Midi_Spec::GS, _EX("E.Piano 1w")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x5)] = Midi_Program_Ex{Midi_Spec::GS, _EX("E.Piano 2w/Soft FM EP")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x6)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Harpsi.w")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::GS, _EX("60's Organ 1")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x13)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Church Org.3")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x18)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Nylon Gt.o")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x19)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Mandolin")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x1c)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Funk Gt.2")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Rubber Bass")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x3e)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Analog Brass1/Octave Brass")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x3f)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Analog Brass 2/Velo Brass 1")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x4)] = Midi_Program_Ex{Midi_Spec::GS, _EX("60's E.Piano")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x6)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Harpsi.o")};
+    midi_ex_[midi_ex_id(0x20, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Organ 4")};
+    midi_ex_[midi_ex_id(0x20, 00, 0x11)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Organ 5")};
+    midi_ex_[midi_ex_id(0x20, 00, 0x18)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Nylon Gt.2")};
+    midi_ex_[midi_ex_id(0x20, 00, 0x34)] = Midi_Program_Ex{Midi_Spec::GS, _EX("Choir Aahs 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x2)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("EG+Rhodes1")};
+    midi_ex_[midi_ex_id(0x1, 00, 0xb)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Hard Vibe")};
+    midi_ex_[midi_ex_id(0x1, 00, 0xf)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Santur 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Organ 101")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x11)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Organ 201")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x16)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Harmonica 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x1a)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Mellow Gt.")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x1c)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Muted Dis.Gt")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Dist.Gt 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x21)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fingered Bs2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x23)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fretless Bs2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Synth Bass 201")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Strings 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x31)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("SlowStrings2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x32)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("OB Strings")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x38)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Trumpet 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x3a)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tuba 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x3e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Poly Brass")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x3f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Soft Brass")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x52)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Vent Synth")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x56)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Big Fives")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x57)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Big & Raw")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x58)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fantasia 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x59)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Thick Pad")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x5a)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("80's PolySyn")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x5b)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Heaven II")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x5d)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tine Pad")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x5f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Polar Pad")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x60)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Harmo Rain")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x61)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Ancestral")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Warm Atmos")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x65)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Goblinson")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x67)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Star Theme 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x69)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Muted Banjo")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x6a)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tsugaru")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x6f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Shanai 2")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x75)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Real Tom")};
+    midi_ex_[midi_ex_id(0x1, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Reverse Cym2")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x2)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("EG+Rhodes2")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Dazed Guitar")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x21)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Jazz Bass")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x23)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fretless Bs3")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Modular Bass")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Hollow Mini")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Pulse Saw")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x52)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Pure PanLead")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x57)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fat & Perky")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x59)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Horn Pad")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x5d)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Panner Pad")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x60)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("African Wood")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x61)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Prologue")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Soft Crystal")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Nylon Harp")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x65)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("50's Sci-Fi")};
+    midi_ex_[midi_ex_id(0x2, 00, 0x68)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Detune Sitar")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x23)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fretless Bs4")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Seq Bass")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Mellow FM")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Feline GR")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x59)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("RotaryString")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Round Glock")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Harpvox")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Echo Pan 2")};
+    midi_ex_[midi_ex_id(0x3, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Gt.CutNoise2")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("CC Solo")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Big Lead")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x59)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Soft Pad")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Loud Glock")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("HollowReleas")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Big Panner")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Dist.CutNoise")};
+    midi_ex_[midi_ex_id(0x4, 00, 0x7b)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Kitty")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x23)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Mr.Smooth")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Shmoog")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Velo Lead")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("GlockenChime")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Nylon+Rhodes")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Reso Panner")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Bass Slide")};
+    midi_ex_[midi_ex_id(0x5, 00, 0x7b)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Growl")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("LM Square")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("GR-300")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Clear Bells")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Ambient Pad")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Water Piano")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Pick Scrape")};
+    midi_ex_[midi_ex_id(0x6, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Applause 2")};
+    midi_ex_[midi_ex_id(0x7, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("LA Saw")};
+    midi_ex_[midi_ex_id(0x7, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("ChristmasBel")};
+    midi_ex_[midi_ex_id(0x7, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Scratch 2")};
+    midi_ex_[midi_ex_id(0x8, 00, 0xf)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Cimbalom")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x12)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rotary Org.")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x22)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Mute PickBs.")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x24)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Reso Slap")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x2c)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Slow Tremolo")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x31)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Legato Str.")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x34)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("St.Choir")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x36)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Syn.Voice")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x37)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Impact Hit")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x38)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Flugel Horn")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x3c)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Fr.Horn Solo")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x41)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Hyper Alto")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x42)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("BreathyTenor")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x47)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Bs.Clarinet")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x4b)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Kawala")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x54)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Dist.Lead")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x5f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Converge")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x60)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Clavi Pad")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x61)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rave")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Vibra Bells")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x68)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tambra")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x69)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rabab")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x6f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Pungi")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x70)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Bonang")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x71)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Atarigane")};
+    midi_ex_[midi_ex_id(0x8, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rev.Snare 1")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Organ 109")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x19)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Nylon+Steel")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Feedback Gt2")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("X Wire Bass")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x2c)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Suspense Str")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Orchestra 2")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x31)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Warm Strings")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x34)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Mello Choir")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x37)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Philly Hit")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x3e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Quack Brass")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x5f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Shwimmer")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Digi Bells")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x70)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Gender")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x75)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rock Tom")};
+    midi_ex_[midi_ex_id(0x9, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rev.Snare 2")};
+    midi_ex_[midi_ex_id(0xa, 00, 0x26)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tekno Bass")};
+    midi_ex_[midi_ex_id(0xa, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tremolo Orch")};
+    midi_ex_[midi_ex_id(0xa, 00, 0x31)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("St.Slow Str.")};
+    midi_ex_[midi_ex_id(0xa, 00, 0x37)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Double Hit")};
+    midi_ex_[midi_ex_id(0xa, 00, 0x5f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Celestial Pd")};
+    midi_ex_[midi_ex_id(0xa, 00, 0x70)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Gamelan Gong")};
+    midi_ex_[midi_ex_id(0xb, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Choir Str.")};
+    midi_ex_[midi_ex_id(0xb, 00, 0x70)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("St.Gamelan")};
+    midi_ex_[midi_ex_id(0x10, 00, 0xc)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Barafon")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x12)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rotary Org.S")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Power Guitar")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x1f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Ac.Gt.Harmonx")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x26)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Reso SH Bass")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("St.Strings")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x37)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Lo Fi Rave")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x3c)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Horn Orch")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x3d)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Brass Fall")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Waspy Synth")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Choral Bells")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x68)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Tamboura")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x69)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Gopichant")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x6b)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Kanoon")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x6f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Hichiriki")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x70)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("RAMA Cymbal")};
+    midi_ex_[midi_ex_id(0x10, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rev.Kick 1")};
+    midi_ex_[midi_ex_id(0x11, 00, 0xc)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Barafon 2")};
+    midi_ex_[midi_ex_id(0x11, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("60's Organ 2")};
+    midi_ex_[midi_ex_id(0x11, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Power Gt.2")};
+    midi_ex_[midi_ex_id(0x11, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("SH101 Bass 1")};
+    midi_ex_[midi_ex_id(0x11, 00, 0x3f)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Velo Brass 2")};
+    midi_ex_[midi_ex_id(0x11, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Air Bells")};
+    midi_ex_[midi_ex_id(0x11, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rev.ConBD")};
+    midi_ex_[midi_ex_id(0x12, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("60's Organ 3")};
+    midi_ex_[midi_ex_id(0x12, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("5th Dist.")};
+    midi_ex_[midi_ex_id(0x12, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("SH101 Bass 2")};
+    midi_ex_[midi_ex_id(0x12, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Bell Harp")};
+    midi_ex_[midi_ex_id(0x13, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Smooth Bass")};
+    midi_ex_[midi_ex_id(0x13, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Gamelimba")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x5)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Hard FM EP")};
+    midi_ex_[midi_ex_id(0x18, 00, 0xc)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Log Drum")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Cheese Organ")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x12)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rotary Org.F")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x13)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Organ Flute")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x18)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Velo Harmnix")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rock Rhythm")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Velo Strings")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x38)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Bright Tp.")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x69)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Oud")};
+    midi_ex_[midi_ex_id(0x18, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rev.Tom 1")};
+    midi_ex_[midi_ex_id(0x19, 00, 0x4)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Hard Rhodes")};
+    midi_ex_[midi_ex_id(0x19, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rock Rhythm2")};
+    midi_ex_[midi_ex_id(0x19, 00, 0x38)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Warm Tp.")};
+    midi_ex_[midi_ex_id(0x19, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Rev.Tom 2")};
+    midi_ex_[midi_ex_id(0x1a, 00, 0x4)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("MellowRhodes")};
+    midi_ex_[midi_ex_id(0x20, 00, 0x13)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Trem.Flute")};
+    midi_ex_[midi_ex_id(0x20, 00, 0x19)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Steel Gt.2")};
+    midi_ex_[midi_ex_id(0x21, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Even Bar")};
+    midi_ex_[midi_ex_id(0x28, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Organ Bass")};
+    midi_ex_[midi_ex_id(0x28, 00, 0x18)] = Midi_Program_Ex{Midi_Spec::SC88, _EX("Lequint Gt.")};
+    midi_ex_[midi_ex_id(0x7f, 00, 00)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Acou Piano 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Acou Piano 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Acou Piano 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Piano 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Piano 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Piano 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Piano 4")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Honkytonk")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x8)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Org 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x9)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Org 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0xa)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Org 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0xb)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Org 4")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0xc)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Pipe Org 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0xd)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Pipe Org 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0xe)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Pipe Org 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0xf)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Accordion")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x10)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harpsi 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x11)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harpsi 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x12)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harpsi 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x13)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Clavi 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x14)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Clavi 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x15)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Clavi 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x16)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Celesta 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x17)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Celesta 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x18)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Brass 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x19)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Brass 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Brass 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Brass 4")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Bass 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Bass 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Bass 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x1f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Bass 4")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x20)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Fantasy")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x21)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harmo Pan")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x22)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Chorale")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x23)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Glasses")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x24)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Soundtrack")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x25)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Atmosphere")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x26)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Warm Bell")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x27)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Funny Vox")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x28)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Echo Bell")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x29)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Ice Rain")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Oboe 2001")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Echo Pan")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Doctor Solo")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("School Daze")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Bellsinger")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x2f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Square Wave")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x30)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Str Sect 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x31)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Str Sect 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x32)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Str Sect 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x33)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Pizzicato")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x34)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Violin 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x35)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Violin 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x36)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Cello 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x37)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Cello 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x38)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Contrabass")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x39)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harp 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harp 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Guitar 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Guitar 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Gtr 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elect Gtr 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x3f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Sitar")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x40)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Acou Bass 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x41)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Acou Bass 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x42)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Bass 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x43)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Bass 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x44)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Slap Bass 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x45)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Slap Bass 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x46)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Fretless 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x47)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Fretless 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x48)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Flute 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x49)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Flute 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Piccolo 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Piccolo 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Recorder")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Pan Pipes")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Sax 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x4f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Sax 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x50)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Sax 3")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x51)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Sax 4")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x52)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Clarinet 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x53)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Clarinet 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x54)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Oboe")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x55)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Engl Horn")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x56)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Bassoon")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x57)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Harmonica")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x58)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Trumpet 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x59)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Trumpet 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Trombone 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Trombone 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Fr Horn 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Fr Horn 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Tuba")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x5f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Brs Sect 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x60)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Brs Sect 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x61)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Vibe 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x62)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Vibe 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x63)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Syn Mallet")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x64)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Windbell")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x65)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Glock")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x66)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Tube Bell")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x67)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Xylophone")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x68)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Marimba")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x69)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Koto")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Sho")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Shakuhachi")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Whistle 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Whistle 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Bottleblow")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x6f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Breathpipe")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x70)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Timpani")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x71)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Melodic Tom")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x72)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Deep Snare")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x73)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Perc 1")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x74)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Elec Perc 2")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x75)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Taiko")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x76)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Taiko Rim")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x77)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Cymbal")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x78)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Castanets")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x79)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Triangle")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7a)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Orche Hit")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7b)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Telephone")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7c)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Bird Tweet")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7d)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("One Note Jam")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7e)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Water Bell")};
+    midi_ex_[midi_ex_id(0x7f, 00, 0x7f)] = Midi_Program_Ex{Midi_Spec::MT32, _EX("Jungle Tune")};
+    midi_ex_[midi_ex_id(00, 0x1, 00)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Grand PianoK")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x1)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Bright Piano K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x2)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Electric Grand Piano K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x3)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Honky Tonk K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x4)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Electric Piano 1K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Electric Piano2 K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x6)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Harpsichord K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0x7)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Clavinet K")};
+    midi_ex_[midi_ex_id(00, 0x1, 0xb)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VibesK")};
+    midi_ex_[midi_ex_id(00, 0x1, 0xc)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Marimba K")};
+    midi_ex_[midi_ex_id(00, 0x3, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("S.Strngs")};
+    midi_ex_[midi_ex_id(00, 0x3, 0x31)] = Midi_Program_Ex{Midi_Spec::XG, _EX("S.SlwStr")};
+    midi_ex_[midi_ex_id(00, 0x3, 0x34)] = Midi_Program_Ex{Midi_Spec::XG, _EX("S.Choir")};
+    midi_ex_[midi_ex_id(00, 0x6, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MelloSB1")};
+    midi_ex_[midi_ex_id(00, 0x6, 0x3c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FrHrSolo")};
+    midi_ex_[midi_ex_id(00, 0x6, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Square 2")};
+    midi_ex_[midi_ex_id(00, 0x6, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Saw 2")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x28)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SlowVln")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x2c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SlowTrStr")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SlowStr")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x31)] = Midi_Program_Ex{Midi_Spec::XG, _EX("LegatoSt")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("LMSquare")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ThickSaw")};
+    midi_ex_[midi_ex_id(00, 0x8, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("EchoPad2")};
+    midi_ex_[midi_ex_id(00, 0xc, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Seq Bass")};
+    midi_ex_[midi_ex_id(00, 0xc, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("QuackBr")};
+    midi_ex_[midi_ex_id(00, 0xc, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynDrCmp")};
+    midi_ex_[midi_ex_id(00, 0xe, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Popcorn")};
+    midi_ex_[midi_ex_id(00, 0xe, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Echo Pan")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x18)] = Midi_Program_Ex{Midi_Spec::XG, _EX("NylonGt2")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x19)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SteelGt2")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x34)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ch.Aahs2")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x38)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Trumpet2")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x3a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Tuba 2")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x57)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Big&Low")};
+    midi_ex_[midi_ex_id(00, 0x10, 0x59)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ThickPad")};
+    midi_ex_[midi_ex_id(00, 0x11, 0x38)] = Midi_Program_Ex{Midi_Spec::XG, _EX("BriteTrp")};
+    midi_ex_[midi_ex_id(00, 0x11, 0x59)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Soft Pad")};
+    midi_ex_[midi_ex_id(00, 0x12, 00)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MelloGrP")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x4)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MelloEP1")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x1a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MelloGtr")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x21)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FingrDrk")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynBa1Dk")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynBa1Dk")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x28)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ClkSynBa")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x39)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Trmbone2")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x3f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Soft Brs")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Hollow")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DynaSaw")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x59)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SinePad")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("TinyBell")};
+    midi_ex_[midi_ex_id(00, 0x12, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("WarmAtms")};
+    midi_ex_[midi_ex_id(00, 0x13, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynBa2Dk")};
+    midi_ex_[midi_ex_id(00, 0x13, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Shmoog")};
+    midi_ex_[midi_ex_id(00, 0x13, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DigiSaw")};
+    midi_ex_[midi_ex_id(00, 0x13, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HollwRls")};
+    midi_ex_[midi_ex_id(00, 0x14, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FastResB")};
+    midi_ex_[midi_ex_id(00, 0x14, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("RezSynBr")};
+    midi_ex_[midi_ex_id(00, 0x14, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Big Lead")};
+    midi_ex_[midi_ex_id(00, 0x14, 0x5f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Shwimmer")};
+    midi_ex_[midi_ex_id(00, 0x18, 0x11)] = Midi_Program_Ex{Midi_Spec::XG, _EX("70sPcOr1")};
+    midi_ex_[midi_ex_id(00, 0x18, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AcidBass")};
+    midi_ex_[midi_ex_id(00, 0x18, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ArcoStr")};
+    midi_ex_[midi_ex_id(00, 0x18, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PolyBrss")};
+    midi_ex_[midi_ex_id(00, 0x18, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HeavySyn")};
+    midi_ex_[midi_ex_id(00, 0x18, 0x55)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynthAah")};
+    midi_ex_[midi_ex_id(00, 0x19, 0x6)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Harpsi.2")};
+    midi_ex_[midi_ex_id(00, 0x19, 0x18)] = Midi_Program_Ex{Midi_Spec::XG, _EX("NylonGt3")};
+    midi_ex_[midi_ex_id(00, 0x19, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("WaspySyn")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x7)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ClaviWah")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x21)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FlangeBa")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x24)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ResoSlap")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x32)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ResoStr")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynBras3")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x5f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Converge")};
+    midi_ex_[midi_ex_id(00, 0x1b, 0x61)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Prologue")};
+    midi_ex_[midi_ex_id(00, 0x1c, 0x22)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MutePkBa")};
+    midi_ex_[midi_ex_id(00, 0x1c, 0x69)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MuteBnjo")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x2)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Det.CP80")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x4)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Chor.EP1")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Chor.EP2")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DetDrwOr")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x11)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DetPrcOr")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x13)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ChurOrg3")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x15)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AccordIt")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x16)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Harmo 2")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x1a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("JazzAmp")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x1b)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ChorusGt")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x23)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Fretles2")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x24)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PunchThm")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SmthBa 2")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x34)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MelChoir")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x38)] = Midi_Program_Ex{Midi_Spec::XG, _EX("WarmTrp")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x3c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FrHorn2")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("JumpBrss")};
+    midi_ex_[midi_ex_id(00, 0x20, 0x68)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DetSitar")};
+    midi_ex_[midi_ex_id(00, 0x21, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DX Hard")};
+    midi_ex_[midi_ex_id(00, 0x21, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("60sDrOr1")};
+    midi_ex_[midi_ex_id(00, 0x21, 0x11)] = Midi_Program_Ex{Midi_Spec::XG, _EX("LiteOrg")};
+    midi_ex_[midi_ex_id(00, 0x21, 0x23)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Fretles3")};
+    midi_ex_[midi_ex_id(00, 0x22, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DXLegend")};
+    midi_ex_[midi_ex_id(00, 0x22, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("60sDrOr2")};
+    midi_ex_[midi_ex_id(00, 0x22, 0x23)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Fretles4")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x6)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Harpsi.3")};
+    midi_ex_[midi_ex_id(00, 0x23, 0xf)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Dulcimr2")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("70sDrOr1")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x13)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ChurOrg2")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x19)] = Midi_Program_Ex{Midi_Spec::XG, _EX("12StrGtr")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Clv Bass")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("60sStrng")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x37)] = Midi_Program_Ex{Midi_Spec::XG, _EX("OrchHit2")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x3d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Tp&TbSec")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x56)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Big Five")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("RndGlock")};
+    midi_ex_[midi_ex_id(00, 0x23, 0x68)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Sitar 2")};
+    midi_ex_[midi_ex_id(00, 0x24, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DrawOrg2")};
+    midi_ex_[midi_ex_id(00, 0x25, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("60sDrOr3")};
+    midi_ex_[midi_ex_id(00, 0x25, 0x11)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PercOrg2")};
+    midi_ex_[midi_ex_id(00, 0x25, 0x3c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HornOrch")};
+    midi_ex_[midi_ex_id(00, 0x26, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("EvenBar")};
+    midi_ex_[midi_ex_id(00, 0x28, 00)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PianoStr")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x2)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ElGrPno1")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x4)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HardEl.P")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DX Phase")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("16+2\"2/3")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x13)] = Midi_Program_Ex{Midi_Spec::XG, _EX("NotreDam")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x14)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Puff Org")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x19)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Nyln&Stl")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x1c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FunkGtr1")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x1e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FeedbkGt")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x20)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Jazz Rhythm")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x21)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ba&DstEG")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Techno Bass")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Modular Bass")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x2c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Susp Str")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x2e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Yang Chin")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Orchestra")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x31)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Warm Str")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x34)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ChoirStr")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x36)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynVox2")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x3d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("BrassSec2")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x3f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynBras4")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x41)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Sax Sect")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x42)] = Midi_Program_Ex{Midi_Spec::XG, _EX("BrthTnSx")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Pulse Saw")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("GlockChi")};
+    midi_ex_[midi_ex_id(00, 0x28, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("NylonEP")};
+    midi_ex_[midi_ex_id(00, 0x29, 00)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Dream")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x2)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ElGrPno2")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DX+Analg")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x19)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Stl&Body")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x1c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MuteStlG")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x1e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FeedbGt2")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DX Bass")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Orchstr2")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x31)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Kingdom")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x36)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Choral")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x3d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HiBrass")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x3f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ChorBrss")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x42)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SoftTenr")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Dr. Lead")};
+    midi_ex_[midi_ex_id(00, 0x29, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ClearBel")};
+    midi_ex_[midi_ex_id(00, 0x2a, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DXKotoEP")};
+    midi_ex_[midi_ex_id(00, 0x2a, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("TremOrch")};
+    midi_ex_[midi_ex_id(00, 0x2a, 0x3d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("MelloBrs")};
+    midi_ex_[midi_ex_id(00, 0x2a, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ChorBell")};
+    midi_ex_[midi_ex_id(00, 0x2b, 0x18)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VelGtHrm")};
+    midi_ex_[midi_ex_id(00, 0x2b, 0x1c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FunkGtr2")};
+    midi_ex_[midi_ex_id(00, 0x2b, 0x1d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Gt.Pinch")};
+    midi_ex_[midi_ex_id(00, 0x2b, 0x21)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FngrSlap")};
+    midi_ex_[midi_ex_id(00, 0x2b, 0x25)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VeloSlap")};
+    midi_ex_[midi_ex_id(00, 0x2b, 0x41)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HyprAlto")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x4)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VX El.P1")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x5)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VX El.P2")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0xb)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HardVibe")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x1c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Jazz Man")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x20)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VX Upright")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x21)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FngBass2")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x30)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VeloStr")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AnaVelBr")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x3f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VelBras2")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VeloLead")};
+    midi_ex_[midi_ex_id(00, 0x2d, 0x60)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ClaviPad")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x4)] = Midi_Program_Ex{Midi_Spec::XG, _EX("60sEl.P")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x7)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PulseClv")};
+    midi_ex_[midi_ex_id(00, 0x40, 0xa)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Orgel")};
+    midi_ex_[midi_ex_id(00, 0x40, 0xc)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SineMrmb")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Organ Ba")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x12)] = Midi_Program_Ex{Midi_Spec::XG, _EX("RotaryOr")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x13)] = Midi_Program_Ex{Midi_Spec::XG, _EX("OrgFlute")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x17)] = Midi_Program_Ex{Midi_Spec::XG, _EX("TngoAcd2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Oscar")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x27)] = Midi_Program_Ex{Midi_Spec::XG, _EX("X WireBa")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x31)] = Midi_Program_Ex{Midi_Spec::XG, _EX("70s Str")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x32)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Syn Str4")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x36)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AnaVoice")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x37)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Impact")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x3e)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AnaBrss1")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x3f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AnaBras2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x42)] = Midi_Program_Ex{Midi_Spec::XG, _EX("TnrSax 2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Mellow")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x53)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Rubby")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x54)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DistLead")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x55)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VoxLead")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x57)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Fat&Prky")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x58)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Fantasy2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x59)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Horn Pad")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x5a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PolyPd80")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x5b)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Heaven2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x5c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Glacier")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x5d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Tine Pad")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x5f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PolarPad")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x60)] = Midi_Program_Ex{Midi_Spec::XG, _EX("HrmoRain")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x61)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ancestrl")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynMalet")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("NylnHarp")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x64)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FantaBel")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("GobSyn")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("EchoBell")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x67)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Starz")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x6f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Shanai2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x75)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Mel Tom2")};
+    midi_ex_[midi_ex_id(00, 0x40, 0x76)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ana Tom")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x7)] = Midi_Program_Ex{Midi_Spec::XG, _EX("PierceCl")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("70sDrOr2")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x12)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SlwRotar")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x13)] = Midi_Program_Ex{Midi_Spec::XG, _EX("TrmOrgFl")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x1f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("GtFeedbk")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x21)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ModAlem")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SqrBass")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x32)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SS Str")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SoloSine")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x52)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Pure Pad")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x54)] = Midi_Program_Ex{Midi_Spec::XG, _EX("WireLead")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x57)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SoftWurl")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x59)] = Midi_Program_Ex{Midi_Spec::XG, _EX("RotarStr")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x5a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ClickPad")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x5c)] = Midi_Program_Ex{Midi_Spec::XG, _EX("GlassPad")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x5d)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Pan Pad")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x60)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AfrcnWod")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SftCryst")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Harp Vox")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("50sSciFi")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Big Pan")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x75)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Real Tom")};
+    midi_ex_[midi_ex_id(00, 0x41, 0x76)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ElecPerc")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("CheezOrg")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x12)] = Midi_Program_Ex{Midi_Spec::XG, _EX("FstRotar")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x1f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("GtrHrmo2")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("RubberBa")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x50)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SineLead")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x5a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ana Pad")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x5b)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Itopia")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x5f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Celstial")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x60)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Caribean")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("LoudGlok")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AtmosPad")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ring Pad")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynPiano")};
+    midi_ex_[midi_ex_id(00, 0x42, 0x75)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Rock Tom")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x10)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DrawOrg3")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x5a)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SquarPad")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x5b)] = Midi_Program_Ex{Midi_Spec::XG, _EX("CC Pad")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("XmasBell")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x63)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Planet")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ritual")};
+    midi_ex_[midi_ex_id(00, 0x43, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Creation")};
+    midi_ex_[midi_ex_id(00, 0x44, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("VibeBell")};
+    midi_ex_[midi_ex_id(00, 0x44, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ToHeaven")};
+    midi_ex_[midi_ex_id(00, 0x44, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Stardust")};
+    midi_ex_[midi_ex_id(00, 0x45, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("DigiBell")};
+    midi_ex_[midi_ex_id(00, 0x45, 0x66)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Reso Pan")};
+    midi_ex_[midi_ex_id(00, 0x46, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AirBells")};
+    midi_ex_[midi_ex_id(00, 0x46, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Night")};
+    midi_ex_[midi_ex_id(00, 0x47, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("BellHarp")};
+    midi_ex_[midi_ex_id(00, 0x47, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Glisten")};
+    midi_ex_[midi_ex_id(00, 0x48, 0x62)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Gamelmba")};
+    midi_ex_[midi_ex_id(00, 0x60, 0xe)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Church Bell")};
+    midi_ex_[midi_ex_id(00, 0x60, 0xf)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Cimbalom")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x18)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Ukelele")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x19)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Mandolin")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x23)] = Midi_Program_Ex{Midi_Spec::XG, _EX("SynFretl")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x26)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Hammer")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x51)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Seq Ana")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x64)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Smokey")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x65)] = Midi_Program_Ex{Midi_Spec::XG, _EX("BelChoir")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x68)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Tambra")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x69)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Rabab")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x6b)] = Midi_Program_Ex{Midi_Spec::XG, _EX("T.Koto")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x6f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Pungi")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x70)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Bonang")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x73)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Castanets")};
+    midi_ex_[midi_ex_id(00, 0x60, 0x74)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Gr.Cassa")};
+    midi_ex_[midi_ex_id(00, 0x61, 0xc)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Balafon2")};
+    midi_ex_[midi_ex_id(00, 0x61, 0xe)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Carillon")};
+    midi_ex_[midi_ex_id(00, 0x61, 0xf)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Santur")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x23)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Smooth")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x68)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Tamboura")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x69)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Gopichnt")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x6b)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Kanoon")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x6f)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Hichriki")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x70)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Gender")};
+    midi_ex_[midi_ex_id(00, 0x61, 0x72)] = Midi_Program_Ex{Midi_Spec::XG, _EX("GlasPerc")};
+    midi_ex_[midi_ex_id(00, 0x62, 0xc)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Log Drum")};
+    midi_ex_[midi_ex_id(00, 0x62, 0x69)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Oud")};
+    midi_ex_[midi_ex_id(00, 0x62, 0x70)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Gamelan")};
+    midi_ex_[midi_ex_id(00, 0x62, 0x72)] = Midi_Program_Ex{Midi_Spec::XG, _EX("ThaiBell")};
+    midi_ex_[midi_ex_id(00, 0x63, 0x70)] = Midi_Program_Ex{Midi_Spec::XG, _EX("S.Gamlan")};
+    midi_ex_[midi_ex_id(00, 0x64, 0x70)] = Midi_Program_Ex{Midi_Spec::XG, _EX("Rama Cym")};
+    midi_ex_[midi_ex_id(00, 0x65, 0x70)] = Midi_Program_Ex{Midi_Spec::XG, _EX("AsianBel")};
+}
 
-const Midi_Program_Ex *midi_program_ex_find(
+const Midi_Program_Ex *Midi_Db::find_ex(
     unsigned msb, unsigned lsb, unsigned pgm)
 {
-    auto it = midi_program_ex_map.find(
-        midi_program_ex_id(msb, lsb, pgm));
-    return (it != midi_program_ex_map.end()) ? &it->second : nullptr;
+    auto it = midi_ex_.find(midi_ex_id(msb, lsb, pgm));
+    return (it != midi_ex_.end()) ? &it->second : nullptr;
 }
