@@ -55,6 +55,13 @@ cmake --build .
 sudo cmake --build . --target install
 ```
 
+## Questions
+
+### Why are the colors odd-looking in a X11 terminal?
+
+The default terminal setting may prevent the program from being able to define its own colors.
+In the initialization of your shell, try setting a 256-color terminal type: `test "$TERM" = "xterm" && export TERM=xterm-256color`
+
 ## Change Log
 
 ### Version 1.0.0
