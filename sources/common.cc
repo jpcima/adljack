@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <system_error>
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
 #if defined(_WIN32)
