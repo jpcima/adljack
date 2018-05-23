@@ -32,6 +32,12 @@ This is how you use adljack in the console.
 * -e [emulator]: Selects the emulator. (by number, as listed in -h)
 * -L [latency]: (adlrt only) Defines the audio latency. The unit is milliseconds. Default 20ms.
 
+## Development builds
+
+[![Build Status](https://semaphoreci.com/api/v1/jpcima/adljack/branches/master/badge.svg)](https://semaphoreci.com/jpcima/adljack)
+
+Find automatic builds of the development branch [here](https://app.box.com/s/00o1nn33q2ozkclqsmbcx2w3n0w3kr68) (Windows).
+
 ## Build instructions
 
 Installed required dependencies:
