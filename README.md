@@ -36,7 +36,7 @@ This is how you use adljack in the console.
 
 [![Build Status](https://semaphoreci.com/api/v1/jpcima/adljack/branches/master/badge.svg)](https://semaphoreci.com/jpcima/adljack)
 
-Find automatic builds of the development branch [here](https://app.box.com/s/00o1nn33q2ozkclqsmbcx2w3n0w3kr68) (Windows).
+Find automatic builds of the development branch [here](http://jpcima.sdf1.org/software/development/ADLjack/) (Windows).
 
 ## Build instructions
 
