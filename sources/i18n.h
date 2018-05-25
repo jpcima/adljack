@@ -50,7 +50,9 @@ inline void i18n_setup()
         {"adljack", "adljack_inst", "adljack_prefix", "adljack_ex"};
     for (const char *domain : domains) {
         bindtextdomain(domain, locale_path);
+#if defined(_WIN32)
         bind_textdomain_codeset(domain, "UTF-8");
+#endif
     }
     textdomain("adljack");
 }

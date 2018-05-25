@@ -6,79 +6,41 @@
 #if defined(ADLJACK_I18N)
 #define ADLJACK_NO_PDC_I18N_MACROS
 #include "i18n.h"
-#include <iconv.h>
+#include "i18n_util.h"
 #include <locale>
-#include <type_traits>
 #include <stdio.h>
 #include <string.h>
 
-struct Iconv_Deleter {
-    void operator()(iconv_t x) const noexcept { iconv_close(x); }
-};
-typedef std::unique_ptr<
-    std::remove_pointer<iconv_t>::type, Iconv_Deleter> iconv_u;
-
 #if defined(PDCURSES) && !defined(PDC_WIDE)
 
-static const char *output_encoding = "CP437";
+static constexpr Encoding pdc_fontenc = Encoding::CP437;
 
-static iconv_t get_cvt_from_utf8()
-{
-    static iconv_u cvt;
-    if (!cvt)
-        cvt.reset(iconv_open(::output_encoding, "UTF-8"));
-    return cvt.get();
-}
-
-static iconv_t get_cvt_from_utf32()
-{
-    static iconv_u cvt;
-    if (!cvt)
-        cvt.reset(iconv_open(::output_encoding, "UTF-32"));
-    return cvt.get();
-}
+#if !defined(_WIN32)
+static Encoder<Encoding::UTF32, Encoding::Local8> cvt_utf32_from_system;
+#else
+static Encoder<Encoding::UTF32, Encoding::UTF8> cvt_utf32_from_system;
+#endif
+static Encoder<pdc_fontenc, Encoding::UTF32> cvt_pdc_from_utf32;
 
 static char char_to_pdc(char32_t ucs4, char defchar = ' ')
 {
-    char result_char = defchar;
-
-    iconv_t cd = get_cvt_from_utf32();
-    if (!cd)
-        return result_char;
-
-    const char *input = (char *)&ucs4;
-    size_t input_size = sizeof(ucs4);
-    char *result = &result_char;
-    size_t result_size = 1;
-    iconv(cd, (char **)&input, &input_size, &result, &result_size);
-    return result_char;
+    std::string result = cvt_pdc_from_utf32.from_string(&ucs4, 1);
+    return result.empty() ? defchar : result[0];
 }
 
-static std::string string_to_pdc(
-    const char *input, size_t input_size = (size_t)-1)
+static std::string string_to_pdc(const char *input, size_t input_size = (size_t)-1)
 {
-    if (input_size == (size_t)-1)
-        input_size = strlen(input);
-
-    iconv_t cd = get_cvt_from_utf8();
-    if (!cd)
-        return std::string();
-
-    std::string result_buf(input_size, '\0');
-    char *result = &result_buf[0];
-    size_t result_size = result_buf.size();
-
-    while (input_size > 0) {
-        size_t old_input_size = input_size;
-        iconv(cd, (char **)&input, &input_size, &result, &result_size);
-        if (input_size == old_input_size) {
-            ++input;
-            --input_size;
-        }
+    std::u32string result = cvt_utf32_from_system.from_string(input, input_size);
+    switch (pdc_fontenc) {
+    default:
+        break;
+    case Encoding::CP437:
+        // substitute ligatures
+        for (size_t pos; (pos = result.find(U'œ')) != result.npos;)
+            result.replace(pos, 1, U"oe", 2);
+        break;
     }
-
-    result_buf.resize(result - result_buf.data());
-    return result_buf;
+    return cvt_pdc_from_utf32.from_string(result);
 }
 
 int pdc_ext_mvprintw(int y, int x, const char *fmt, ...)
