@@ -19,55 +19,55 @@ msgstr ""
 
 #: sources/insnames.cc:164
 msgid "<Reserved 0>"
-msgstr ""
+msgstr "<Réservé 0>"
 
 #: sources/insnames.cc:165
 msgid "<Reserved 1>"
-msgstr ""
+msgstr "<Réservé 1>"
 
 #: sources/insnames.cc:166
 msgid "<Reserved 2>"
-msgstr ""
+msgstr "<Réservé 2>"
 
 #: sources/insnames.cc:167
 msgid "<Reserved 3>"
-msgstr ""
+msgstr "<Réservé 3>"
 
 #: sources/insnames.cc:168
 msgid "<Reserved 4>"
-msgstr ""
+msgstr "<Réservé 4>"
 
 #: sources/insnames.cc:169
 msgid "<Reserved 5>"
-msgstr ""
+msgstr "<Réservé 5>"
 
 #: sources/insnames.cc:170
 msgid "<Reserved 6>"
-msgstr ""
+msgstr "<Réservé 6>"
 
 #: sources/insnames.cc:171
 msgid "<Reserved 7>"
-msgstr ""
+msgstr "<Réservé 7>"
 
 #: sources/insnames.cc:172
 msgid "<Reserved 8>"
-msgstr ""
+msgstr "<Réservé 8>"
 
 #: sources/insnames.cc:173
 msgid "<Reserved 9>"
-msgstr ""
+msgstr "<Réservé 9>"
 
 #: sources/insnames.cc:174
 msgid "<Reserved 10>"
-msgstr ""
+msgstr "<Réservé 10>"
 
 #: sources/insnames.cc:175
 msgid "<Reserved 11>"
-msgstr ""
+msgstr "<Réservé 11>"
 
 #: sources/insnames.cc:176
 msgid "<Reserved 12>"
-msgstr ""
+msgstr "<Réservé 12>"
 
 #: sources/insnames.cc:177
 msgid "Surdo Mute"
@@ -231,7 +231,7 @@ msgstr "Cymbale splash"
 
 #: sources/insnames.cc:220
 msgid "Cow Bell"
-msgstr "Cencerro ou Cowbell"
+msgstr "Cencerro"
 
 #: sources/insnames.cc:221
 msgid "Crash Cymbal 2"
@@ -359,160 +359,160 @@ msgstr ""
 
 #: sources/insnames.cc:252
 msgid "<Reserved 88>"
-msgstr ""
+msgstr "<Réservé 88>"
 
 #: sources/insnames.cc:253
 msgid "<Reserved 89>"
-msgstr ""
+msgstr "<Réservé 89>"
 
 #: sources/insnames.cc:254
 msgid "<Reserved 90>"
-msgstr ""
+msgstr "<Réservé 90>"
 
 #: sources/insnames.cc:255
 msgid "<Reserved 91>"
-msgstr ""
+msgstr "<Réservé 91>"
 
 #: sources/insnames.cc:256
 msgid "<Reserved 92>"
-msgstr ""
+msgstr "<Réservé 92>"
 
 #: sources/insnames.cc:257
 msgid "<Reserved 93>"
-msgstr ""
+msgstr "<Réservé 93>"
 
 #: sources/insnames.cc:258
 msgid "<Reserved 94>"
-msgstr ""
+msgstr "<Réservé 94>"
 
 #: sources/insnames.cc:259
 msgid "<Reserved 95>"
-msgstr ""
+msgstr "<Réservé 95>"
 
 #: sources/insnames.cc:260
 msgid "<Reserved 96>"
-msgstr ""
+msgstr "<Réservé 96>"
 
 #: sources/insnames.cc:261
 msgid "<Reserved 97>"
-msgstr ""
+msgstr "<Réservé 97>"
 
 #: sources/insnames.cc:262
 msgid "<Reserved 98>"
-msgstr ""
+msgstr "<Réservé 98>"
 
 #: sources/insnames.cc:263
 msgid "<Reserved 99>"
-msgstr ""
+msgstr "<Réservé 99>"
 
 #: sources/insnames.cc:264
 msgid "<Reserved 100>"
-msgstr ""
+msgstr "<Réservé 100>"
 
 #: sources/insnames.cc:265
 msgid "<Reserved 101>"
-msgstr ""
+msgstr "<Réservé 101>"
 
 #: sources/insnames.cc:266
 msgid "<Reserved 102>"
-msgstr ""
+msgstr "<Réservé 102>"
 
 #: sources/insnames.cc:267
 msgid "<Reserved 103>"
-msgstr ""
+msgstr "<Réservé 103>"
 
 #: sources/insnames.cc:268
 msgid "<Reserved 104>"
-msgstr ""
+msgstr "<Réservé 104>"
 
 #: sources/insnames.cc:269
 msgid "<Reserved 105>"
-msgstr ""
+msgstr "<Réservé 105>"
 
 #: sources/insnames.cc:270
 msgid "<Reserved 106>"
-msgstr ""
+msgstr "<Réservé 106>"
 
 #: sources/insnames.cc:271
 msgid "<Reserved 107>"
-msgstr ""
+msgstr "<Réservé 107>"
 
 #: sources/insnames.cc:272
 msgid "<Reserved 108>"
-msgstr ""
+msgstr "<Réservé 108>"
 
 #: sources/insnames.cc:273
 msgid "<Reserved 109>"
-msgstr ""
+msgstr "<Réservé 109>"
 
 #: sources/insnames.cc:274
 msgid "<Reserved 110>"
-msgstr ""
+msgstr "<Réservé 110>"
 
 #: sources/insnames.cc:275
 msgid "<Reserved 111>"
-msgstr ""
+msgstr "<Réservé 111>"
 
 #: sources/insnames.cc:276
 msgid "<Reserved 112>"
-msgstr ""
+msgstr "<Réservé 112>"
 
 #: sources/insnames.cc:277
 msgid "<Reserved 113>"
-msgstr ""
+msgstr "<Réservé 113>"
 
 #: sources/insnames.cc:278
 msgid "<Reserved 114>"
-msgstr ""
+msgstr "<Réservé 114>"
 
 #: sources/insnames.cc:279
 msgid "<Reserved 115>"
-msgstr ""
+msgstr "<Réservé 115>"
 
 #: sources/insnames.cc:280
 msgid "<Reserved 116>"
-msgstr ""
+msgstr "<Réservé 116>"
 
 #: sources/insnames.cc:281
 msgid "<Reserved 117>"
-msgstr ""
+msgstr "<Réservé 117>"
 
 #: sources/insnames.cc:282
 msgid "<Reserved 118>"
-msgstr ""
+msgstr "<Réservé 118>"
 
 #: sources/insnames.cc:283
 msgid "<Reserved 119>"
-msgstr ""
+msgstr "<Réservé 119>"
 
 #: sources/insnames.cc:284
 msgid "<Reserved 120>"
-msgstr ""
+msgstr "<Réservé 120>"
 
 #: sources/insnames.cc:285
 msgid "<Reserved 121>"
-msgstr ""
+msgstr "<Réservé 121>"
 
 #: sources/insnames.cc:286
 msgid "<Reserved 122>"
-msgstr ""
+msgstr "<Réservé 122>"
 
 #: sources/insnames.cc:287
 msgid "<Reserved 123>"
-msgstr ""
+msgstr "<Réservé 123>"
 
 #: sources/insnames.cc:288
 msgid "<Reserved 124>"
-msgstr ""
+msgstr "<Réservé 124>"
 
 #: sources/insnames.cc:289
 msgid "<Reserved 125>"
-msgstr ""
+msgstr "<Réservé 125>"
 
 #: sources/insnames.cc:290
 msgid "<Reserved 126>"
-msgstr ""
+msgstr "<Réservé 126>"
 
 #: sources/insnames.cc:291
 msgid "<Reserved 127>"
-msgstr ""
+msgstr "<Réservé 127>"

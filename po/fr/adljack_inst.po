@@ -123,19 +123,19 @@ msgstr "Guitare folk"
 
 #: sources/insnames.cc:58
 msgid "Electric Guitar (jazz)"
-msgstr "Guitare électrique - Jazz"
+msgstr "Guitare élec. jazz"
 
 #: sources/insnames.cc:59
 msgid "Electric Guitar (clean)"
-msgstr "Guitare électrique - son clair"
+msgstr "Guitare élec. pure"
 
 #: sources/insnames.cc:60
 msgid "Electric Guitar (muted)"
-msgstr "Guitare électrique - sourdine"
+msgstr "Guitare élec. sourdine"
 
 #: sources/insnames.cc:61
 msgid "Overdrive Guitar"
-msgstr "Guitare avec overdrive"
+msgstr "Guitare saturée"
 
 #: sources/insnames.cc:62
 msgid "Distortion Guitar"
@@ -147,15 +147,15 @@ msgstr "Harmoniques de guitare"
 
 #: sources/insnames.cc:64
 msgid "Acoustic Bass"
-msgstr "Basse acoustique sans frettes"
+msgstr "Basse acoustique"
 
 #: sources/insnames.cc:65
 msgid "Electric Bass (finger)"
-msgstr "Basse électrique jouée au doigt"
+msgstr "Basse élec. doigt"
 
 #: sources/insnames.cc:66
 msgid "Electric Bass (pick)"
-msgstr "Basse électrique jouée au médiator"
+msgstr "Basse élec. médiator"
 
 #: sources/insnames.cc:67
 msgid "Fretless Bass"
@@ -163,19 +163,19 @@ msgstr "Basse sans frettes"
 
 #: sources/insnames.cc:68
 msgid "Slap Bass 1"
-msgstr "Basse slapée 1"
+msgstr "Basse slap 1"
 
 #: sources/insnames.cc:69
 msgid "Slap Bass 2"
-msgstr "Basse slapée 2"
+msgstr "Basse slap 2"
 
 #: sources/insnames.cc:70
 msgid "Synth Bass 1"
-msgstr "Synthétiseur basse 1"
+msgstr "Basse synthétiseur 1"
 
 #: sources/insnames.cc:71
 msgid "Synth Bass 2"
-msgstr "Synthétiseur basse 2"
+msgstr "Basse synthétiseur 2"
 
 #: sources/insnames.cc:72
 msgid "Violin"
@@ -211,19 +211,19 @@ msgstr "Timbales"
 
 #: sources/insnames.cc:80
 msgid "String Ensemble 1"
-msgstr "Ensemble acoustique à Cordes 1"
+msgstr "Quatuor à cordes 1"
 
 #: sources/insnames.cc:81
 msgid "String Ensemble 2"
-msgstr "Ensemble acoustique à Cordes 2"
+msgstr "Quatuor à cordes 2"
 
 #: sources/insnames.cc:82
 msgid "Synth Strings 1"
-msgstr "Synthétiseur de cordes 1"
+msgstr "Cordes synthétiques 1"
 
 #: sources/insnames.cc:83
 msgid "Synth Strings 2"
-msgstr "Synthétiseur de cordes 2"
+msgstr "Cordes synthétiques 2"
 
 #: sources/insnames.cc:84
 msgid "Choir Aahs"
@@ -267,11 +267,11 @@ msgstr "Section de cuivres"
 
 #: sources/insnames.cc:94
 msgid "Synth Brass 1"
-msgstr "Synthétiseur de Cuivres 1"
+msgstr "Cuivres synthétiques 1"
 
 #: sources/insnames.cc:95
 msgid "Synth Brass 2"
-msgstr "Synthétiseur de Cuivres 2"
+msgstr "Cuivres synthétiques 2"
 
 #: sources/insnames.cc:96
 msgid "Soprano Sax"
@@ -339,99 +339,99 @@ msgstr "Ocarina"
 
 #: sources/insnames.cc:112
 msgid "Lead 1 (Square)"
-msgstr "Signal carré (Lead 1 (square))"
+msgstr "Onde carrée (Lead 1)"
 
 #: sources/insnames.cc:113
 msgid "Lead 2 (Sawtooth)"
-msgstr "Signal en dents de scie (Lead 2 (sawtooth))"
+msgstr "Dent de scie (Lead 2)"
 
 #: sources/insnames.cc:114
 msgid "Lead 3 (Calliope)"
-msgstr "Orgue à vapeur (Lead 3 (calliope lead))"
+msgstr "Orgue à vapeur (Lead 3)"
 
 #: sources/insnames.cc:115
 msgid "Lead 4 (Chiff)"
-msgstr "Chiffer (Lead 4 (chiff lead))"
+msgstr "Chiffer (Lead 4)"
 
 #: sources/insnames.cc:116
 msgid "Lead 5 (Charang)"
-msgstr "Charang (Lead 5 (charang))"
+msgstr "Charang (Lead 5)"
 
 #: sources/insnames.cc:117
 msgid "Lead 6 (Voice)"
-msgstr "Voix solo (Lead 6 (voice))"
+msgstr "Voix (Lead 6)"
 
 #: sources/insnames.cc:118
 msgid "Lead 7 (Fifths)"
-msgstr "Signal en dents de scie en quinte (Lead 7 (fifths))"
+msgstr "Quinte (Lead 7)"
 
 #: sources/insnames.cc:119
 msgid "Lead 8 (Lead+Bass)"
-msgstr "Basse & Solo (Lead 8 (bass + lead))"
+msgstr "Basse & Solo (Lead 8)"
 
 #: sources/insnames.cc:120
 msgid "Pad 1 (New age)"
-msgstr "Fantaisie (Pad 1 (new age))"
+msgstr "Fantaisie (Pad 1)"
 
 #: sources/insnames.cc:121
 msgid "Pad 2 (Warm)"
-msgstr "Son chaleureux (Pad 2 (warm))"
+msgstr "Son chaleureux (Pad 2)"
 
 #: sources/insnames.cc:122
 msgid "Pad 3 (Polysynth)"
-msgstr "Polysynthé (Pad 3 (polysynth))"
+msgstr "Polysynthé (Pad 3)"
 
 #: sources/insnames.cc:123
 msgid "Pad 4 (Choir)"
-msgstr "Chœur (Pad 4 (choir))"
+msgstr "Chœur (Pad 4)"
 
 #: sources/insnames.cc:124
 msgid "Pad 5 (Bowed)"
-msgstr "Archet (Pad 5 (bowed))"
+msgstr "Archet (Pad 5)"
 
 #: sources/insnames.cc:125
 msgid "Pad 6 (Metallic)"
-msgstr "Son métallique (Pad 6 (metallic))"
+msgstr "Son métallique (Pad 6)"
 
 #: sources/insnames.cc:126
 msgid "Pad 7 (Halo)"
-msgstr "Halo (Pad 7 (halo))"
+msgstr "Halo (Pad 7)"
 
 #: sources/insnames.cc:127
 msgid "Pad 8 (Sweep)"
-msgstr "Balai (Pad 8 (sweep))"
+msgstr "Balai (Pad 8)"
 
 #: sources/insnames.cc:128
 msgid "FX 1 (Rain)"
-msgstr "Pluie de glace"
+msgstr "Pluie de glace (FX 1)"
 
 #: sources/insnames.cc:129
 msgid "FX 2 (Soundtrack)"
-msgstr "Trames sonores"
+msgstr "Trames sonores (FX 2)"
 
 #: sources/insnames.cc:130
 msgid "FX 3 (Crystal)"
-msgstr "Cristal"
+msgstr "Cristal (FX 3)"
 
 #: sources/insnames.cc:131
 msgid "FX 4 (Atmosphere)"
-msgstr "Atmosphère"
+msgstr "Atmosphère (FX 4)"
 
 #: sources/insnames.cc:132
 msgid "FX 5 (Brightness)"
-msgstr "Brillance"
+msgstr "Brillance (FX 5)"
 
 #: sources/insnames.cc:133
 msgid "FX 6 (Goblins)"
-msgstr "Gobelins (Goblins)"
+msgstr "Gobelins (FX 6)"
 
 #: sources/insnames.cc:134
 msgid "FX 7 (Echoes)"
-msgstr "Échos"
+msgstr "Échos (FX 7)"
 
 #: sources/insnames.cc:135
 msgid "FX 8 (Sci-fi)"
-msgstr "Espace (Sci-Fi)"
+msgstr "Sci-fi (FX 8)"
 
 #: sources/insnames.cc:136
 msgid "Sitar"
@@ -499,7 +499,7 @@ msgstr "Cymbale inversée"
 
 #: sources/insnames.cc:152
 msgid "Guitar Fret Noise"
-msgstr "Guitare - bruit de frette"
+msgstr "Frette de guitare"
 
 #: sources/insnames.cc:153
 msgid "Breath Noise"
