@@ -47,28 +47,27 @@ struct Encoder {
     target_string from_bytes(const uint8_t *input, size_t input_size = (size_t)-1);
     target_string from_string(const source_character *input, size_t input_size = (size_t)-1);
     target_string from_string(const source_string &input);
+    size_t next_character(const uint8_t *input, size_t input_size, target_character *dst);
 
 private:
     static thread_local Iconv_Handle cd_;
 };
 
 //------------------------------------------------------------------------------
-template <> struct Encoding_Traits<Encoding::Local8> {
-    static const char *name() { return ""; }
-    typedef char character_type;
-};
-template <> struct Encoding_Traits<Encoding::UTF8> {
-    static const char *name() { return "UTF-8"; }
-    typedef char character_type;
-};
-template <> struct Encoding_Traits<Encoding::UTF32> {
-    static const char *name() { return "UTF-32"; }
-    typedef char32_t character_type;
-};
-template <> struct Encoding_Traits<Encoding::CP437> {
-    static const char *name() { return "CP437"; }
-    typedef char character_type;
-};
+#define DEFINE_ENCODING(enc, typ, nam)                  \
+    template <> struct Encoding_Traits<Encoding::enc> { \
+        static const char *name() { return nam; }       \
+        typedef typ character_type;                     \
+    }
+
+DEFINE_ENCODING(Local8, char, "");
+DEFINE_ENCODING(UTF8, char, "UTF-8");
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+DEFINE_ENCODING(UTF32, char32_t, "UTF-32LE");
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+DEFINE_ENCODING(UTF32, char32_t, "UTF-32BE");
+#endif
+DEFINE_ENCODING(CP437, char, "CP437");
 
 //------------------------------------------------------------------------------
 template <Encoding Target, Encoding Source>
@@ -92,7 +91,7 @@ auto Encoder<Target, Source>::from_bytes(const uint8_t *input, size_t input_size
         input_size = nchars * sizeof(source_character);
     }
 
-    target_string result_buf(input_size / sizeof(source_character), '\0');
+    target_string result_buf(input_size, '\0');
     target_character *result = &result_buf[0];
     size_t result_size = result_buf.size() * sizeof(target_character);
 
@@ -122,6 +121,15 @@ template <Encoding Target, Encoding Source>
 auto Encoder<Target, Source>::from_string(const source_string &input) -> target_string
 {
     return from_string(input.data(), input.size());
+}
+
+template <Encoding Target, Encoding Source>
+size_t Encoder<Target, Source>::next_character(const uint8_t *input, size_t input_size, target_character *dst)
+{
+    size_t old_input_size = input_size;
+    size_t result_size = sizeof(target_character);
+    iconv(handle(), (char **)&input, &input_size, (char **)&dst, &result_size);
+    return old_input_size - input_size;
 }
 
 #endif  // defined(ADLJACK_I18N)

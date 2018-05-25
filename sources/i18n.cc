@@ -22,10 +22,11 @@ static Encoder<Encoding::UTF32, Encoding::UTF8> cvt_utf32_from_system;
 #endif
 static Encoder<pdc_fontenc, Encoding::UTF32> cvt_pdc_from_utf32;
 
-static char char_to_pdc(char32_t ucs4, char defchar = ' ')
+static char char_to_pdc(char32_t u32, char defchar = ' ')
 {
-    std::string result = cvt_pdc_from_utf32.from_string(&ucs4, 1);
-    return result.empty() ? defchar : result[0];
+    char c = '\0';
+    size_t n = cvt_pdc_from_utf32.next_character((const uint8_t *)&u32, sizeof(u32), &c);
+    return (n == 0) ? defchar : c;
 }
 
 static std::string string_to_pdc(const char *input, size_t input_size = (size_t)-1)
