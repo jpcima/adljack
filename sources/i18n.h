@@ -9,6 +9,9 @@
 #include <string>
 #include <libintl.h>
 #include <locale.h>
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 
 inline const char *_(const char *x)
     { return gettext(x); }
@@ -22,10 +25,33 @@ inline const char *_EX(const char *x)
 inline void i18n_setup()
 {
     setlocale(LC_ALL, "");
-    bindtextdomain("adljack", ADLJACK_PREFIX "/share/locale/");
-    bindtextdomain("adljack_inst", ADLJACK_PREFIX "/share/locale/");
-    bindtextdomain("adljack_perc", ADLJACK_PREFIX "/share/locale/");
-    bindtextdomain("adljack_ex", ADLJACK_PREFIX "/share/locale/");
+
+#if !defined(_WIN32)
+    const char *locale_path = ADLJACK_PREFIX "/share/locale/";
+#else
+    std::string path(PATH_MAX, '\0');
+    path.resize(GetModuleFileNameA(nullptr, &path[0], path.size()));
+    if (!path.empty()) {
+        size_t pos = path.rfind('\\');
+        path.resize((pos != path.npos) ? pos : 0);
+        path.append("\\..\\share\\locale\\");
+    }
+    const char *locale_path = path.size() ? path.c_str() : nullptr;
+#endif
+
+    if (!locale_path)
+        return;
+
+#if defined(_WIN32)
+    SetConsoleOutputCP(CP_UTF8);
+#endif
+
+    const char *domains[] =
+        {"adljack", "adljack_inst", "adljack_prefix", "adljack_ex"};
+    for (const char *domain : domains) {
+        bindtextdomain(domain, locale_path);
+        bind_textdomain_codeset(domain, "UTF-8");
+    }
     textdomain("adljack");
 }
 
