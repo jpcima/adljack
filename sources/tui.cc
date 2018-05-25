@@ -289,7 +289,7 @@ static void update_display(TUI_context &ctx)
     }
     if (WINDOW *w = ctx.win.cpuratio.get()) {
         mvwaddstr(w, 0, 0, _("CPU"));
-        print_bar(w, 0, 10, 15, cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
+        print_bar(w, 0, 15, 15, cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
         wclrtoeol(w);
         wnoutrefresh(w);
     }
