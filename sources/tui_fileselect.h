@@ -24,8 +24,9 @@ enum class File_Selection_Code {
 
 class File_Selector {
 public:
-    File_Selector(WINDOW *w, File_Selection_Options &opts);
+    explicit File_Selector(File_Selection_Options &opts);
     ~File_Selector();
+    void setup_display(WINDOW *w);
     void update();
     File_Selection_Code key(int key);
 private:

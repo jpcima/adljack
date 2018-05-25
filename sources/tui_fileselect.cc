@@ -46,31 +46,31 @@ bool operator<(const File_Entry &a, const File_Entry &b)
 
 struct File_Selector::Impl
 {
-    WINDOW *win_ = nullptr;
     File_Selection_Options *opts_ = nullptr;
     //
-    WINDOW_u win_title_;
-    WINDOW_u win_inner_;
+    struct Windows {
+        WINDOW *outer_ = nullptr;
+        WINDOW_u title_;
+        WINDOW_u inner_;
+    };
+    Windows win;
     std::vector<File_Entry> file_list_;
     unsigned file_selection_ = 0;
     //
     void update_file_list();
-    void setup_display();
     void update_display();
     std::string visit_file();
     std::string visit_file_if_directory();
 };
 
-File_Selector::File_Selector(WINDOW *w, File_Selection_Options &opts)
+File_Selector::File_Selector(File_Selection_Options &opts)
     : P(new Impl)
 {
-    P->win_ = w;
     P->opts_ = &opts;
     P->file_list_.reserve(256);
     if (opts.directory.empty())
         opts.directory = '/';
     P->update_file_list();
-    P->setup_display();
 }
 
 File_Selector::~File_Selector()
@@ -130,49 +130,54 @@ File_Selection_Code File_Selector::key(int key)
     return File_Selection_Code::Continue;
 }
 
-void File_Selector::Impl::setup_display()
+void File_Selector::setup_display(WINDOW *outer)
 {
-    WINDOW *wdlg = win_;
-    win_title_.reset(derwin(wdlg, 1, getcols(wdlg) - 2, 1, 1));
-    win_inner_.reset(derwin(wdlg, getrows(wdlg) - 4, getcols(wdlg) - 2, 3, 1));
+    P->win = Impl::Windows();
+    P->win.outer_ = outer;
+
+    if (!outer)
+        return;
+
+    P->win.title_.reset(derwin_s(outer, 1, getcols(outer) - 2, 1, 1));
+    P->win.inner_.reset(derwin_s(outer, getrows(outer) - 4, getcols(outer) - 2, 3, 1));
 }
 
 void File_Selector::Impl::update_display()
 {
-    WINDOW *wdlg = win_;
     File_Selection_Options &opts = *opts_;
 
-    {
-        size_t titlesize = opts.title.size();
+    if (WINDOW *w = win.outer_) {
+        const std::string &title = opts.title;
+        size_t titlesize = title.size();
 
-        wattron(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
-        wborder(wdlg, ' ', ' ', '-', ' ', '-', '-', ' ', ' ');
-        wattroff(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
+        wattron(w, A_BOLD|COLOR_PAIR(Colors_Frame));
+        wborder(w, ' ', ' ', '-', '-', '-', '-', '-', '-');
+        wattroff(w, A_BOLD|COLOR_PAIR(Colors_Frame));
 
-        unsigned cols = getcols(wdlg);
+        unsigned cols = getcols(w);
         if (cols >= titlesize + 2) {
             unsigned x = (cols - (titlesize + 2)) / 2;
-            wattron(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
-            mvwaddch(wdlg, 0, x, '(');
-            mvwaddch(wdlg, 0, x + titlesize + 1, ')');
-            wattroff(wdlg, A_BOLD|COLOR_PAIR(Colors_Frame));
-            mvwaddstr(wdlg, 0, x + 1, opts.title.c_str());
+            wattron(w, A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvwaddch(w, 0, x, '(');
+            mvwaddch(w, 0, x + titlesize + 1, ')');
+            wattroff(w, A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvwaddstr(w, 0, x + 1, title.c_str());
         }
+        wnoutrefresh(w);
     }
 
-    if (WINDOW *w = win_title_.get()) {
-        wclear(w);
+    if (WINDOW *w = win.title_.get()) {
         wattron(w, A_UNDERLINE);
         mvwprintw(w, 0, 0, "Directory: %s", opts.directory.c_str());
         wattroff(w, A_UNDERLINE);
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
 
-    if (WINDOW *inner = win_inner_.get()) {
-        wclear(inner);
-
+    if (WINDOW *w = win.inner_.get()) {
         unsigned file_selection = file_selection_;
         unsigned file_count = file_list_.size();
-        unsigned display_max = getrows(inner);
+        unsigned display_max = getrows(w);
         unsigned display_offset = file_selection;
         display_offset -= std::min(display_offset, display_max / 2);
 
@@ -192,20 +197,23 @@ void File_Selector::Impl::update_display()
                 ent_attr |= COLOR_PAIR(Colors_Highlight);
 
             if (selected)
-                wattron(inner, sel_attr);
+                wattron(w, sel_attr);
             else
-                wattron(inner, ent_attr);
-            mvwaddstr(inner, display_nth, 0, fe.name.c_str());
+                wattron(w, ent_attr);
+            mvwaddstr(w, display_nth, 0, fe.name.c_str());
             if (!selected)
-                wattroff(inner, ent_attr);
+                wattroff(w, ent_attr);
             if (fe.type == File_Type::Directory)
-                waddch(inner, '/');
+                waddch(w, '/');
             if (selected)
-                wattroff(inner, sel_attr);
-        }
-    }
+                wattroff(w, sel_attr);
 
-    wrefresh(wdlg);
+            wclrtoeol(w);
+        }
+
+        wclrtobot(w);
+        wnoutrefresh(w);
+    }
 }
 
 static bool is_separator(char c)

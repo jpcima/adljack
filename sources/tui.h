@@ -42,7 +42,9 @@ typedef std::unique_ptr<WINDOW, WINDOW_deleter> WINDOW_u;
 
 int getrows(WINDOW *w);
 int getcols(WINDOW *w);
-WINDOW_u linewin(WINDOW *w, int row, int col);
+WINDOW *subwin_s(WINDOW *orig, int lines, int cols, int y, int x);
+WINDOW *derwin_s(WINDOW *orig, int lines, int cols, int y, int x);
+WINDOW *linewin(WINDOW *w, int row, int col);
 int init_color_rgb24(short id, uint32_t value);
 
 //------------------------------------------------------------------------------

@@ -20,6 +20,7 @@ extern std::string get_program_title();
 
 struct TUI_windows
 {
+    WINDOW_u outer;
     WINDOW_u inner;
     WINDOW_u playertitle;
     WINDOW_u emutitle;
@@ -101,23 +102,6 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
             ctx.player = player;
             update_bank_mtime(ctx);
         }
-#if 0
-#if defined(PDCURSES)
-        bool resized = is_termresized();
-#else
-        bool resized = is_term_resized(LINES, COLS);
-#endif
-        if (resized) {
-#if defined(PDCURSES)
-            resize_term(LINES, COLS);
-#else
-            resizeterm(LINES, COLS);
-#endif
-            setup_display(ctx);
-            endwin();
-            refresh();
-        }
-#endif
 
         stc::steady_clock::time_point now = stc::steady_clock::now();
         if (now - bank_check_last > stc::seconds(bank_check_interval)) {
@@ -135,6 +119,7 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
         int key = getch();
         if (!handle_anylevel_key(ctx, key))
             handle_toplevel_key(ctx, key);
+        doupdate();
     }
     ctx.win = TUI_windows();
     screen.end();
@@ -185,7 +170,11 @@ static void setup_display(TUI_context &ctx)
 
     bkgd(COLOR_PAIR(Colors_Background));
 
-    WINDOW *inner = subwin(stdscr, LINES - 2, COLS - 2, 1, 1);
+    WINDOW *outer = derwin_s(stdscr, LINES, COLS, 0, 0);
+    if (!outer) return;
+    ctx.win.outer.reset(outer);
+
+    WINDOW *inner = derwin_s(outer, LINES - 2, COLS - 2, 1, 1);
     if (!inner) return;
     ctx.win.inner.reset(inner);
 
@@ -194,90 +183,95 @@ static void setup_display(TUI_context &ctx)
 
     int row = 0;
 
-    ctx.win.playertitle = linewin(inner, row++, 0);
-    ctx.win.emutitle = linewin(inner, row++, 0);
-    ctx.win.chipcount = linewin(inner, row++, 0);
-    ctx.win.cpuratio = linewin(inner, row++, 0);
-    ctx.win.banktitle = linewin(inner, row++, 0);
-    ctx.win.volumeratio = linewin(inner, row++, 0);
+    ctx.win.playertitle.reset(linewin(inner, row++, 0));
+    ctx.win.emutitle.reset(linewin(inner, row++, 0));
+    ctx.win.chipcount.reset(linewin(inner, row++, 0));
+    ctx.win.cpuratio.reset(linewin(inner, row++, 0));
+    ctx.win.banktitle.reset(linewin(inner, row++, 0));
+    ctx.win.volumeratio.reset(linewin(inner, row++, 0));
 
     for (unsigned channel = 0; channel < 2; ++channel)
-        ctx.win.volume[channel] = linewin(inner, row++, 0);
+        ctx.win.volume[channel].reset(linewin(inner, row++, 0));
     ++row;
 
     for (unsigned midichannel = 0; midichannel < 16; ++midichannel) {
         unsigned width = cols / 2;
         unsigned row2 = row + midichannel % 8;
         unsigned col = (midichannel < 8) ? 0 : width;
-        ctx.win.instrument[midichannel].reset(derwin(inner, 1, width, row2, col));
+        ctx.win.instrument[midichannel].reset(derwin_s(inner, 1, width, row2, col));
     }
     row += 8;
 
-    ctx.win.status.reset(derwin(inner, 1, cols, rows - 4, 0));
-    ctx.win.keydesc1.reset(derwin(inner, 1, cols, rows - 2, 0));
-    ctx.win.keydesc2.reset(derwin(inner, 1, cols, rows - 1, 0));
+    ctx.win.status.reset(derwin_s(inner, 1, cols, rows - 4, 0));
+    ctx.win.keydesc1.reset(derwin_s(inner, 1, cols, rows - 2, 0));
+    ctx.win.keydesc2.reset(derwin_s(inner, 1, cols, rows - 1, 0));
 }
 
-static void print_bar(WINDOW *w, double vol, char ch_on, char ch_off, int attr_on)
+static int print_bar(
+    WINDOW *w, int y, int x, int size,
+    double vol, char ch_on, char ch_off, int attr_on)
 {
-    unsigned size = getcols(w);
     if (size < 2)
-        return;
-    mvwaddch(w, 0, 0, '[');
-    for (unsigned i = 0; i < size - 2; ++i) {
+        return ERR;
+    if (wmove(w, y, x) == ERR)
+        return ERR;
+    waddch(w, '[');
+    for (int i = 0; i < size - 2; ++i) {
         double ref = (double)i / (size - 2);
         bool gt = vol > ref;
         if (gt) wattron(w, attr_on);
-        mvwaddch(w, 0, i + 1, gt ? ch_on : ch_off);
+        waddch(w, gt ? ch_on : ch_off);
         if (gt) wattroff(w, attr_on);
     }
-    mvwaddch(w, 0, size - 1, ']');
+    waddch(w, ']');
+    return OK;
 }
 
 static void update_display(TUI_context &ctx)
 {
     Player *player = ctx.player;
 
-    {
+    if (WINDOW *w = ctx.win.outer.get()) {
         std::string title = get_program_title();
         size_t titlesize = title.size();
 
-        attron(A_BOLD|COLOR_PAIR(Colors_Frame));
-        //border(' ', ' ', '-', ' ', '-', '-', ' ', ' ');
-        border(' ', ' ', '-', '-', '-', '-', '-', '-');
-        attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
+        wattron(w, A_BOLD|COLOR_PAIR(Colors_Frame));
+        wborder(w, ' ', ' ', '-', '-', '-', '-', '-', '-');
+        wattroff(w, A_BOLD|COLOR_PAIR(Colors_Frame));
 
         unsigned cols = getcols(stdscr);
         if (cols >= titlesize + 2) {
             unsigned x = (cols - (titlesize + 2)) / 2;
-            attron(A_BOLD|COLOR_PAIR(Colors_Frame));
-            mvaddch(0, x, '(');
-            mvaddch(0, x + titlesize + 1, ')');
-            attroff(A_BOLD|COLOR_PAIR(Colors_Frame));
-            mvaddstr(0, x + 1, title.c_str());
+            wattron(w, A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvwaddch(w, 0, x, '(');
+            mvwaddch(w, 0, x + titlesize + 1, ')');
+            wattroff(w, A_BOLD|COLOR_PAIR(Colors_Frame));
+            mvwaddstr(w, 0, x + 1, title.c_str());
         }
+        wnoutrefresh(w);
     }
 
     if (WINDOW *w = ctx.win.playertitle.get()) {
-        wclear(w);
         mvwaddstr(w, 0, 0, "Player");
         if (player) {
             wattron(w, COLOR_PAIR(Colors_Highlight));
             mvwprintw(w, 0, 10, "%s %s", player->name(), player->version());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.emutitle.get()) {
-        wclear(w);
         mvwaddstr(w, 0, 0, "Emulator");
         if (player) {
             wattron(w, COLOR_PAIR(Colors_Highlight));
             mvwaddstr(w, 0, 10, player->emulator_name());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.chipcount.get()) {
-        wclear(w);
         mvwaddstr(w, 0, 0, "Chips");
         if (player) {
             wattron(w, COLOR_PAIR(Colors_Highlight));
@@ -288,17 +282,16 @@ static void update_display(TUI_context &ctx)
             waddstr(w, player->chip_name());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.cpuratio.get()) {
-        wclear(w);
         mvwaddstr(w, 0, 0, "CPU");
-
-        WINDOW_u barw(derwin(w, 1, 25, 0, 10));
-        if (barw)
-            print_bar(barw.get(), cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
+        print_bar(w, 0, 10, 15, cpuratio, '*', '-', COLOR_PAIR(Colors_Highlight));
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
     if (WINDOW *w = ctx.win.banktitle.get()) {
-        wclear(w);
         mvwaddstr(w, 0, 0, "Bank");
         if (player) {
             std::string title;
@@ -318,6 +311,8 @@ static void update_display(TUI_context &ctx)
             mvwaddstr(w, 0, 10, title.c_str());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
 
     double channel_volumes[2] = {lvcurrent[0], lvcurrent[1]};
@@ -332,6 +327,8 @@ static void update_display(TUI_context &ctx)
         wattron(w, COLOR_PAIR(Colors_Highlight));
         mvwprintw(w, 0, 10, "%3d%%\n", ::player_volume);
         wattroff(w, COLOR_PAIR(Colors_Highlight));
+        wclrtoeol(w);
+        wrefresh(w);
     }
 
     for (unsigned channel = 0; channel < 2; ++channel) {
@@ -346,29 +343,25 @@ static void update_display(TUI_context &ctx)
         }
 
         mvwaddstr(w, 0, 0, channel_names[channel]);
-
-        WINDOW_u barw(derwin(w, 1, getcols(w) - 6, 0, 6));
-        if (barw)
-            print_bar(barw.get(), vol, '*', '-', A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
-
-        wrefresh(w);
+        print_bar(w, 0, 6, getcols(w) - 6, vol, '*', '-', A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
 
     for (unsigned midichannel = 0; midichannel < 16; ++midichannel) {
         WINDOW *w = ctx.win.instrument[midichannel].get();
         if (!w) continue;
-        wclear(w);
         const Program &pgm = channel_map[midichannel];
         mvwprintw(w, 0, 0, "%2u: [", midichannel + 1);
         wattron(w, A_BOLD|COLOR_PAIR(Colors_ProgramNumber));
         wprintw(w, "%3u", pgm.gm);
         wattroff(w, A_BOLD|COLOR_PAIR(Colors_ProgramNumber));
         waddstr(w, "]");
-        if (midi_channel_note_count[midichannel] > 0) {
-            wattron(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
-            mvwaddch(w, 0, 11, '*');
-            wattroff(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
-        }
+
+        bool playing = midi_channel_note_count[midichannel] > 0;
+        wattron(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
+        mvwaddch(w, 0, 11, playing ? '*' : ' ');
+        wattroff(w, A_BOLD|COLOR_PAIR(Colors_ActiveVolume));
 
         const char *name = nullptr;
         Midi_Spec spec = Midi_Spec::GM;
@@ -417,22 +410,26 @@ static void update_display(TUI_context &ctx)
         wattroff(w, attr);
         if (spec != Midi_Spec::GM)
             wprintw(w, " [%s]", midi_spec_name(spec));
+        wclrtoeol(w);
+        wrefresh(w);
     }
 
     if (WINDOW *w = ctx.win.status.get()) {
         if (!ctx.status_text.empty()) {
             if (!ctx.status_display) {
-                wclear(w);
                 wattron(w, COLOR_PAIR(Colors_Select));
-                waddstr(w, ctx.status_text.c_str());
+                mvwaddstr(w, 0, 0, ctx.status_text.c_str());
                 wattroff(w, COLOR_PAIR(Colors_Select));
                 ctx.status_start = stc::steady_clock::now();
                 ctx.status_display = true;
+                wclrtoeol(w);
+                wnoutrefresh(w);
             }
             else if (stc::steady_clock::now() - ctx.status_start > stc::seconds(ctx.status_timeout)) {
-                wclear(w);
                 ctx.status_text.clear();
                 ctx.status_display = false;
+                werase(w);
+                wnoutrefresh(w);
             }
         }
     }
@@ -447,8 +444,6 @@ static void update_display(TUI_context &ctx)
     const unsigned key_spacing = 16;
 
     if (WINDOW *w = ctx.win.keydesc1.get()) {
-        wclear(w);
-
         static const Key_Description keydesc[] = {
             { "<", "prev emulator" },
             { ">", "next emulator" },
@@ -466,11 +461,12 @@ static void update_display(TUI_context &ctx)
             waddstr(w, " ");
             waddstr(w, keydesc[i].desc);
         }
+
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
 
     if (WINDOW *w = ctx.win.keydesc2.get()) {
-        wclear(w);
-
         static const Key_Description keydesc[] = {
             { "/", "volume -1" },
             { "*", "volume +1" },
@@ -487,6 +483,9 @@ static void update_display(TUI_context &ctx)
             waddstr(w, " ");
             waddstr(w, keydesc[i].desc);
         }
+
+        wclrtoeol(w);
+        wnoutrefresh(w);
     }
 }
 
@@ -505,12 +504,12 @@ static bool handle_anylevel_key(TUI_context &ctx, int key)
     case 'q': case 'Q':
     case 3:   // console break
         ctx.quit = true;
-        return true;;
-#if 0
-    case KEY_RESIZE:
-        clear();
         return true;
-#endif
+    case KEY_RESIZE:
+        resize_term(0, 0);
+        erase();
+        setup_display(ctx);
+        return true;
     }
 }
 
@@ -554,33 +553,44 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
     }
     case 'b':
     case 'B': {
-        WINDOW_u w(newwin(getrows(stdscr), getcols(stdscr), 0, 0));
-        if (w) {
-            File_Selection_Options fopts;
-            fopts.title = "Load bank";
-            fopts.directory = ctx.bank_directory;
-            File_Selector fs(w.get(), fopts);
-            File_Selection_Code code = File_Selection_Code::Continue;
-            fs.update();
-            for (key = getch(); !ctx.quit && !interface_interrupted() &&
-                     code == File_Selection_Code::Continue; key = getch()) {
-                if (!handle_anylevel_key(ctx, key)) {
-                    code = fs.key(key);
-                    fs.update();
+        erase();
+
+        File_Selection_Options fopts;
+        fopts.title = "Load bank";
+        fopts.directory = ctx.bank_directory;
+        File_Selector fs(fopts);
+        WINDOW_u w(derwin(stdscr, LINES, COLS, 0, 0));
+        fs.setup_display(w.get());
+        File_Selection_Code code = File_Selection_Code::Continue;
+        fs.update();
+
+        for (key = getch(); !ctx.quit && !interface_interrupted() &&
+                 code == File_Selection_Code::Continue; key = getch()) {
+            if (handle_anylevel_key(ctx, key)) {
+                if (key == KEY_RESIZE) {
+                    w.reset(derwin(stdscr, LINES, COLS, 0, 0));
+                    fs.setup_display(w.get());
                 }
             }
-            if (code == File_Selection_Code::Ok) {
-                if (player->dynamic_load_bank(fopts.filepath.c_str())) {
-                    show_status(ctx, "Bank loaded!");
-                    active_bank_file() = fopts.filepath;
-                    update_bank_mtime(ctx);
-                }
-                else
-                    show_status(ctx, "Error loading the bank file.");
-                ctx.bank_directory = fopts.directory;
+            else {
+                code = fs.key(key);
+                fs.update();
             }
-            clear();
+            doupdate();
         }
+
+        if (code == File_Selection_Code::Ok) {
+            if (player->dynamic_load_bank(fopts.filepath.c_str())) {
+                show_status(ctx, "Bank loaded!");
+                active_bank_file() = fopts.filepath;
+                update_bank_mtime(ctx);
+            }
+            else
+                show_status(ctx, "Error loading the bank file.");
+            ctx.bank_directory = fopts.directory;
+        }
+
+        erase();
         return true;
     }
     case 'p':
@@ -616,9 +626,23 @@ int getcols(WINDOW *w)
     return getmaxx(w) - getbegx(w);
 }
 
-WINDOW_u linewin(WINDOW *w, int row, int col)
+WINDOW *subwin_s(WINDOW *orig, int lines, int cols, int y, int x)
 {
-    return WINDOW_u(derwin(w, 1, getcols(w) - col, row, col));
+    if (lines <= 0 || cols <= 0)
+        return nullptr;
+    return subwin(orig, lines, cols, y, x);
+}
+
+WINDOW *derwin_s(WINDOW *orig, int lines, int cols, int y, int x)
+{
+    if (lines <= 0 || cols <= 0)
+        return nullptr;
+    return derwin(orig, lines, cols, y, x);
+}
+
+WINDOW *linewin(WINDOW *w, int row, int col)
+{
+    return derwin_s(w, 1, getcols(w) - col, row, col);
 }
 
 int init_color_rgb24(short id, uint32_t value)
