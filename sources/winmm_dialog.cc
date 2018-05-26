@@ -6,18 +6,26 @@
 #include "winmm_dialog.h"
 #if defined(_WIN32)
 #include "win_resource.h"
+#include "i18n.h"
+#include "i18n_util.h"
 
 static INT_PTR CALLBACK winmm_dlgproc(HWND hdlg, unsigned msg, WPARAM wp, LPARAM lp)
 {
     switch (msg) {
     case WM_INITDIALOG: {
+        Encoder<Encoding::Local8, Encoding::UTF8> cvt;
+        SetWindowTextA(hdlg, cvt.from_string(_("ADLrt for Windows")).c_str());
+        SetDlgItemTextA(hdlg, IDC_LABEL, cvt.from_string(_("Select a MIDI input device from the list:")).c_str());
+        SetDlgItemTextA(hdlg, IDOK, cvt.from_string(_("OK")).c_str());
+        SetDlgItemTextA(hdlg, IDCANCEL, cvt.from_string(_("Cancel")).c_str());
+
         Audio_Context &ctx = *(Audio_Context *)lp;
         RtMidiIn &midi_client = *ctx.midi_client;
         unsigned nports = midi_client.getPortCount();
         HWND hchoice = GetDlgItem(hdlg, IDC_CHOICE);
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
         if (ctx.have_virtualmidi) {
-            int index = SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)"New Virtual MIDI port");
+            int index = SendMessageA(hchoice, CB_ADDSTRING, 0, (LPARAM)_("New virtual MIDI port"));
             SendMessageA(hchoice, CB_SETITEMDATA, index, -2);
         }
 #endif
