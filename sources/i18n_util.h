@@ -44,13 +44,14 @@ struct Encoder {
     typedef std::basic_string<source_character> source_string;
 
     iconv_t handle();
+    void clear_state();
     target_string from_bytes(const uint8_t *input, size_t input_size = (size_t)-1);
     target_string from_string(const source_character *input, size_t input_size = (size_t)-1);
     target_string from_string(const source_string &input);
     size_t next_character(const uint8_t *input, size_t input_size, target_character *dst);
 
 private:
-    static thread_local Iconv_Handle cd_;
+    Iconv_Handle cd_;
 };
 
 //------------------------------------------------------------------------------
@@ -71,9 +72,6 @@ DEFINE_ENCODING(CP437, char, "CP437");
 
 //------------------------------------------------------------------------------
 template <Encoding Target, Encoding Source>
-thread_local Iconv_Handle Encoder<Target, Source>::cd_;
-
-template <Encoding Target, Encoding Source>
 iconv_t Encoder<Target, Source>::handle()
 {
     if (!cd_)
@@ -81,6 +79,13 @@ iconv_t Encoder<Target, Source>::handle()
     if (!cd_)
         throw std::system_error(errno, std::generic_category(), "iconv_open");
     return cd_.get();
+}
+
+template <Encoding Target, Encoding Source>
+void Encoder<Target, Source>::clear_state()
+{
+    if (cd_)
+        iconv(cd_.get(), nullptr, nullptr, nullptr, nullptr);
 }
 
 template <Encoding Target, Encoding Source>
@@ -95,6 +100,7 @@ auto Encoder<Target, Source>::from_bytes(const uint8_t *input, size_t input_size
     target_character *result = &result_buf[0];
     size_t result_size = result_buf.size() * sizeof(target_character);
 
+    clear_state();
     iconv_t cvt = handle();
     while (input_size > 0) {
         size_t old_input_size = input_size;

@@ -25,6 +25,7 @@ static Encoder<pdc_fontenc, Encoding::UTF32> cvt_pdc_from_utf32;
 static char char_to_pdc(char32_t u32, char defchar = ' ')
 {
     char c = '\0';
+    cvt_pdc_from_utf32.clear_state();
     size_t n = cvt_pdc_from_utf32.next_character((const uint8_t *)&u32, sizeof(u32), &c);
     return (n == 0) ? defchar : c;
 }
