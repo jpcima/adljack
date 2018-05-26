@@ -47,7 +47,7 @@ inline void i18n_setup()
 #endif
 
     const char *domains[] =
-        {"adljack", "adljack_inst", "adljack_prefix", "adljack_ex"};
+        {"adljack", "adljack_inst", "adljack_perc", "adljack_ex"};
     for (const char *domain : domains) {
         bindtextdomain(domain, locale_path);
 #if defined(_WIN32)
