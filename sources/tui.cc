@@ -15,6 +15,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#if defined(PDCURSES)
+#include <SDL.h>
+#endif
 namespace stc = std::chrono;
 
 extern std::string get_program_title();
@@ -53,6 +56,9 @@ struct TUI_context
     Midi_Program_Ex perc_display_program;
 };
 
+#if defined(PDCURSES)
+static void install_event_hook(TUI_context &ctx);
+#endif
 static void setup_colors();
 static void setup_display(TUI_context &ctx);
 static void update_display(TUI_context &ctx);
@@ -65,6 +71,12 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
 {
     Screen screen;
     screen.init();
+
+    TUI_context ctx;
+#if defined(PDCURSES)
+    install_event_hook(ctx);
+#endif
+
     if (has_colors())
         setup_colors();
     raw();
@@ -80,8 +92,6 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
 #if defined(PDCURSES)
     PDC_set_title(get_program_title().c_str());
 #endif
-
-    TUI_context ctx;
 
     {
         char pathbuf[PATH_MAX + 1];
@@ -129,6 +139,26 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     if (interface_interrupted())
         fprintf(stderr, "Interrupted.\n");
 }
+
+#if defined(PDCURSES)
+static int event_hook(void *userdata, SDL_Event *event)
+{
+    TUI_context &ctx = *(TUI_context *)userdata;
+
+    if (event->type == SDL_QUIT) {
+        // prevents pdcurses from invoking exit()
+        ctx.quit = true;
+        return 0;
+    }
+
+    return 1;
+}
+
+static void install_event_hook(TUI_context &ctx)
+{
+    SDL_SetEventFilter(&event_hook, &ctx);
+}
+#endif
 
 static void setup_colors()
 {

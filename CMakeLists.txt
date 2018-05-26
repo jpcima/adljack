@@ -71,11 +71,6 @@ if(NOT PREFER_PDCURSES)
   endif()
 endif()
 if(PREFER_PDCURSES OR NOT CURSES_FOUND)
-  file(GLOB PDCURSES_SOURCES
-    "thirdparty/PDCurses/sdl2/*.c"
-    "thirdparty/PDCurses/pdcurses/*.c")
-  add_library(pdcurses STATIC ${PDCURSES_SOURCES})
-  target_include_directories(pdcurses PUBLIC "thirdparty/PDCurses")
   find_library(SDL2_LIBRARY "SDL2")
   find_path(SDL2_INCLUDE_DIR_PREFIX "SDL2/SDL.h")
   if(SDL2_LIBRARY)
@@ -91,8 +86,17 @@ if(PREFER_PDCURSES OR NOT CURSES_FOUND)
   if(NOT SDL2_INCLUDE_DIR_PREFIX OR NOT SDL2_LIBRARY)
     message(FATAL_ERROR "cannot find SDL2")
   endif()
-  target_include_directories(pdcurses PRIVATE "${SDL2_INCLUDE_DIR_PREFIX}/SDL2")
-  target_link_libraries(pdcurses PRIVATE "${SDL2_LIBRARY}")
+  add_library(SDL2 INTERFACE)
+  target_include_directories(SDL2 INTERFACE "${SDL2_INCLUDE_DIR_PREFIX}/SDL2")
+  target_link_libraries(SDL2 INTERFACE "${SDL2_LIBRARY}")
+  #
+  file(GLOB PDCURSES_SOURCES
+    "thirdparty/PDCurses/sdl2/*.c"
+    "thirdparty/PDCurses/pdcurses/*.c")
+  add_library(pdcurses STATIC ${PDCURSES_SOURCES})
+  target_include_directories(pdcurses PUBLIC "thirdparty/PDCurses")
+  target_link_libraries(pdcurses PUBLIC SDL2)
+  #
   check_function_exists("vsnprintf" HAVE_VSNPRINTF)
   check_function_exists("vsscanf" HAVE_VSSCANF)
   if(HAVE_VSNPRINTF)
