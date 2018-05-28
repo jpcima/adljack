@@ -15,6 +15,9 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#if defined(ADLJACK_HAVE_MLOCKALL)
+#    include <sys/mman.h>
+#endif
 #if defined(_WIN32)
 #    include <windows.h>
 #else
@@ -122,6 +125,11 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
 bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet)
 {
     qfprintf(quiet, stderr, _("%s version %s\n"), Player::name(pt), Player::version(pt));
+
+#if defined(ADLJACK_HAVE_MLOCKALL)
+    if(mlockall(MCL_CURRENT|MCL_FUTURE) == -1)
+        qfprintf(quiet, stderr, _("Error locking memory."));
+#endif
 
     for (unsigned i = 0; i < player_type_count; ++i) {
         Player *player = Player::create((Player_Type)i, sample_rate);
