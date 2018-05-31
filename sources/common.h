@@ -7,6 +7,7 @@
 #include "player.h"
 #include "dcfilter.h"
 #include "vumonitor.h"
+#include <ring_buffer/ring_buffer.h>
 #include <getopt.h>
 #include <string>
 #include <bitset>
@@ -71,6 +72,19 @@ extern unsigned midi_channel_note_count[16];
 extern std::bitset<128> midi_channel_note_active[16];
 extern unsigned midi_channel_last_note_p1[16];
 
+extern std::unique_ptr<Ring_Buffer> fifo_notify;
+static constexpr unsigned fifo_notify_size = 8192;
+
+enum Notification_Type {
+    Notify_TextInsert,
+};
+struct Notify_Header {
+    Notification_Type type;
+    unsigned size;
+};
+
+bool notify(Notification_Type type, const uint8_t *data, unsigned len);
+
 static constexpr unsigned default_nchip = 2;
 static constexpr unsigned midi_message_max_size = 64;
 static constexpr unsigned midi_buffer_size = 1024;
@@ -89,6 +103,7 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
 bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet = false);
 void player_ready(bool quiet = false);
 void play_midi(const uint8_t *msg, unsigned len);
+void play_sysex(const uint8_t *msg, unsigned len);
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride);
 
 void dynamic_switch_emulator_id(unsigned index);

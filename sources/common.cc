@@ -40,6 +40,10 @@ Program channel_map[16];
 unsigned midi_channel_note_count[16] = {};
 std::bitset<128> midi_channel_note_active[16];
 unsigned midi_channel_last_note_p1[16] = {};
+static unsigned sysex_device_id = 0x10;
+static constexpr unsigned sysex_broadcast_id = 0x7f;
+
+std::unique_ptr<Ring_Buffer> fifo_notify;
 
 Player_Type arg_player_type = Player_Type::OPL3;
 unsigned arg_nchip = default_nchip;
@@ -131,6 +135,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         qfprintf(quiet, stderr, _("Error locking memory."));
 #endif
 
+    ::fifo_notify.reset(new Ring_Buffer(fifo_notify_size));
+
     for (unsigned i = 0; i < player_type_count; ++i) {
         Player *player = Player::create((Player_Type)i, sample_rate);
         if (!player) {
@@ -211,8 +217,8 @@ void play_midi(const uint8_t *msg, unsigned len)
         return;
 
     uint8_t status = msg[0];
-    if ((status & 0xf0) == 0xf0)
-        return;
+    if (status == 0xf0)
+        return play_sysex(msg, len);
 
     uint8_t channel = status & 0x0f;
     switch (status >> 4) {
@@ -278,6 +284,64 @@ void play_midi(const uint8_t *msg, unsigned len)
         player.rt_pitchbend(channel, value);
         break;
     }
+}
+
+static void play_roland_sysex(unsigned address, const uint8_t *data, unsigned len)
+{
+    switch (address) {
+    }
+}
+
+static void play_roland_sc_sysex(unsigned address, const uint8_t *data, unsigned len)
+{
+    switch (address) {
+    case 0x100000:  // text insert
+        notify(Notify_TextInsert, data, (len < 256) ? len : 256); break;
+    }
+}
+
+void play_sysex(const uint8_t *msg, unsigned len)
+{
+    if (len < 4 || msg[0] != 0xf0 || msg[len - 1] != 0xf7 ||
+        (msg[2] != sysex_device_id && msg[2] != sysex_broadcast_id))
+        return;
+
+    uint8_t manufacturer = msg[1];
+    switch (manufacturer) {
+        case 0x41:  // Roland
+            if (len < 10)
+                break;
+            else {
+                uint8_t model = msg[3];
+                uint8_t mode = msg[4];
+                unsigned address = (msg[5] << 16) | (msg[6] << 8) | msg[7];
+                // uint8_t checksum = msg[len - 2];
+                if (mode == 0x12) {  // receive
+                    const uint8_t *data = &msg[8];
+                    unsigned datalen = len - 10;
+                    switch (model) {
+                    case 0x42:
+                        play_roland_sysex(address, data, datalen); break;
+                    case 0x45:
+                        play_roland_sc_sysex(address, data, datalen); break;
+                    }
+                }
+            }
+            break;
+    }
+}
+
+bool notify(Notification_Type type, const uint8_t *data, unsigned len)
+{
+    Ring_Buffer *fifo = ::fifo_notify.get();
+    if (!fifo)
+        return false;
+    Notify_Header hdr = {type, len};
+    if (fifo->size_free() < sizeof(hdr) + len)
+        return false;
+    fifo->put(hdr);
+    fifo->put(data, len);
+    return true;
 }
 
 void generate_outputs(float *left, float *right, unsigned nframes, unsigned stride)

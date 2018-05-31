@@ -12,6 +12,7 @@
 #include <chrono>
 #include <cmath>
 #include <limits.h>
+#include <assert.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -62,9 +63,10 @@ static void install_event_hook(TUI_context &ctx);
 static void setup_colors();
 static void setup_display(TUI_context &ctx);
 static void update_display(TUI_context &ctx);
-static void show_status(TUI_context &ctx, const std::string &text, unsigned timeout = 10);
+static void show_status(TUI_context &ctx, std::string text, unsigned timeout = 10);
 static bool handle_anylevel_key(TUI_context &ctx, int key);
 static bool handle_toplevel_key(TUI_context &ctx, int key);
+static void handle_notifications(TUI_context &ctx);
 static bool update_bank_mtime(TUI_context &ctx);
 
 void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
@@ -108,6 +110,8 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     while (!ctx.quit && !interface_interrupted()) {
         if (idle_proc)
             idle_proc(idle_data);
+
+        handle_notifications(ctx);
 
         Player *player = have_active_player() ? &active_player() : nullptr;
         if (ctx.player != player) {
@@ -521,9 +525,9 @@ static void update_display(TUI_context &ctx)
     }
 }
 
-static void show_status(TUI_context &ctx, const std::string &text, unsigned timeout)
+static void show_status(TUI_context &ctx, std::string text, unsigned timeout)
 {
-    ctx.status_text = text;
+    ctx.status_text = std::move(text);
     ctx.status_display = false;
     ctx.status_timeout = timeout;
 }
@@ -630,6 +634,29 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         player->dynamic_panic();
         return true;
     }
+    }
+}
+
+static void handle_notifications(TUI_context &ctx)
+{
+    Ring_Buffer *fifo = ::fifo_notify.get();
+    if (!fifo)
+        return;
+
+    Notify_Header hdr;
+    while (fifo->peek(hdr) && fifo->size_used() >= sizeof(hdr) + hdr.size) {
+        fifo->discard(sizeof(hdr));
+        switch (hdr.type) {
+        default:
+            assert(false);
+            break;
+        case Notify_TextInsert: {
+            std::unique_ptr<char[]> buf(new char[hdr.size]);
+            fifo->get(buf.get(), hdr.size);
+            show_status(ctx, std::string(buf.get(), hdr.size));
+            break;
+        }
+        }
     }
 }
 
