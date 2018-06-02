@@ -280,7 +280,7 @@ void play_midi(const uint8_t *msg, unsigned len)
     }
     case 0b1110:
         if (len < 3) break;
-        unsigned value = (msg[1] & 0xf7) | ((msg[2] & 0xf7) << 7);
+        unsigned value = (msg[1] & 0x7f) | ((msg[2] & 0x7f) << 7);
         player.rt_pitchbend(channel, value);
         break;
     }
