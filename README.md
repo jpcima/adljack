@@ -70,6 +70,18 @@ In the initialization of your shell, try setting a 256-color terminal type: `tes
 
 ## Change Log
 
+### Version 1.1.0 dev
+
+- fidelity improvement of DosBox, MAME and Gens emulators by processing at native sample rate
+- update of the DosBox OPL emulator
+- support of MIDI aftertouch
+- fixed issues with pitch bend and pitch bend sensitivity
+- support of Roland SC-55 sysex: text insert
+- improved computation of the optimal 4 operator channel setting for OPL3
+- fixed long notes cutting prematurely
+- translation support on Windows
+- various fixes
+
 ### Version 1.0.0
 
 This is the initial release.
