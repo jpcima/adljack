@@ -1,8 +1,8 @@
 # adljack
-OPL3/OPN2 synthesizer using ADLMIDI
+OPL3/OPN2 synthesizer using ADLMIDI and OPNMIDI
 
-This is a simple synthesizer for ADLMIDI on the command line.
-It is based on the [libADLMIDI](https://github.com/Wohlstand/libADLMIDI) project.
+This is a standalone synthesizer for ADLMIDI and OPNMIDI on the text console.
+It is based on [libADLMIDI](https://github.com/Wohlstand/libADLMIDI) and [libOPNMIDI](https://github.com/Wohlstand/libOPNMIDI).
 
 - *adljack* is the version for the Jack audio system.
 - *adlrt* is the portable version for Linux, Windows and Mac.
