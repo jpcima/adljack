@@ -40,7 +40,7 @@ Program channel_map[16];
 unsigned midi_channel_note_count[16] = {};
 std::bitset<128> midi_channel_note_active[16];
 unsigned midi_channel_last_note_p1[16] = {};
-static unsigned sysex_device_id = 0x10;
+static unsigned sysex_device_id = 0;
 static constexpr unsigned sysex_broadcast_id = 0x7f;
 
 std::unique_ptr<Ring_Buffer> fifo_notify;
@@ -144,6 +144,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
             return false;
         }
         ::player[i].reset(player);
+
+        player->set_device_identifier(::sysex_device_id);
 
         if (!player->set_embedded_bank(0))
             qfprintf(quiet, stderr, "%s\n", _("Error setting default bank."));
@@ -286,24 +288,31 @@ void play_midi(const uint8_t *msg, unsigned len)
     }
 }
 
-static void play_roland_sysex(unsigned address, const uint8_t *data, unsigned len)
+static void play_roland_sysex(unsigned dev, unsigned address, const uint8_t *data, unsigned len)
 {
     switch (address) {
     }
 }
 
-static void play_roland_sc_sysex(unsigned address, const uint8_t *data, unsigned len)
+static void play_roland_sc_sysex(unsigned dev, unsigned address, const uint8_t *data, unsigned len)
 {
-    switch (address) {
-    case 0x100000:  // text insert
+    switch (((dev & 0xF0) << 24) | address) {
+    case (0x10 << 24)| 0x100000:  // text insert
         notify(Notify_TextInsert, data, (len < 256) ? len : 256); break;
     }
 }
 
 void play_sysex(const uint8_t *msg, unsigned len)
 {
-    if (len < 4 || msg[0] != 0xf0 || msg[len - 1] != 0xf7 ||
-        (msg[2] != sysex_device_id && msg[2] != sysex_broadcast_id))
+    Player &player = active_player();
+    if (player.rt_system_exclusive(msg, len) > 0)
+        return;
+
+    if (len < 4 || msg[0] != 0xf0 || msg[len - 1] != 0xf7)
+        return;
+
+    unsigned dev = msg[2];
+    if (((dev & 0x0F) != ::sysex_device_id && dev != ::sysex_broadcast_id))
         return;
 
     uint8_t manufacturer = msg[1];
@@ -321,9 +330,9 @@ void play_sysex(const uint8_t *msg, unsigned len)
                     unsigned datalen = len - 10;
                     switch (model) {
                     case 0x42:
-                        play_roland_sysex(address, data, datalen); break;
+                        play_roland_sysex(dev, address, data, datalen); break;
                     case 0x45:
-                        play_roland_sc_sysex(address, data, datalen); break;
+                        play_roland_sc_sysex(dev, address, data, datalen); break;
                     }
                 }
             }

@@ -42,6 +42,7 @@ public:
     virtual ~Player() {}
     virtual Player_Type type() const = 0;
     unsigned sample_rate() const { return sample_rate_; }
+    virtual bool set_device_identifier(unsigned id) = 0;
     virtual void reset() = 0;
     virtual void panic() = 0;
     virtual const char *emulator_name() const = 0;
@@ -62,6 +63,7 @@ public:
     virtual void rt_pitchbend(unsigned chan, unsigned value) = 0;
     virtual void rt_bank_change_msb(unsigned chan, unsigned value) = 0;
     virtual void rt_bank_change_lsb(unsigned chan, unsigned value) = 0;
+    virtual bool rt_system_exclusive(const uint8_t *data, unsigned size) = 0;
 
     bool dynamic_set_chip_count(unsigned nchip);
     bool dynamic_set_emulator(unsigned emulator);
@@ -99,6 +101,8 @@ public:
         }
     Player_Type type() const override
         { return Pt; }
+    bool set_device_identifier(unsigned id) override
+        { return Traits::set_device_identifier(player_.get(), id) >= 0; }
     void reset() override
         { Traits::reset(player_.get()); }
     void panic() override
@@ -144,4 +148,6 @@ public:
         { Traits::rt_bank_change_msb(player_.get(), chan, value); }
     void rt_bank_change_lsb(unsigned chan, unsigned value) override
         { Traits::rt_bank_change_lsb(player_.get(), chan, value); }
+    bool rt_system_exclusive(const uint8_t *data, unsigned size) override
+        { return Traits::rt_system_exclusive(player_.get(), data, size) > 0; }
 };

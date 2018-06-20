@@ -40,6 +40,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &version = adl_linkedLibraryVersion;
     static constexpr auto &init = adl_init;
     static constexpr auto &close = adl_close;
+    static constexpr auto &set_device_identifier = adl_setDeviceIdentifier;
     static constexpr auto &reset = adl_reset;
     static constexpr auto &panic = adl_panic;
     static constexpr auto &emulator_name = adl_chipEmulatorName;
@@ -60,6 +61,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &rt_pitchbend = adl_rt_pitchBend;
     static constexpr auto &rt_bank_change_msb = adl_rt_bankChangeMSB;
     static constexpr auto &rt_bank_change_lsb = adl_rt_bankChangeLSB;
+    static constexpr auto &rt_system_exclusive = adl_rt_systemExclusive;
 };
 
 #include <opnmidi.h>
@@ -76,6 +78,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &version = opn2_linkedLibraryVersion;
     static constexpr auto &init = opn2_init;
     static constexpr auto &close = opn2_close;
+    static constexpr auto &set_device_identifier = opn2_setDeviceIdentifier;
     static constexpr auto &reset = opn2_reset;
     static constexpr auto &panic = opn2_panic;
     static constexpr auto &emulator_name = opn2_chipEmulatorName;
@@ -96,4 +99,5 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &rt_pitchbend = opn2_rt_pitchBend;
     static constexpr auto &rt_bank_change_msb = opn2_rt_bankChangeMSB;
     static constexpr auto &rt_bank_change_lsb = opn2_rt_bankChangeLSB;
+    static constexpr auto &rt_system_exclusive = opn2_rt_systemExclusive;
 };
