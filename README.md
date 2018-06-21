@@ -70,6 +70,10 @@ In the initialization of your shell, try setting a 256-color terminal type: `tes
 
 ## Change Log
 
+### Version 1.2.0 dev
+
+- support of MIDI portamento
+
 ### Version 1.1.0-rc.1
 
 - fidelity improvement of DosBox, MAME and Gens emulators by processing at native sample rate
