@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-28 08:45+0200\n"
+"POT-Creation-Date: 2018-07-01 22:02+0200\n"
 "PO-Revision-Date: 2018-05-19 19:39+0200\n"
 "Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
 "Language-Team: French\n"
@@ -21,17 +21,17 @@ msgstr ""
 msgid " [-L latency-ms]"
 msgstr " [-L latence-ms]"
 
-#: sources/common.cc:199
+#: sources/common.cc:205
 #, c-format
 msgid "%s ready with %u chips.\n"
 msgstr "%s prêt avec %u circuits.\n"
 
-#: sources/common.cc:127
+#: sources/common.cc:131
 #, c-format
 msgid "%s version %s\n"
 msgstr "%s version %s\n"
 
-#: sources/tui.cc:332
+#: sources/tui.cc:337
 msgid "(default)"
 msgstr "(par défaut)"
 
@@ -39,32 +39,32 @@ msgstr "(par défaut)"
 msgid "ADLrt for Windows"
 msgstr "ADLrt pour Windows"
 
-#: sources/common.cc:71
+#: sources/common.cc:75
 #, c-format
 msgid "Available emulators for %s:\n"
 msgstr "Émulateurs disponibles pour %s :\n"
 
-#: sources/common.cc:63
+#: sources/common.cc:67
 msgid "Available players:"
 msgstr "Synthétiseurs disponibles :"
 
-#: sources/tui.cc:327
+#: sources/tui.cc:332
 msgid "Bank"
 msgstr "Banque"
 
-#: sources/tui.cc:122
+#: sources/tui.cc:127
 msgid "Bank has changed on disk. Reload!"
 msgstr "La banque a été modifiée sur le disque. Rechargement !"
 
-#: sources/tui.cc:124
+#: sources/tui.cc:129
 msgid "Bank has changed on disk. Reloading failed."
 msgstr "La banque a été modifiée sur le disque. Échec du rechargement."
 
-#: sources/tui.cc:616
+#: sources/tui.cc:622
 msgid "Bank loaded!"
 msgstr "Banque chargée !"
 
-#: sources/tui.cc:321
+#: sources/tui.cc:326
 msgid "CPU"
 msgstr "Processeur"
 
@@ -72,11 +72,11 @@ msgstr "Processeur"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: sources/tui.cc:307
+#: sources/tui.cc:312
 msgid "Chips"
 msgstr "Circuits"
 
-#: sources/common.cc:187
+#: sources/common.cc:193
 #, c-format
 msgid "DC filter @ %f Hz, LV monitor @ %f ms\n"
 msgstr "Filtre DC @ %f Hz, Moniteur LV @ %f ms\n"
@@ -91,39 +91,39 @@ msgstr "Latence souhaitée %f ms = taille de buffer %u\n"
 msgid "Directory: %s"
 msgstr "Dossier : %s"
 
-#: sources/tui.cc:297
+#: sources/tui.cc:302
 msgid "Emulator"
 msgstr "Émulateur"
 
-#: sources/common.cc:137
+#: sources/common.cc:143
 msgid "Error instantiating player."
 msgstr "Erreur d'instanciation du synthétiseur."
 
-#: sources/common.cc:175
+#: sources/common.cc:181
 msgid "Error loading bank file."
 msgstr "Erreur de chargement du fichier de banques."
 
-#: sources/tui.cc:621
+#: sources/tui.cc:627
 msgid "Error loading the bank file."
 msgstr "Erreur de chargement du fichier de banques."
 
-#: sources/common.cc:131
+#: sources/common.cc:135
 msgid "Error locking memory."
 msgstr "Erreur de verrouillage de la mémoire."
 
-#: sources/common.cc:164
+#: sources/common.cc:170
 msgid "Error selecting emulator."
 msgstr "Erreur de sélection de l'émulateur."
 
-#: sources/common.cc:143
+#: sources/common.cc:149
 msgid "Error setting default bank."
 msgstr "Erreur de chargement de la banque par défaut."
 
-#: sources/common.cc:183
+#: sources/common.cc:189
 msgid "Error setting the number of chips."
 msgstr "Erreur de changement du nombre de cicuits."
 
-#: sources/common.cc:380
+#: sources/common.cc:444
 msgid "Interrupted."
 msgstr "Interrompu."
 
@@ -131,19 +131,19 @@ msgstr "Interrompu."
 msgid "Invalid latency."
 msgstr "Latence invalide."
 
-#: sources/common.cc:99
+#: sources/common.cc:103
 msgid "Invalid number of chips."
 msgstr "Nombre de circuits invalide."
 
-#: sources/common.cc:92
+#: sources/common.cc:96
 msgid "Invalid player name."
 msgstr "Nom de synthétiseur invalide."
 
-#: sources/tui.cc:351
+#: sources/tui.cc:356
 msgid "Left"
 msgstr "Gauche"
 
-#: sources/tui.cc:591
+#: sources/tui.cc:597
 msgid "Load bank"
 msgstr "Charger une banque"
 
@@ -159,19 +159,19 @@ msgstr "Aucun périphérique de sortie audio n'est disponible."
 msgid "OK"
 msgstr "OK"
 
-#: sources/tui.cc:420
+#: sources/tui.cc:425
 msgid "Percussion"
 msgstr "Percussion"
 
-#: sources/tui.cc:287
+#: sources/tui.cc:292
 msgid "Player"
 msgstr "Synthétiseur"
 
-#: sources/tui.cc:103
+#: sources/tui.cc:106
 msgid "Ready!"
 msgstr "Prêt !"
 
-#: sources/tui.cc:351
+#: sources/tui.cc:356
 msgid "Right"
 msgstr "Droite"
 
@@ -184,66 +184,70 @@ msgstr "Client RtAudio \"%s\" fs=%u bs=%u latence=%f\n"
 msgid "Select a MIDI input device from the list:"
 msgstr "Sélectionnez un périphérique d'entrée MIDI dans la liste :"
 
-#: sources/common.cc:157
+#: sources/common.cc:163
 msgid "The given emulator does not exist."
 msgstr "L'émulateur choisi n'existe pas."
 
-#: sources/common.cc:55
+#: sources/common.cc:59
 #, c-format
 msgid "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]"
 msgstr ""
 "Utilisation: %s [-p synthétiseur] [-n nombre-circuits] [-b banque.wopl] [-e "
 "émulateur]"
 
-#: sources/common.cc:178
+#: sources/common.cc:184
 msgid "Using banks from WOPL file."
 msgstr "Utilisation des banques du fichier WOPL."
 
-#: sources/common.cc:171
+#: sources/common.cc:177
 msgid "Using default banks."
 msgstr "Utilisation des banques par défaut."
 
-#: sources/common.cc:168
+#: sources/common.cc:174
 #, c-format
 msgid "Using emulator \"%s\"\n"
 msgstr "Utilisation de l'émulateur \"%s\"\n"
 
-#: sources/tui.cc:358
+#: sources/tui.cc:363
 msgid "Volume"
 msgstr "Volume"
 
-#: sources/tui.cc:483
+#: sources/tui.cc:511
+msgid "channels"
+msgstr "canaux"
+
+#: sources/tui.cc:488
 msgid "chips +1"
 msgstr "circuits +1"
 
-#: sources/tui.cc:482
+#: sources/tui.cc:487
 msgid "chips -1"
 msgstr "circuits -1"
 
-#: sources/tui.cc:484
+#: sources/tui.cc:489
 msgid "load bank"
 msgstr "ch. banque"
 
-#: sources/tui.cc:481
+#: sources/tui.cc:486
 msgid "next emulator"
 msgstr "ému. suiv."
 
-#: sources/tui.cc:505
+#: sources/tui.cc:510
 msgid "panic"
 msgstr "silence"
 
-#: sources/tui.cc:480
+#: sources/tui.cc:485
 msgid "prev emulator"
 msgstr "ému. préc."
 
-#: sources/tui.cc:506
+#: sources/tui.cc:512
 msgid "quit"
 msgstr "quitter"
 
-#: sources/tui.cc:504
+#: sources/tui.cc:509
 msgid "volume +1"
 msgstr "volume +1"
 
-#: sources/tui.cc:503
+#: sources/tui.cc:508
 msgid "volume -1"
 msgstr "volume -1"

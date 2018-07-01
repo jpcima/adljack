@@ -77,6 +77,7 @@ static constexpr unsigned fifo_notify_size = 8192;
 
 enum Notification_Type {
     Notify_TextInsert,
+    Notify_Channels,
 };
 struct Notify_Header {
     Notification_Type type;

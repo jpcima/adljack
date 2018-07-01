@@ -53,6 +53,7 @@ public:
     virtual bool load_bank_file(const char *file) = 0;
     virtual bool load_bank_data(const void *data, size_t size) = 0;
     virtual void generate(unsigned nframes, void *left, void *right, const Audio_Format &format) = 0;
+    virtual void describe_channels(char *text, char *attr, size_t size) = 0;
     virtual void rt_note_on(unsigned chan, unsigned note, unsigned vel) = 0;
     virtual void rt_note_off(unsigned chan, unsigned note) = 0;
     virtual void rt_note_aftertouch(unsigned chan, unsigned note, unsigned val) = 0;
@@ -126,6 +127,8 @@ public:
         { return Traits::open_bank_data(player_.get(), data, size) >= 0; }
     void generate(unsigned nframes, void *left, void *right, const Audio_Format &format) override
         { Traits::generate_format(player_.get(), 2 * nframes, (ADL_UInt8 *)left, (ADL_UInt8 *)right, &(typename Traits::audio_format &)format); }
+    void describe_channels(char *text, char *attr, size_t size) override
+        { Traits::describe_channels(player_.get(), text, attr, size); }
     void rt_note_on(unsigned chan, unsigned note, unsigned vel) override
         { Traits::rt_note_on(player_.get(), chan, note, vel); }
     void rt_note_off(unsigned chan, unsigned note) override

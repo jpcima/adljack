@@ -155,6 +155,7 @@ print_feature("POSIX mlockall" HAVE_MLOCKALL)
 
 set(adl_sources
   "sources/tui.cc"
+  "sources/tui_channels.cc"
   "sources/tui_fileselect.cc"
   "sources/insnames.cc"
   "sources/player_traits.cc"

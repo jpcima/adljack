@@ -5,6 +5,7 @@
 
 #if defined(ADLJACK_USE_CURSES)
 #include "tui.h"
+#include "tui_channels.h"
 #include "tui_fileselect.h"
 #include "insnames.h"
 #include "i18n.h"
@@ -55,6 +56,14 @@ struct TUI_context
     unsigned perc_display_cycle = 0;
     bool have_perc_display_program = false;
     Midi_Program_Ex perc_display_program;
+    struct Channel_State {
+        std::unique_ptr<char[]> data;
+        unsigned size = 0;
+        unsigned serial = 0;
+    };
+    Channel_State channel_state;
+    void (*idle_proc)(void *) = nullptr;
+    void *idle_data = nullptr;
 };
 
 #if defined(PDCURSES)
@@ -75,6 +84,8 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     screen.init();
 
     TUI_context ctx;
+    ctx.idle_proc = idle_proc;
+    ctx.idle_data = idle_data;
 #if defined(PDCURSES)
     install_event_hook(ctx);
 #endif
@@ -507,6 +518,7 @@ static void update_display(TUI_context &ctx)
             { "/", _("volume -1") },
             { "*", _("volume +1") },
             { "p", _("panic") },
+            { "c", _("channels") },
             { "q", _("quit") },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
@@ -600,8 +612,16 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         File_Selection_Code code = File_Selection_Code::Continue;
         fs.update();
 
+        void (*idle_proc)(void *) = ctx.idle_proc;
+        void *idle_data = ctx.idle_data;
+
         for (key = getch(); !ctx.quit && !interface_interrupted() &&
                  code == File_Selection_Code::Continue; key = getch()) {
+            if (idle_proc)
+                idle_proc(idle_data);
+
+            handle_notifications(ctx);
+
             if (handle_anylevel_key(ctx, key)) {
                 if (key == KEY_RESIZE) {
                     w.reset(derwin(stdscr, LINES, COLS, 0, 0));
@@ -634,6 +654,45 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         player->dynamic_panic();
         return true;
     }
+
+    case 'c':
+    case 'C': {
+        erase();
+
+        WINDOW_u w(derwin(stdscr, LINES, COLS, 0, 0));
+        Channel_Monitor cm;
+        cm.setup_display(w.get());
+
+        TUI_context::Channel_State &state = ctx.channel_state;
+        cm.update(state.data.get(), state.size, state.serial);
+
+        void (*idle_proc)(void *) = ctx.idle_proc;
+        void *idle_data = ctx.idle_data;
+
+        int code = 1;
+        for (key = getch(); !ctx.quit && !interface_interrupted() &&
+                 code > 0; key = getch()) {
+            if (idle_proc)
+                idle_proc(idle_data);
+
+            handle_notifications(ctx);
+
+            if (handle_anylevel_key(ctx, key)) {
+                if (key == KEY_RESIZE) {
+                    w.reset(derwin(stdscr, LINES, COLS, 0, 0));
+                    cm.setup_display(w.get());
+                }
+            }
+            else {
+                code = cm.key(key);
+                cm.update(state.data.get(), state.size, state.serial);
+            }
+            doupdate();
+        }
+
+        erase();
+        return true;
+    }
     }
 }
 
@@ -654,6 +713,16 @@ static void handle_notifications(TUI_context &ctx)
             std::unique_ptr<char[]> buf(new char[hdr.size]);
             fifo->get(buf.get(), hdr.size);
             show_status(ctx, std::string(buf.get(), hdr.size));
+            break;
+        }
+        case Notify_Channels: {
+            assert((hdr.size & 1) == 0);
+            TUI_context::Channel_State &state = ctx.channel_state;
+            if (state.size < hdr.size)
+                state.data.reset(new char[hdr.size]);
+            fifo->get(state.data.get(), hdr.size);
+            state.size = hdr.size;
+            ++state.serial;
             break;
         }
         }

@@ -23,6 +23,11 @@ enum {
     player_type_count = sizeof(all_player_types) / sizeof(*all_player_types),
 };
 
+enum {
+    player_max_chips = 100,
+    player_max_channels = 23,
+};
+
 template <Player_Type>
 struct Player_Traits;
 
@@ -37,6 +42,9 @@ struct Player_Traits<Player_Type::OPL3>
 
     static const char *name() { return "ADLMIDI"; }
     static const char *chip_name() { return "YMF262"; }
+
+    static constexpr unsigned channels_per_chip = 23;
+
     static constexpr auto &version = adl_linkedLibraryVersion;
     static constexpr auto &init = adl_init;
     static constexpr auto &close = adl_close;
@@ -51,6 +59,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &open_bank_data = adl_openBankData;
     static constexpr auto &generate = adl_generate;
     static constexpr auto &generate_format = adl_generateFormat;
+    static constexpr auto &describe_channels = adl_describeChannels;
     static constexpr auto &rt_note_on = adl_rt_noteOn;
     static constexpr auto &rt_note_off = adl_rt_noteOff;
     static constexpr auto &rt_note_aftertouch = adl_rt_noteAfterTouch;
@@ -73,6 +82,9 @@ struct Player_Traits<Player_Type::OPN2>
 
     static const char *name() { return "OPNMIDI"; }
     static const char *chip_name() { return "YM2612"; }
+
+    static constexpr unsigned channels_per_chip = 6;
+
     static constexpr auto &version = opn2_linkedLibraryVersion;
     static constexpr auto &init = opn2_init;
     static constexpr auto &close = opn2_close;
@@ -87,6 +99,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &open_bank_data = opn2_openBankData;
     static constexpr auto &generate = opn2_generate;
     static constexpr auto &generate_format = opn2_generateFormat;
+    static constexpr auto &describe_channels = opn2_describeChannels;
     static constexpr auto &rt_note_on = opn2_rt_noteOn;
     static constexpr auto &rt_note_off = opn2_rt_noteOff;
     static constexpr auto &rt_note_aftertouch = opn2_rt_noteAfterTouch;

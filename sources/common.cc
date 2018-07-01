@@ -53,6 +53,10 @@ unsigned arg_emulator = 0;
 bool arg_simple_interface = false;
 #endif
 
+static double channels_update_delay = 50e-3;
+static unsigned channels_update_frames;
+static unsigned channels_update_left;
+
 void generic_usage(const char *progname, const char *more_options)
 {
     std::string usage_string =
@@ -195,6 +199,9 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         dcfilter[i].cutoff(dccutoff / sample_rate);
         lvmonitor[i].release(lvrelease * sample_rate);
     }
+
+    ::channels_update_frames = std::ceil(channels_update_delay * sample_rate);
+    ::channels_update_left = ::channels_update_frames;
 
     return true;
 }
@@ -392,6 +399,22 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
     stc::steady_clock::duration d_gen = t_after_gen - t_before_gen;
     double d_sec = 1e-6 * stc::duration_cast<stc::microseconds>(d_gen).count();
     ::cpuratio = d_sec / ((double)nframes / player.sample_rate());
+
+    if (::channels_update_left > nframes)
+        ::channels_update_left -= nframes;
+    else {
+        ::channels_update_left = ::channels_update_frames -
+            (nframes - ::channels_update_left) % ::channels_update_frames;
+
+        char buf[2 * (player_max_chips * player_max_channels + 1)];
+        char *text = buf;
+        char *attr = buf + player_max_chips * player_max_channels + 1;
+        player.describe_channels(text, attr, sizeof(buf) / 2);
+
+        unsigned len = std::char_traits<char>::length(text);
+        std::move(attr, attr + len, text + len);
+        notify(Notify_Channels, (const uint8_t *)buf, 2 * len);
+    }
 }
 
 void dynamic_switch_emulator_id(unsigned index)
