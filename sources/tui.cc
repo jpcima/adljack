@@ -209,6 +209,18 @@ static void setup_colors()
     init_pair(Colors_KeyDescription, COLOR_BLACK, COLOR_WHITE);
     init_pair(Colors_Instrument, COLOR_BLUE, COLOR_BLACK);
     init_pair(Colors_ProgramNumber, COLOR_MAGENTA, COLOR_BLACK);
+
+    const unsigned rgb_colors[16] = {
+        // (loop :for i :from 0 :below 16 :collect
+        //   (print-hex-rgb (hsv-to-rgb (hsv (* (/ i 16) 360) 1.0 0.8))))
+        0xbf0000, 0xbf4800, 0xbf8f00, 0xa7bf00, 0x60bf00, 0x18bf00, 0x00bf30, 0x00bf78, 0x00bfbf,
+        0x0078bf, 0x0030bf, 0x1800bf, 0x6000bf, 0xa700bf, 0xbf008f, 0xbf0048,
+    };
+
+    for (unsigned i = 0; i < 16; ++i) {
+        init_color_rgb24(16 + i, rgb_colors[i]);
+        init_pair(Colors_MidiCh1 + i, COLOR_WHITE, 16 + i);
+    }
 }
 
 static void setup_display(TUI_context &ctx)

@@ -117,8 +117,18 @@ void Channel_Monitor::Impl::update_display()
 
             for (unsigned col = 0; col < pad; ++col)
                 waddch(w, ' ');
-            for (unsigned col = 0; col < cols1 && col < cols2; ++col)
-                waddch(w, rowdata[col]);
+            for (unsigned col = 0; col < cols1 && col < cols2; ++col) {
+                char ch = rowdata[col];
+                uint8_t at = (uint8_t)rowattr[col];
+
+                int attr = 0;
+                if (ch != '-')
+                    attr |= COLOR_PAIR(Colors_MidiCh1 + (at & 0xf));
+
+                wattron(w, attr);
+                waddch(w, ch);
+                wattroff(w, attr);
+            }
 
             wclrtoeol(w);
         }

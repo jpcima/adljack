@@ -19,6 +19,8 @@ enum {
     Colors_Instrument = 7,
     Colors_InstrumentEx = Colors_Highlight,
     Colors_ProgramNumber = 8,
+    Colors_MidiCh1 = 9,
+    Colors_MidiCh16 = Colors_MidiCh1 + 15,
 };
 
 void curses_interface_exec(void (*idle_proc)(void *), void *idle_data);
