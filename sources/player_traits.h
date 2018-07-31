@@ -45,6 +45,8 @@ struct Player_Traits<Player_Type::OPL3>
 
     static constexpr unsigned channels_per_chip = 23;
 
+    static const double output_gain;
+
     static constexpr auto &version = adl_linkedLibraryVersion;
     static constexpr auto &init = adl_init;
     static constexpr auto &close = adl_close;
@@ -84,6 +86,8 @@ struct Player_Traits<Player_Type::OPN2>
     static const char *chip_name() { return "YM2612"; }
 
     static constexpr unsigned channels_per_chip = 6;
+
+    static constexpr double output_gain = 1.0;
 
     static constexpr auto &version = opn2_linkedLibraryVersion;
     static constexpr auto &init = opn2_init;

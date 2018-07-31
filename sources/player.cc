@@ -56,6 +56,17 @@ const char *Player::chip_name(Player_Type pt)
     }
 }
 
+double Player::output_gain(Player_Type pt)
+{
+    switch (pt) {
+    default: assert(false); abort();
+    #define PLAYER_CASE(x)                                                  \
+        case Player_Type::x: return Player_Traits<Player_Type::x>::output_gain;
+    EACH_PLAYER_TYPE(PLAYER_CASE);
+    #undef PLAYER_CASE
+    }
+}
+
 std::vector<std::string> Player::enumerate_emulators(Player_Type pt)
 {
     std::unique_ptr<Player> player(create(pt, 44100));

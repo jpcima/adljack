@@ -5,6 +5,9 @@
 
 #include "player_traits.h"
 #include <stdint.h>
+#include <math.h>
+
+const double Player_Traits<Player_Type::OPL3>::output_gain = pow(10.0, 3.0 / 20.0);
 
 int Player_Traits<Player_Type::OPN2>::set_bank(player *pl, unsigned bank)
 {

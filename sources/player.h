@@ -25,6 +25,7 @@ public:
     static const char *name(Player_Type pt);
     static const char *version(Player_Type pt);
     static const char *chip_name(Player_Type pt);
+    static double output_gain(Player_Type pt);
     static std::vector<std::string> enumerate_emulators(Player_Type pt);
     static unsigned emulator_by_name(Player_Type pt, const char *name);
 
@@ -34,6 +35,8 @@ public:
         { return version(type()); }
     const char *chip_name() const
         { return chip_name(type()); }
+    double output_gain() const
+        { return output_gain(type()); }
     std::vector<std::string> enumerate_emulators() const
         { return enumerate_emulators(type()); }
     unsigned emulator_by_name(const char *name) const

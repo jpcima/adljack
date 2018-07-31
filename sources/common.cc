@@ -381,7 +381,7 @@ void generate_outputs(float *left, float *right, unsigned nframes, unsigned stri
     DcFilter &dcrf = dcfilter[1];
     double lvcurrent[2];
 
-    const double outputgain = ::player_volume * (1.0 / 100.0);
+    const double outputgain = ::player_volume * (1.0 / 100.0) * player.output_gain();
     for (unsigned i = 0; i < nframes; ++i) {
         float *leftp = &left[i * stride];
         float *rightp = &right[i * stride];
