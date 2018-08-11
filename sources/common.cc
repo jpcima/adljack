@@ -49,6 +49,7 @@ Player_Type arg_player_type = Player_Type::OPL3;
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
 unsigned arg_emulator = 0;
+bool arg_autoconnect = false;
 #if defined(ADLJACK_USE_CURSES)
 bool arg_simple_interface = false;
 #endif
@@ -56,7 +57,7 @@ bool arg_simple_interface = false;
 void generic_usage(const char *progname, const char *more_options)
 {
     std::string usage_string =
-        _("Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]");
+        _("Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-a]");
 #if defined(ADLJACK_USE_CURSES)
     usage_string += " [-t]";
 #endif
@@ -80,7 +81,7 @@ void generic_usage(const char *progname, const char *more_options)
 
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)())
 {
-    const char *basic_optstr = "hp:n:b:e:"
+    const char *basic_optstr = "hp:n:b:e:a"
 #if defined(ADLJACK_USE_CURSES)
         "t"
 #endif
@@ -109,6 +110,9 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
             break;
         case 'e':
             arg_emulator = std::stoi(optarg);
+            break;
+        case 'a':
+            arg_autoconnect = true;
             break;
         case 'h':
             usagefn();

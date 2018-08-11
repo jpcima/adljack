@@ -68,6 +68,37 @@ static int setup_audio(const char *client_name, Audio_Context &ctx, bool quiet =
     return 0;
 }
 
+static void auto_connect(Audio_Context &ctx)
+{
+    jack_client_t *client = ctx.client.get();
+
+    std::unique_ptr<const char *[], STDC_Deleter> ports(
+        jack_get_ports(client, nullptr, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput));
+
+    if (!ports)
+        return;
+
+    // identify the default device (the first one)
+    std::string device;
+    if (ports[0]) {
+        if (const char *separator = strchr(ports[0], ':'))
+            device.assign(ports[0], separator);
+    }
+
+    if (device.empty())
+        return;
+
+    // connect ports
+    unsigned nports = 0;
+    for (const char **p = ports.get(), *port; nports < 2 && (port = *p); ++p) {
+        bool is_of_device = strlen(port) > device.size() &&
+            port[device.size()] == ':' &&
+            !memcmp(port, device.data(), device.size());
+        if (is_of_device)
+            jack_connect(client, jack_port_name(ctx.outport[nports++]), port);
+    }
+}
+
 #if defined(ADLJACK_USE_NSM)
 static bool session_is_open = false;
 static std::string session_path;
@@ -320,6 +351,9 @@ static int audio_main(int argc, char *argv[])
     jack_client_t *client = ctx.client.get();
     jack_activate(client);
     player_ready();
+
+    if (::arg_autoconnect)
+        auto_connect(ctx);
 
     //
     interface_exec(nullptr, nullptr);

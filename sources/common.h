@@ -14,6 +14,7 @@
 #include <memory>
 #include <adlmidi.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
 
@@ -93,6 +94,7 @@ extern Player_Type arg_player_type;
 extern unsigned arg_nchip;
 extern const char *arg_bankfile;
 extern unsigned arg_emulator;
+extern bool arg_autoconnect;
 #if defined(ADLJACK_USE_CURSES)
 extern bool arg_simple_interface;
 #endif
@@ -123,3 +125,7 @@ struct FILE_Deleter {
     void operator()(FILE *x) { fclose(x); }
 };
 typedef std::unique_ptr<FILE, FILE_Deleter> FILE_u;
+
+struct STDC_Deleter {
+    void operator()(void *x) { free(x); }
+};

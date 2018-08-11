@@ -102,6 +102,8 @@ int audio_main()
 
     RtAudio::StreamOptions stream_opts;
     stream_opts.flags = RTAUDIO_ALSA_USE_DEFAULT;
+    if (!arg_autoconnect)
+        stream_opts.flags |= RTAUDIO_JACK_DONT_CONNECT;
     stream_opts.streamName = "ADLrt";
 
     double latency = ::arg_latency;
