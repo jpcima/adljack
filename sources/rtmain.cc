@@ -24,36 +24,97 @@ static bool vmidi_init();
 static VM_MIDI_PORT_u vmidi_port_setup(Audio_Context &ctx, std::string &name);
 #endif
 
+struct Midi_Message_Header {
+    uint8_t size;
+    double timestamp;
+};
+
 static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudioStreamStatus, void *user_data)
 {
     Audio_Context &ctx = *(Audio_Context *)user_data;
     Ring_Buffer &midi_rb = *ctx.midi_rb;
-    uint8_t evsize;
-    uint8_t evdata[midi_message_max_size];
-    while (midi_rb.peek(evsize) && 1u + evsize <= midi_rb.size_used()) {
-        midi_rb.discard(1);
-        midi_rb.get(evdata, evsize);
-        play_midi(evdata, evsize);
+
+    double fs = ctx.sample_rate;
+    double ts = 1.0 / fs;
+    double midi_delta = ctx.midi_delta;
+    bool midi_stream_started = ctx.midi_stream_started;
+
+    // maximum interval between midi processing cycles
+    constexpr unsigned midi_interval_max = 256;
+
+    for (unsigned iframe = 0; iframe != nframes;) {
+        unsigned segment_nframes = std::min(nframes - iframe, midi_interval_max);
+
+        if (midi_stream_started)
+            midi_delta += segment_nframes * ts;
+        else
+            midi_delta = segment_nframes * ts;
+
+        Midi_Message_Header hdr;
+        uint8_t evdata[midi_message_max_size];
+        while (midi_rb.peek(hdr) && sizeof(hdr) + hdr.size <= midi_rb.size_used()) {
+            double timestamp = hdr.timestamp;
+            if (!midi_stream_started) {
+                timestamp = 0;
+                midi_stream_started = true;
+            }
+            if (midi_delta < timestamp)
+                break;  // not yet
+            midi_delta -= timestamp;
+
+            midi_rb.discard(sizeof(hdr));
+            midi_rb.get(evdata, hdr.size);
+            play_midi(evdata, hdr.size);
+        }
+
+        generate_outputs(
+            (float *)outputbuffer + 2 * iframe,
+            (float *)outputbuffer + 2 * iframe + 1,
+            segment_nframes, 2);
+
+        iframe += segment_nframes;
     }
-    generate_outputs((float *)outputbuffer, (float *)outputbuffer + 1, nframes, 2);
+
+    ctx.midi_delta = midi_delta;
+    ctx.midi_stream_started = midi_stream_started;
     return 0;
 }
 
-static void generic_midi_event(const uint8_t *data, unsigned size, Audio_Context &ctx)
+static void generic_midi_event(const uint8_t *data, unsigned size, double timestamp, Audio_Context &ctx)
 {
-    if (size > midi_message_max_size)
+    if (size > midi_message_max_size) {
+        ctx.midi_timestamp_accum += timestamp;
         return;
-    Ring_Buffer &midi_rb = *ctx.midi_rb;
-    if (midi_rb.size_free() >= 1 + size) {
-        midi_rb.put<uint8_t>(size);
-        midi_rb.put(data, size);
     }
+    Ring_Buffer &midi_rb = *ctx.midi_rb;
+    Midi_Message_Header hdr;
+    hdr.size = size;
+    hdr.timestamp = timestamp + ctx.midi_timestamp_accum;
+
+    if (true) {
+        // wait for buffer space (this is non-RT!)
+        while (midi_rb.size_free() < sizeof(hdr) + size) {
+            // fprintf(stderr, "MIDI buffer full!\n");
+            std::this_thread::sleep_for(stc::microseconds(100));
+        }
+    }
+    else {
+        // drop
+        if (midi_rb.size_free() < sizeof(hdr) + size) {
+            ctx.midi_timestamp_accum += timestamp;
+            return;
+        }
+    }
+
+    midi_rb.put(hdr);
+    midi_rb.put(data, size);
+    ctx.midi_timestamp_accum = 0;
 }
 
-static void rtmidi_event(double, std::vector<uint8_t> *message, void *user_data)
+static void rtmidi_event(double timestamp, std::vector<uint8_t> *message, void *user_data)
 {
     Audio_Context &ctx = *(Audio_Context *)user_data;
-    generic_midi_event(message->data(), message->size(), ctx);
+    generic_midi_event(message->data(), message->size(), timestamp, ctx);
 }
 
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
@@ -94,6 +155,7 @@ int audio_main()
     unsigned output_device_id = audio_client.getDefaultOutputDevice();
     RtAudio::DeviceInfo device_info = audio_client.getDeviceInfo(output_device_id);
     unsigned sample_rate = device_info.preferredSampleRate;
+    ctx.sample_rate = sample_rate;
 
     RtAudio::StreamParameters stream_param;
     stream_param.deviceId = output_device_id;
@@ -287,7 +349,20 @@ static bool vmidi_init()
 static void CALLBACK vmidi_event(VM_MIDI_PORT *, BYTE *bytes, DWORD length, DWORD_PTR user_data)
 {
     Audio_Context &ctx = *(Audio_Context *)user_data;
-    generic_midi_event(bytes, length, ctx);
+
+    double timestamp;
+    stc::steady_clock::time_point now = stc::steady_clock::now();
+    if (!ctx.vmidi_have_last_event) {
+        timestamp = 0;
+        ctx.vmidi_have_last_event = true;
+    }
+    else {
+        stc::steady_clock::duration d = now - ctx.vmidi_last_event_time;
+        timestamp = stc::duration_cast<stc::duration<double>>(d).count();
+    }
+    ctx.vmidi_last_event_time = now;
+
+    generic_midi_event(bytes, length, timestamp, ctx);
 }
 
 static VM_MIDI_PORT_u vmidi_port_setup(Audio_Context &ctx, std::string &name)

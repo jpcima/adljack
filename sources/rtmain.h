@@ -9,10 +9,13 @@
 #include <ring_buffer/ring_buffer.h>
 #include <string>
 #include <memory>
+#include <chrono>
+#include <thread>
 #include <string.h>
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
 #    include "te_virtual_midi.h"
 #endif
+namespace stc = std::chrono;
 
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
 struct VM_MIDI_PORT_Deleter {
@@ -26,9 +29,15 @@ struct Audio_Context
     Ring_Buffer *midi_rb = nullptr;
     RtAudio *audio_client = nullptr;
     RtMidiIn *midi_client = nullptr;
+    unsigned sample_rate = 0;
+    double midi_delta = 0;
+    bool midi_stream_started = false;
+    double midi_timestamp_accum = 0;  // timestamp accumulation of skipped events
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
     VM_MIDI_PORT *vmidi_port = nullptr;
     bool have_virtualmidi = false;
+    bool vmidi_have_last_event = false;
+    stc::steady_clock::time_point vmidi_last_event_time;
 #endif
 };
 
