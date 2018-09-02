@@ -89,7 +89,7 @@ bool notify(Notification_Type type, const uint8_t *data, unsigned len);
 
 static constexpr unsigned default_nchip = 2;
 static constexpr unsigned midi_message_max_size = 64;
-static constexpr unsigned midi_buffer_size = 1024;
+static constexpr unsigned midi_buffer_size = 64 * 1024;
 
 extern Player_Type arg_player_type;
 extern unsigned arg_nchip;
