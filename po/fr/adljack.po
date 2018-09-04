@@ -200,7 +200,7 @@ msgid ""
 "Usage:\n"
 "    %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-a]"
 msgstr ""
-"Utilisation:\n"
+"Utilisation :\n"
 "    %s [-p synthétiseur] [-n nombre-circuits] [-b banque.wopl] [-e émulateur] [-a]"
 
 #: sources/common.cc:192
@@ -254,7 +254,7 @@ msgstr "ému. suiv."
 
 #: sources/tui.cc:532
 msgid "panic"
-msgstr "silence"
+msgstr "panique"
 
 #: sources/tui.cc:507
 msgid "prev emulator"
