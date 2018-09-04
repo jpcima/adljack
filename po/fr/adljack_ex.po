@@ -2,14 +2,15 @@
 # Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Jean Pierre Cimalando <jp-dev@inbox.ru>, 2018.
+# Olivier Humbert <trebmuh@tuxfamily.org>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-21 09:55+0200\n"
-"PO-Revision-Date: 2018-05-21 04:40+0200\n"
-"Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
+"PO-Revision-Date: 2018-09-04 21:47+0200\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -19,23 +20,23 @@ msgstr ""
 
 #: sources/insnames.cc:302
 msgid "Synth Bass 101"
-msgstr ""
+msgstr "Basse synthétique 101"
 
 #: sources/insnames.cc:303 sources/insnames.cc:681
 msgid "Trombone 2"
-msgstr ""
+msgstr "Trombone 2"
 
 #: sources/insnames.cc:304
 msgid "French Horn2"
-msgstr ""
+msgstr "Cor d'harmonie 2"
 
 #: sources/insnames.cc:305
 msgid "Square"
-msgstr ""
+msgstr "Carré"
 
 #: sources/insnames.cc:306
 msgid "Saw"
-msgstr ""
+msgstr "Dent de scie"
 
 #: sources/insnames.cc:307 sources/insnames.cc:689
 msgid "Syn Mallet"
@@ -47,7 +48,7 @@ msgstr ""
 
 #: sources/insnames.cc:309 sources/insnames.cc:832
 msgid "Sitar 2"
-msgstr ""
+msgstr "Sitar 2"
 
 #: sources/insnames.cc:310
 msgid "Gt. Cut Noise"
@@ -59,27 +60,27 @@ msgstr ""
 
 #: sources/insnames.cc:312
 msgid "Rain"
-msgstr ""
+msgstr "Pluie"
 
 #: sources/insnames.cc:313
 msgid "Dog"
-msgstr ""
+msgstr "Chien"
 
 #: sources/insnames.cc:314
 msgid "Telephone 2"
-msgstr ""
+msgstr "Téléphone 2"
 
 #: sources/insnames.cc:315
 msgid "Car-Engine"
-msgstr ""
+msgstr "Moteur de voiture"
 
 #: sources/insnames.cc:316
 msgid "Laughing"
-msgstr ""
+msgstr "Rire"
 
 #: sources/insnames.cc:317
 msgid "Machine Gun"
-msgstr ""
+msgstr "Mitrailleur"
 
 #: sources/insnames.cc:318 sources/insnames.cc:633 sources/insnames.cc:746
 msgid "Echo Pan"
@@ -91,15 +92,15 @@ msgstr ""
 
 #: sources/insnames.cc:320
 msgid "Thunder"
-msgstr ""
+msgstr "Tonnerre"
 
 #: sources/insnames.cc:321
 msgid "Horse-Gallop"
-msgstr ""
+msgstr "Galop de cheval"
 
 #: sources/insnames.cc:322
 msgid "Door Creaking"
-msgstr ""
+msgstr "Grincement de porte"
 
 #: sources/insnames.cc:323
 msgid "Car-Stop"
@@ -107,23 +108,23 @@ msgstr ""
 
 #: sources/insnames.cc:324
 msgid "Screaming"
-msgstr ""
+msgstr "Hurlement"
 
 #: sources/insnames.cc:325
 msgid "Lasergun"
-msgstr ""
+msgstr "Fusil laser"
 
 #: sources/insnames.cc:326
 msgid "Wind"
-msgstr ""
+msgstr "Vent"
 
 #: sources/insnames.cc:327
 msgid "Bird 2"
-msgstr ""
+msgstr "Oiseau 2"
 
 #: sources/insnames.cc:328
 msgid "Door Close"
-msgstr ""
+msgstr "Fermeture de porte"
 
 #: sources/insnames.cc:329
 msgid "Car-Pass"
@@ -131,51 +132,51 @@ msgstr ""
 
 #: sources/insnames.cc:330
 msgid "Punch"
-msgstr ""
+msgstr "coup de poing"
 
 #: sources/insnames.cc:331
 msgid "Explosion"
-msgstr ""
+msgstr "Explosion"
 
 #: sources/insnames.cc:332
 msgid "Stream"
-msgstr ""
+msgstr "Ruisseau"
 
 #: sources/insnames.cc:333
 msgid "Scratch"
-msgstr ""
+msgstr "Grattage"
 
 #: sources/insnames.cc:334
 msgid "Car-Crash"
-msgstr ""
+msgstr "Accident de voiture"
 
 #: sources/insnames.cc:335
 msgid "Heart Beat"
-msgstr ""
+msgstr "Battement de cœur"
 
 #: sources/insnames.cc:336
 msgid "Bubble"
-msgstr ""
+msgstr "Bulle"
 
 #: sources/insnames.cc:337
 msgid "Windchime"
-msgstr ""
+msgstr "Carillon à vent"
 
 #: sources/insnames.cc:338
 msgid "Siren"
-msgstr ""
+msgstr "Sirène"
 
 #: sources/insnames.cc:339
 msgid "Footsteps"
-msgstr ""
+msgstr "Pas de pied"
 
 #: sources/insnames.cc:340
 msgid "Train"
-msgstr ""
+msgstr "Train"
 
 #: sources/insnames.cc:341
 msgid "Jetplane"
-msgstr ""
+msgstr "Avion à réaction"
 
 #: sources/insnames.cc:342
 msgid "Piano 1w"
@@ -215,7 +216,7 @@ msgstr ""
 
 #: sources/insnames.cc:351 sources/insnames.cc:995
 msgid "Church Bell"
-msgstr ""
+msgstr "Cloche d'église"
 
 #: sources/insnames.cc:352
 msgid "Detuned Or.1"
@@ -235,7 +236,7 @@ msgstr ""
 
 #: sources/insnames.cc:356
 msgid "Ukulele"
-msgstr ""
+msgstr "Ukulele"
 
 #: sources/insnames.cc:357
 msgid "12-str Guitar"
@@ -271,11 +272,11 @@ msgstr ""
 
 #: sources/insnames.cc:365
 msgid "Slow Violin"
-msgstr ""
+msgstr "Violon lent"
 
 #: sources/insnames.cc:366 sources/insnames.cc:854
 msgid "Orchestra"
-msgstr ""
+msgstr "Orchestre"
 
 #: sources/insnames.cc:367
 msgid "Syn.Strings 3"
@@ -283,19 +284,19 @@ msgstr ""
 
 #: sources/insnames.cc:368
 msgid "Brass 2"
-msgstr ""
+msgstr "Cuivre 2"
 
 #: sources/insnames.cc:369
 msgid "Synth Brass 3"
-msgstr ""
+msgstr "Cuivre synthétique 2"
 
 #: sources/insnames.cc:370
 msgid "Synth Brass 4"
-msgstr ""
+msgstr "Cuivre synthétique 4"
 
 #: sources/insnames.cc:371
 msgid "Sine Wave"
-msgstr ""
+msgstr "Onde sinusoïdale"
 
 #: sources/insnames.cc:372 sources/insnames.cc:634
 msgid "Doctor Solo"
@@ -307,7 +308,7 @@ msgstr ""
 
 #: sources/insnames.cc:374 sources/insnames.cc:710 sources/insnames.cc:1009
 msgid "Castanets"
-msgstr ""
+msgstr "Catagnettes"
 
 #: sources/insnames.cc:375
 msgid "Concert Bass Drum"
@@ -323,11 +324,11 @@ msgstr ""
 
 #: sources/insnames.cc:378
 msgid "Starship"
-msgstr ""
+msgstr "Vaisseau"
 
 #: sources/insnames.cc:379 sources/insnames.cc:1012
 msgid "Carillon"
-msgstr ""
+msgstr "Carillon"
 
 #: sources/insnames.cc:380
 msgid "Elec Perc"
@@ -367,7 +368,7 @@ msgstr ""
 
 #: sources/insnames.cc:389 sources/insnames.cc:998
 msgid "Mandolin"
-msgstr ""
+msgstr "Mandoline"
 
 #: sources/insnames.cc:390
 msgid "Funk Gt.2"
@@ -395,11 +396,11 @@ msgstr ""
 
 #: sources/insnames.cc:396
 msgid "Organ 4"
-msgstr ""
+msgstr "Orgue 4"
 
 #: sources/insnames.cc:397
 msgid "Organ 5"
-msgstr ""
+msgstr "Orgu 5"
 
 #: sources/insnames.cc:398
 msgid "Nylon Gt.2"
@@ -423,15 +424,15 @@ msgstr ""
 
 #: sources/insnames.cc:403
 msgid "Organ 101"
-msgstr ""
+msgstr "Orgue 101"
 
 #: sources/insnames.cc:404
 msgid "Organ 201"
-msgstr ""
+msgstr "Orgue 201"
 
 #: sources/insnames.cc:405
 msgid "Harmonica 2"
-msgstr ""
+msgstr "Harmonica 2"
 
 #: sources/insnames.cc:406
 msgid "Mellow Gt."
@@ -455,15 +456,15 @@ msgstr ""
 
 #: sources/insnames.cc:411
 msgid "Synth Bass 201"
-msgstr ""
+msgstr "Basse synthétique 201"
 
 #: sources/insnames.cc:412
 msgid "Strings 2"
-msgstr ""
+msgstr "Cordes 2"
 
 #: sources/insnames.cc:413
 msgid "SlowStrings2"
-msgstr ""
+msgstr "Cordes lentes 2"
 
 #: sources/insnames.cc:414
 msgid "OB Strings"
@@ -471,11 +472,11 @@ msgstr ""
 
 #: sources/insnames.cc:415 sources/insnames.cc:679
 msgid "Trumpet 2"
-msgstr ""
+msgstr "trompette 2"
 
 #: sources/insnames.cc:416 sources/insnames.cc:751
 msgid "Tuba 2"
-msgstr ""
+msgstr "Tuba 2"
 
 #: sources/insnames.cc:417
 msgid "Poly Brass"
@@ -499,7 +500,7 @@ msgstr ""
 
 #: sources/insnames.cc:422
 msgid "Fantasia 2"
-msgstr ""
+msgstr "Fantaisie 2"
 
 #: sources/insnames.cc:423
 msgid "Thick Pad"
@@ -543,7 +544,7 @@ msgstr ""
 
 #: sources/insnames.cc:433
 msgid "Muted Banjo"
-msgstr ""
+msgstr "Banjo étouffé"
 
 #: sources/insnames.cc:434
 msgid "Tsugaru"
@@ -551,7 +552,7 @@ msgstr ""
 
 #: sources/insnames.cc:435
 msgid "Shanai 2"
-msgstr ""
+msgstr "Shehnai 2"
 
 #: sources/insnames.cc:436 sources/insnames.cc:962
 msgid "Real Tom"
@@ -571,7 +572,7 @@ msgstr ""
 
 #: sources/insnames.cc:440
 msgid "Jazz Bass"
-msgstr ""
+msgstr "Basse jazz"
 
 #: sources/insnames.cc:441
 msgid "Fretless Bs3"
@@ -579,7 +580,7 @@ msgstr ""
 
 #: sources/insnames.cc:442 sources/insnames.cc:851
 msgid "Modular Bass"
-msgstr ""
+msgstr "Basse modulaire"
 
 #: sources/insnames.cc:443
 msgid "Hollow Mini"
@@ -607,7 +608,7 @@ msgstr ""
 
 #: sources/insnames.cc:449
 msgid "African Wood"
-msgstr ""
+msgstr "Bois africain"
 
 #: sources/insnames.cc:450 sources/insnames.cc:793
 msgid "Prologue"
@@ -619,7 +620,7 @@ msgstr ""
 
 #: sources/insnames.cc:452
 msgid "Nylon Harp"
-msgstr ""
+msgstr "Harpe nylon"
 
 #: sources/insnames.cc:453
 msgid "50's Sci-Fi"
@@ -627,7 +628,7 @@ msgstr ""
 
 #: sources/insnames.cc:454
 msgid "Detune Sitar"
-msgstr ""
+msgstr "Sitar désaccordée"
 
 #: sources/insnames.cc:455
 msgid "Fretless Bs4"
@@ -695,7 +696,7 @@ msgstr ""
 
 #: sources/insnames.cc:471
 msgid "Kitty"
-msgstr ""
+msgstr "Chaton"
 
 #: sources/insnames.cc:472
 msgid "Mr.Smooth"
@@ -723,7 +724,7 @@ msgstr ""
 
 #: sources/insnames.cc:478
 msgid "Bass Slide"
-msgstr ""
+msgstr "Glissé de basse"
 
 #: sources/insnames.cc:479
 msgid "Growl"
@@ -755,7 +756,7 @@ msgstr ""
 
 #: sources/insnames.cc:486
 msgid "Applause 2"
-msgstr ""
+msgstr "Applaudissement 2"
 
 #: sources/insnames.cc:487
 msgid "LA Saw"
@@ -767,7 +768,7 @@ msgstr ""
 
 #: sources/insnames.cc:489
 msgid "Scratch 2"
-msgstr ""
+msgstr "Grattage 2"
 
 #: sources/insnames.cc:490 sources/insnames.cc:996
 msgid "Cimbalom"
@@ -895,7 +896,7 @@ msgstr ""
 
 #: sources/insnames.cc:521
 msgid "Orchestra 2"
-msgstr ""
+msgstr "Orchestre 2"
 
 #: sources/insnames.cc:522
 msgid "Warm Strings"
@@ -927,7 +928,7 @@ msgstr ""
 
 #: sources/insnames.cc:529 sources/insnames.cc:977
 msgid "Rock Tom"
-msgstr ""
+msgstr "Tom rock"
 
 #: sources/insnames.cc:530
 msgid "Rev.Snare 2"
@@ -935,7 +936,7 @@ msgstr ""
 
 #: sources/insnames.cc:531
 msgid "Tekno Bass"
-msgstr ""
+msgstr "Basse techno"
 
 #: sources/insnames.cc:532
 msgid "Tremolo Orch"
@@ -1111,7 +1112,7 @@ msgstr ""
 
 #: sources/insnames.cc:575
 msgid "Rock Rhythm"
-msgstr ""
+msgstr "Rythme rock"
 
 #: sources/insnames.cc:576
 msgid "Velo Strings"
@@ -1135,7 +1136,7 @@ msgstr ""
 
 #: sources/insnames.cc:581
 msgid "Rock Rhythm2"
-msgstr ""
+msgstr "Rythme rock 2"
 
 #: sources/insnames.cc:582
 msgid "Warm Tp."
@@ -1163,7 +1164,7 @@ msgstr ""
 
 #: sources/insnames.cc:588
 msgid "Organ Bass"
-msgstr ""
+msgstr "Basse orgue"
 
 #: sources/insnames.cc:589
 msgid "Lequint Gt."
@@ -1231,7 +1232,7 @@ msgstr ""
 
 #: sources/insnames.cc:605
 msgid "Accordion"
-msgstr ""
+msgstr "Accordéon"
 
 #: sources/insnames.cc:606
 msgid "Harpsi 1"
@@ -1299,7 +1300,7 @@ msgstr ""
 
 #: sources/insnames.cc:622
 msgid "Fantasy"
-msgstr ""
+msgstr "Fantaisie"
 
 #: sources/insnames.cc:623
 msgid "Harmo Pan"
@@ -1307,11 +1308,11 @@ msgstr ""
 
 #: sources/insnames.cc:624
 msgid "Chorale"
-msgstr ""
+msgstr "Chorale"
 
 #: sources/insnames.cc:625
 msgid "Glasses"
-msgstr ""
+msgstr "Verres"
 
 #: sources/insnames.cc:626
 msgid "Soundtrack"
@@ -1319,7 +1320,7 @@ msgstr ""
 
 #: sources/insnames.cc:627
 msgid "Atmosphere"
-msgstr ""
+msgstr "Atmosphère"
 
 #: sources/insnames.cc:628
 msgid "Warm Bell"
@@ -1335,7 +1336,7 @@ msgstr ""
 
 #: sources/insnames.cc:632
 msgid "Oboe 2001"
-msgstr ""
+msgstr "Hautbois 2001"
 
 #: sources/insnames.cc:635
 msgid "School Daze"
@@ -1367,39 +1368,39 @@ msgstr ""
 
 #: sources/insnames.cc:642
 msgid "Violin 1"
-msgstr ""
+msgstr "Violon 1"
 
 #: sources/insnames.cc:643
 msgid "Violin 2"
-msgstr ""
+msgstr "Violon 2"
 
 #: sources/insnames.cc:644
 msgid "Cello 1"
-msgstr ""
+msgstr "Violoncelle 1"
 
 #: sources/insnames.cc:645
 msgid "Cello 2"
-msgstr ""
+msgstr "Violoncelle 2"
 
 #: sources/insnames.cc:646
 msgid "Contrabass"
-msgstr ""
+msgstr "Contre-basse"
 
 #: sources/insnames.cc:647
 msgid "Harp 1"
-msgstr ""
+msgstr "Harpe 1"
 
 #: sources/insnames.cc:648
 msgid "Harp 2"
-msgstr ""
+msgstr "Harpe 2"
 
 #: sources/insnames.cc:649
 msgid "Guitar 1"
-msgstr ""
+msgstr "Guitare 1"
 
 #: sources/insnames.cc:650
 msgid "Guitar 2"
-msgstr ""
+msgstr "Guitare 2"
 
 #: sources/insnames.cc:651
 msgid "Elec Gtr 1"
@@ -1411,7 +1412,7 @@ msgstr ""
 
 #: sources/insnames.cc:653
 msgid "Sitar"
-msgstr ""
+msgstr "Sitar"
 
 #: sources/insnames.cc:654
 msgid "Acou Bass 1"
@@ -1447,11 +1448,11 @@ msgstr ""
 
 #: sources/insnames.cc:662
 msgid "Flute 1"
-msgstr ""
+msgstr "Flûte 1"
 
 #: sources/insnames.cc:663
 msgid "Flute 2"
-msgstr ""
+msgstr "Flûte 2"
 
 #: sources/insnames.cc:664
 msgid "Piccolo 1"
@@ -1471,31 +1472,31 @@ msgstr ""
 
 #: sources/insnames.cc:668
 msgid "Sax 1"
-msgstr ""
+msgstr "Saxophone 1"
 
 #: sources/insnames.cc:669
 msgid "Sax 2"
-msgstr ""
+msgstr "Saxophone 2"
 
 #: sources/insnames.cc:670
 msgid "Sax 3"
-msgstr ""
+msgstr "Saxophone 3"
 
 #: sources/insnames.cc:671
 msgid "Sax 4"
-msgstr ""
+msgstr "Saxophone 4"
 
 #: sources/insnames.cc:672
 msgid "Clarinet 1"
-msgstr ""
+msgstr "Clarinette 1"
 
 #: sources/insnames.cc:673
 msgid "Clarinet 2"
-msgstr ""
+msgstr "Clarinette 2"
 
 #: sources/insnames.cc:674
 msgid "Oboe"
-msgstr ""
+msgstr "Hautbois"
 
 #: sources/insnames.cc:675
 msgid "Engl Horn"
@@ -1503,19 +1504,19 @@ msgstr ""
 
 #: sources/insnames.cc:676
 msgid "Bassoon"
-msgstr ""
+msgstr "Basson"
 
 #: sources/insnames.cc:677
 msgid "Harmonica"
-msgstr ""
+msgstr "Harmonica"
 
 #: sources/insnames.cc:678
 msgid "Trumpet 1"
-msgstr ""
+msgstr "Trompette 1"
 
 #: sources/insnames.cc:680
 msgid "Trombone 1"
-msgstr ""
+msgstr "Trombone 1"
 
 #: sources/insnames.cc:682
 msgid "Fr Horn 1"
@@ -1527,7 +1528,7 @@ msgstr ""
 
 #: sources/insnames.cc:684
 msgid "Tuba"
-msgstr ""
+msgstr "Tuba"
 
 #: sources/insnames.cc:685
 msgid "Brs Sect 1"
@@ -1559,15 +1560,15 @@ msgstr ""
 
 #: sources/insnames.cc:693
 msgid "Xylophone"
-msgstr ""
+msgstr "Xylophone"
 
 #: sources/insnames.cc:694
 msgid "Marimba"
-msgstr ""
+msgstr "Marimba"
 
 #: sources/insnames.cc:695
 msgid "Koto"
-msgstr ""
+msgstr "Koto"
 
 #: sources/insnames.cc:696
 msgid "Sho"
@@ -1575,15 +1576,15 @@ msgstr ""
 
 #: sources/insnames.cc:697
 msgid "Shakuhachi"
-msgstr ""
+msgstr "Shakuhachi"
 
 #: sources/insnames.cc:698
 msgid "Whistle 1"
-msgstr ""
+msgstr "Sifflet 1"
 
 #: sources/insnames.cc:699
 msgid "Whistle 2"
-msgstr ""
+msgstr "Sifflet 2"
 
 #: sources/insnames.cc:700
 msgid "Bottleblow"
@@ -1595,15 +1596,15 @@ msgstr ""
 
 #: sources/insnames.cc:702
 msgid "Timpani"
-msgstr ""
+msgstr "Timbales"
 
 #: sources/insnames.cc:703
 msgid "Melodic Tom"
-msgstr ""
+msgstr "Tom mélodique"
 
 #: sources/insnames.cc:704
 msgid "Deep Snare"
-msgstr ""
+msgstr "Caisse claire profonde"
 
 #: sources/insnames.cc:705
 msgid "Elec Perc 1"
@@ -1615,7 +1616,7 @@ msgstr ""
 
 #: sources/insnames.cc:707
 msgid "Taiko"
-msgstr ""
+msgstr "Taiko"
 
 #: sources/insnames.cc:708
 msgid "Taiko Rim"
@@ -1623,11 +1624,11 @@ msgstr ""
 
 #: sources/insnames.cc:709
 msgid "Cymbal"
-msgstr ""
+msgstr "Cymbales"
 
 #: sources/insnames.cc:711
 msgid "Triangle"
-msgstr ""
+msgstr "Triangle"
 
 #: sources/insnames.cc:712
 msgid "Orche Hit"
@@ -1635,7 +1636,7 @@ msgstr ""
 
 #: sources/insnames.cc:713
 msgid "Telephone"
-msgstr ""
+msgstr "Téléphone"
 
 #: sources/insnames.cc:714
 msgid "Bird Tweet"
@@ -1715,11 +1716,11 @@ msgstr ""
 
 #: sources/insnames.cc:733
 msgid "Square 2"
-msgstr ""
+msgstr "Carrée 2"
 
 #: sources/insnames.cc:734
 msgid "Saw 2"
-msgstr ""
+msgstr "Dent de scie 2"
 
 #: sources/insnames.cc:735
 msgid "SlowVln"
@@ -1759,7 +1760,7 @@ msgstr ""
 
 #: sources/insnames.cc:745
 msgid "Popcorn"
-msgstr ""
+msgstr "Popcorn"
 
 #: sources/insnames.cc:747
 msgid "NylonGt2"
@@ -1775,7 +1776,7 @@ msgstr ""
 
 #: sources/insnames.cc:750
 msgid "Trumpet2"
-msgstr ""
+msgstr "Trompette 2"
 
 #: sources/insnames.cc:752
 msgid "Big&Low"
@@ -2187,7 +2188,7 @@ msgstr ""
 
 #: sources/insnames.cc:865
 msgid "Dream"
-msgstr ""
+msgstr "Rêve"
 
 #: sources/insnames.cc:866
 msgid "ElGrPno2"
@@ -2223,7 +2224,7 @@ msgstr ""
 
 #: sources/insnames.cc:874
 msgid "Choral"
-msgstr ""
+msgstr "Chorale"
 
 #: sources/insnames.cc:875
 msgid "HiBrass"
@@ -2383,7 +2384,7 @@ msgstr ""
 
 #: sources/insnames.cc:914
 msgid "Impact"
-msgstr ""
+msgstr "Impact"
 
 #: sources/insnames.cc:915
 msgid "AnaBrss1"
@@ -2419,7 +2420,7 @@ msgstr ""
 
 #: sources/insnames.cc:923
 msgid "Fantasy2"
-msgstr ""
+msgstr "Fantaisie 2"
 
 #: sources/insnames.cc:925
 msgid "PolyPd80"
@@ -2431,7 +2432,7 @@ msgstr ""
 
 #: sources/insnames.cc:927
 msgid "Glacier"
-msgstr ""
+msgstr "Glacier"
 
 #: sources/insnames.cc:929
 msgid "PolarPad"
@@ -2471,7 +2472,7 @@ msgstr ""
 
 #: sources/insnames.cc:938
 msgid "Shanai2"
-msgstr ""
+msgstr "Shehnai 2"
 
 #: sources/insnames.cc:939
 msgid "Mel Tom2"
@@ -2603,7 +2604,7 @@ msgstr ""
 
 #: sources/insnames.cc:972
 msgid "Caribean"
-msgstr ""
+msgstr "Caribéen"
 
 #: sources/insnames.cc:973
 msgid "LoudGlok"
@@ -2639,15 +2640,15 @@ msgstr ""
 
 #: sources/insnames.cc:982
 msgid "Planet"
-msgstr ""
+msgstr "Planète"
 
 #: sources/insnames.cc:983
 msgid "Ritual"
-msgstr ""
+msgstr "Rituel"
 
 #: sources/insnames.cc:984
 msgid "Creation"
-msgstr ""
+msgstr "Création"
 
 #: sources/insnames.cc:985
 msgid "VibeBell"
@@ -2659,7 +2660,7 @@ msgstr ""
 
 #: sources/insnames.cc:987
 msgid "Stardust"
-msgstr ""
+msgstr "Poussière d'étoile"
 
 #: sources/insnames.cc:988
 msgid "DigiBell"
@@ -2675,7 +2676,7 @@ msgstr ""
 
 #: sources/insnames.cc:991
 msgid "Night"
-msgstr ""
+msgstr "Nuit"
 
 #: sources/insnames.cc:992
 msgid "BellHarp"
@@ -2699,7 +2700,7 @@ msgstr ""
 
 #: sources/insnames.cc:1000
 msgid "Hammer"
-msgstr ""
+msgstr "Marteau"
 
 #: sources/insnames.cc:1001
 msgid "Seq Ana"
@@ -2723,7 +2724,7 @@ msgstr ""
 
 #: sources/insnames.cc:1011
 msgid "Balafon2"
-msgstr ""
+msgstr "Balafon 2"
 
 #: sources/insnames.cc:1013
 msgid "Santur"
