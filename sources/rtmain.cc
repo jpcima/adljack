@@ -16,6 +16,8 @@
 static std::string program_title = "ADLrt";
 
 static double arg_latency = 20e-3;  // audio latency, 20ms default
+static RtAudio::Api arg_audio_api;
+static RtMidi::Api arg_midi_api;
 
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
 static bool vmidi_init();
@@ -74,16 +76,13 @@ void midi_error_callback(RtMidiError::Type type, const std::string &text, void *
 
 int audio_main()
 {
-    i18n_setup();
-    midi_db.init();
-
     Audio_Context ctx;
     Ring_Buffer midi_rb(midi_buffer_size);
     ctx.midi_rb = &midi_rb;
 
-    RtAudio audio_client(RtAudio::Api::UNSPECIFIED);
+    RtAudio audio_client(::arg_audio_api);
     ctx.audio_client = &audio_client;
-    RtMidiIn midi_client(RtMidi::Api::UNSPECIFIED, "ADLrt", midi_buffer_size);
+    RtMidiIn midi_client(::arg_midi_api, "ADLrt", midi_buffer_size);
     ctx.midi_client = &midi_client;
 
     unsigned num_audio_devices = audio_client.getDeviceCount();
@@ -180,7 +179,42 @@ int audio_main()
 
 static void usage()
 {
-    generic_usage("adlrt", _(" [-L latency-ms]"));
+    std::string audio_apis_str;
+    std::string midi_apis_str;
+
+    std::vector<RtAudio::Api> audio_apis;
+    std::vector<RtMidi::Api> midi_apis;
+    RtAudio::getCompiledApi(audio_apis);
+    RtMidi::getCompiledApi(midi_apis);
+
+    for (RtAudio::Api api : audio_apis) {
+        if (const char *id = audio_api_id(api)) {
+            if (!audio_apis_str.empty()) audio_apis_str.append(", ");
+            audio_apis_str.append(id);
+        }
+    }
+    for (RtMidi::Api api : midi_apis) {
+        if (const char *id = midi_api_id(api)) {
+            if (!midi_apis_str.empty()) midi_apis_str.append(", ");
+            midi_apis_str.append(id);
+        }
+    }
+
+    std::string usage_extra;
+    usage_extra += "\n          ";
+    usage_extra += _("[-L latency-ms]");
+
+    usage_extra += "\n          ";
+    usage_extra += _("[-A audio-system]");
+    usage_extra +=  ": ";
+    usage_extra += audio_apis_str;
+
+    usage_extra += "\n          ";
+    usage_extra += _("[-M midi-system]");
+    usage_extra +=  ": ";
+    usage_extra += midi_apis_str;
+
+    generic_usage("adlrt", usage_extra.c_str());
 }
 
 std::string get_program_title()
@@ -190,12 +224,31 @@ std::string get_program_title()
 
 int main(int argc, char *argv[])
 {
-    for (int c; (c = generic_getopt(argc, argv, "L:", usage)) != -1;) {
+    i18n_setup();
+    midi_db.init();
+
+    for (int c; (c = generic_getopt(argc, argv, "L:A:M:", usage)) != -1;) {
         switch (c) {
         case 'L': {
             double latency = ::arg_latency = std::stod(optarg) * 1e-3;
             if (latency <= 0) {
                 fprintf(stderr, "%s\n", _("Invalid latency."));
+                return 1;
+            }
+            break;
+        }
+        case 'A': {
+            RtAudio::Api audio_api = ::arg_audio_api = find_audio_api(optarg);
+            if (!is_compiled_audio_api(audio_api)) {
+                fprintf(stderr, _("Invalid audio system '%s'.\n"), optarg);
+                return 1;
+            }
+            break;
+        }
+        case 'M': {
+            RtMidi::Api midi_api = ::arg_midi_api = find_midi_api(optarg);
+            if (!is_compiled_midi_api(midi_api)) {
+                fprintf(stderr, _("Invalid MIDI system '%s'.\n"), optarg);
                 return 1;
             }
             break;

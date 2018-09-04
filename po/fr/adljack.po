@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-01 22:02+0200\n"
+"POT-Creation-Date: 2018-09-04 02:46+0200\n"
 "PO-Revision-Date: 2018-05-19 19:39+0200\n"
 "Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
 "Language-Team: French\n"
@@ -17,21 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: sources/rtmain.cc:181
-msgid " [-L latency-ms]"
-msgstr " [-L latence-ms]"
-
-#: sources/common.cc:205
+#: sources/common.cc:216
 #, c-format
 msgid "%s ready with %u chips.\n"
 msgstr "%s prêt avec %u circuits.\n"
 
-#: sources/common.cc:131
+#: sources/common.cc:139
 #, c-format
 msgid "%s version %s\n"
 msgstr "%s version %s\n"
 
-#: sources/tui.cc:337
+#: sources/tui.cc:359
 msgid "(default)"
 msgstr "(par défaut)"
 
@@ -39,32 +35,32 @@ msgstr "(par défaut)"
 msgid "ADLrt for Windows"
 msgstr "ADLrt pour Windows"
 
-#: sources/common.cc:75
+#: sources/common.cc:80
 #, c-format
 msgid "Available emulators for %s:\n"
 msgstr "Émulateurs disponibles pour %s :\n"
 
-#: sources/common.cc:67
+#: sources/common.cc:72
 msgid "Available players:"
 msgstr "Synthétiseurs disponibles :"
 
-#: sources/tui.cc:332
+#: sources/tui.cc:354
 msgid "Bank"
 msgstr "Banque"
 
-#: sources/tui.cc:127
+#: sources/tui.cc:137
 msgid "Bank has changed on disk. Reload!"
 msgstr "La banque a été modifiée sur le disque. Rechargement !"
 
-#: sources/tui.cc:129
+#: sources/tui.cc:139
 msgid "Bank has changed on disk. Reloading failed."
 msgstr "La banque a été modifiée sur le disque. Échec du rechargement."
 
-#: sources/tui.cc:622
+#: sources/tui.cc:652
 msgid "Bank loaded!"
 msgstr "Banque chargée !"
 
-#: sources/tui.cc:326
+#: sources/tui.cc:348
 msgid "CPU"
 msgstr "Processeur"
 
@@ -72,16 +68,16 @@ msgstr "Processeur"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: sources/tui.cc:312
+#: sources/tui.cc:334
 msgid "Chips"
 msgstr "Circuits"
 
-#: sources/common.cc:193
+#: sources/common.cc:201
 #, c-format
 msgid "DC filter @ %f Hz, LV monitor @ %f ms\n"
 msgstr "Filtre DC @ %f Hz, Moniteur LV @ %f ms\n"
 
-#: sources/rtmain.cc:109
+#: sources/rtmain.cc:110
 #, c-format
 msgid "Desired latency %f ms = buffer size %u\n"
 msgstr "Latence souhaitée %f ms = taille de buffer %u\n"
@@ -91,59 +87,69 @@ msgstr "Latence souhaitée %f ms = taille de buffer %u\n"
 msgid "Directory: %s"
 msgstr "Dossier : %s"
 
-#: sources/tui.cc:302
+#: sources/tui.cc:324
 msgid "Emulator"
 msgstr "Émulateur"
 
-#: sources/common.cc:143
+#: sources/common.cc:151
 msgid "Error instantiating player."
 msgstr "Erreur d'instanciation du synthétiseur."
 
-#: sources/common.cc:181
+#: sources/common.cc:189
 msgid "Error loading bank file."
 msgstr "Erreur de chargement du fichier de banques."
 
-#: sources/tui.cc:627
+#: sources/tui.cc:657
 msgid "Error loading the bank file."
 msgstr "Erreur de chargement du fichier de banques."
 
-#: sources/common.cc:135
+#: sources/common.cc:143
 msgid "Error locking memory."
 msgstr "Erreur de verrouillage de la mémoire."
 
-#: sources/common.cc:170
+#: sources/common.cc:178
 msgid "Error selecting emulator."
 msgstr "Erreur de sélection de l'émulateur."
 
-#: sources/common.cc:149
+#: sources/common.cc:157
 msgid "Error setting default bank."
 msgstr "Erreur de chargement de la banque par défaut."
 
-#: sources/common.cc:189
+#: sources/common.cc:197
 msgid "Error setting the number of chips."
 msgstr "Erreur de changement du nombre de cicuits."
 
-#: sources/common.cc:444
+#: sources/common.cc:471
 msgid "Interrupted."
 msgstr "Interrompu."
 
-#: sources/rtmain.cc:196
+#: sources/rtmain.cc:250
+#, c-format
+msgid "Invalid MIDI system '%s'.\n"
+msgstr "Système MIDI invalide '%s'.\n"
+
+#: sources/rtmain.cc:242
+#, c-format
+msgid "Invalid audio system '%s'.\n"
+msgstr "Système audio invalide '%s'.\n"
+
+#: sources/rtmain.cc:234
 msgid "Invalid latency."
 msgstr "Latence invalide."
 
-#: sources/common.cc:103
+#: sources/common.cc:108
 msgid "Invalid number of chips."
 msgstr "Nombre de circuits invalide."
 
-#: sources/common.cc:96
+#: sources/common.cc:101
 msgid "Invalid player name."
 msgstr "Nom de synthétiseur invalide."
 
-#: sources/tui.cc:356
+#: sources/tui.cc:378
 msgid "Left"
 msgstr "Gauche"
 
-#: sources/tui.cc:597
+#: sources/tui.cc:619
 msgid "Load bank"
 msgstr "Charger une banque"
 
@@ -151,7 +157,7 @@ msgstr "Charger une banque"
 msgid "New virtual MIDI port"
 msgstr "Nouveau port MIDI virtuel"
 
-#: sources/rtmain.cc:91
+#: sources/rtmain.cc:90
 msgid "No audio devices are present for output."
 msgstr "Aucun périphérique de sortie audio n'est disponible."
 
@@ -159,23 +165,23 @@ msgstr "Aucun périphérique de sortie audio n'est disponible."
 msgid "OK"
 msgstr "OK"
 
-#: sources/tui.cc:425
+#: sources/tui.cc:447
 msgid "Percussion"
 msgstr "Percussion"
 
-#: sources/tui.cc:292
+#: sources/tui.cc:314
 msgid "Player"
 msgstr "Synthétiseur"
 
-#: sources/tui.cc:106
+#: sources/tui.cc:116
 msgid "Ready!"
 msgstr "Prêt !"
 
-#: sources/tui.cc:356
+#: sources/tui.cc:378
 msgid "Right"
 msgstr "Droite"
 
-#: sources/rtmain.cc:157
+#: sources/rtmain.cc:158
 #, c-format
 msgid "RtAudio client \"%s\" fs=%u bs=%u latency=%f\n"
 msgstr "Client RtAudio \"%s\" fs=%u bs=%u latence=%f\n"
@@ -184,70 +190,84 @@ msgstr "Client RtAudio \"%s\" fs=%u bs=%u latence=%f\n"
 msgid "Select a MIDI input device from the list:"
 msgstr "Sélectionnez un périphérique d'entrée MIDI dans la liste :"
 
-#: sources/common.cc:163
+#: sources/common.cc:171
 msgid "The given emulator does not exist."
 msgstr "L'émulateur choisi n'existe pas."
 
-#: sources/common.cc:59
+#: sources/common.cc:64
 #, c-format
-msgid "Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator]"
+msgid ""
+"Usage:\n"
+"    %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-a]"
 msgstr ""
-"Utilisation: %s [-p synthétiseur] [-n nombre-circuits] [-b banque.wopl] [-e "
-"émulateur]"
+"Utilisation:\n"
+"    %s [-p synthétiseur] [-n nombre-circuits] [-b banque.wopl] [-e émulateur] [-a]"
 
-#: sources/common.cc:184
+#: sources/common.cc:192
 msgid "Using banks from WOPL file."
 msgstr "Utilisation des banques du fichier WOPL."
 
-#: sources/common.cc:177
+#: sources/common.cc:185
 msgid "Using default banks."
 msgstr "Utilisation des banques par défaut."
 
-#: sources/common.cc:174
+#: sources/common.cc:182
 #, c-format
 msgid "Using emulator \"%s\"\n"
 msgstr "Utilisation de l'émulateur \"%s\"\n"
 
-#: sources/tui.cc:363
+#: sources/tui.cc:385
 msgid "Volume"
 msgstr "Volume"
 
-#: sources/tui.cc:511
+#: sources/rtmain.cc:207
+msgid "[-A audio-system]"
+msgstr "[-A système-audio]"
+
+#: sources/rtmain.cc:204
+msgid "[-L latency-ms]"
+msgstr "[-L latence-ms]"
+
+#: sources/rtmain.cc:212
+msgid "[-M midi-system]"
+msgstr "[-M système-midi]"
+
+#: sources/tui.cc:533
 msgid "channels"
 msgstr "canaux"
 
-#: sources/tui.cc:488
+#: sources/tui.cc:510
 msgid "chips +1"
 msgstr "circuits +1"
 
-#: sources/tui.cc:487
+#: sources/tui.cc:509
 msgid "chips -1"
 msgstr "circuits -1"
 
-#: sources/tui.cc:489
+#: sources/tui.cc:511
 msgid "load bank"
 msgstr "ch. banque"
 
-#: sources/tui.cc:486
+#: sources/tui.cc:508
 msgid "next emulator"
 msgstr "ému. suiv."
 
-#: sources/tui.cc:510
+#: sources/tui.cc:532
 msgid "panic"
 msgstr "silence"
 
-#: sources/tui.cc:485
+#: sources/tui.cc:507
 msgid "prev emulator"
 msgstr "ému. préc."
 
-#: sources/tui.cc:512
+#: sources/tui.cc:534
 msgid "quit"
 msgstr "quitter"
 
-#: sources/tui.cc:509
+#: sources/tui.cc:531
 msgid "volume +1"
 msgstr "volume +1"
 
-#: sources/tui.cc:508
+#: sources/tui.cc:530
 msgid "volume -1"
 msgstr "volume -1"

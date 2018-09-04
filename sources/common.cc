@@ -61,7 +61,7 @@ static unsigned channels_update_left;
 void generic_usage(const char *progname, const char *more_options)
 {
     std::string usage_string =
-        _("Usage: %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-a]");
+        _("Usage:\n    %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-a]");
 #if defined(ADLJACK_USE_CURSES)
     usage_string += " [-t]";
 #endif

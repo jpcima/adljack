@@ -227,6 +227,12 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   find_library(FOUNDATION_LIBRARY "Foundation")
   target_link_libraries(RtMidi PUBLIC "${COREMIDI_LIBRARY}" "${FOUNDATION_LIBRARY}")
 endif()
+if(JACK_FOUND)
+  target_compile_definitions(RtMidi PUBLIC "__UNIX_JACK__")
+  target_include_directories(RtMidi PUBLIC ${JACK_INCLUDE_DIRS})
+  link_directories(${JACK_LIBRARY_DIRS})
+  target_link_libraries(RtMidi PUBLIC ${JACK_LIBRARIES})
+endif()
 
 ## RtAudio library
 add_library(RtAudio STATIC "thirdparty/rtaudio/RtAudio.cpp")
