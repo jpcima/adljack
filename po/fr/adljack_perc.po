@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-21 09:55+0200\n"
-"PO-Revision-Date: 2018-09-04 21:46+0200\n"
+"PO-Revision-Date: 2018-09-17 14:32+0200\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -76,7 +76,7 @@ msgstr "Surdo étouffé"
 
 #: sources/insnames.cc:178
 msgid "Surdo Open"
-msgstr "surdo ouvert"
+msgstr "Surdo ouvert"
 
 #: sources/insnames.cc:179 sources/insnames.cc:191
 msgid "High Q"
@@ -220,7 +220,7 @@ msgstr "Cymbale china"
 
 #: sources/insnames.cc:217
 msgid "Ride Bell"
-msgstr "Cloche de cymbale ridee"
+msgstr "Cloche de cymbale ride"
 
 #: sources/insnames.cc:218
 msgid "Tambourine"
