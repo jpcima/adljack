@@ -2,14 +2,15 @@
 # Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Jean Pierre Cimalando <jp-dev@inbox.ru>, 2018.
+# Olivier Humbert <trebmuh@tuxfamily.org>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-21 09:55+0200\n"
-"PO-Revision-Date: 2018-05-21 04:40+0200\n"
-"Last-Translator: Jean Pierre Cimalando <jp-dev@inbox.ru>\n"
+"PO-Revision-Date: 2018-09-04 21:46+0200\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -71,11 +72,11 @@ msgstr "<Réservé 12>"
 
 #: sources/insnames.cc:177
 msgid "Surdo Mute"
-msgstr ""
+msgstr "Surdo étouffé"
 
 #: sources/insnames.cc:178
 msgid "Surdo Open"
-msgstr ""
+msgstr "surdo ouvert"
 
 #: sources/insnames.cc:179 sources/insnames.cc:191
 msgid "High Q"
@@ -101,17 +102,17 @@ msgstr ""
 
 #: sources/insnames.cc:184
 msgid "Click Noise"
-msgstr ""
+msgstr "Bruit de clic"
 
 #. (XG) Sticks
 #: sources/insnames.cc:185 sources/insnames.cc:197
 msgid "Metronome Click"
-msgstr ""
+msgstr "Clic de métronome"
 
 #. (XG) Bass Drum L
 #: sources/insnames.cc:186 sources/insnames.cc:198
 msgid "Metronome Bell"
-msgstr ""
+msgstr "Cloche de métronome"
 
 #: sources/insnames.cc:187
 msgid "Seq Click L"
@@ -175,7 +176,7 @@ msgstr "Tom basse grave"
 
 #: sources/insnames.cc:206
 msgid "Closed High Hat"
-msgstr "Charley frappé"
+msgstr "Charleston frappé"
 
 #: sources/insnames.cc:207
 msgid "High Floor Tom"
@@ -183,7 +184,7 @@ msgstr "Tom basse aigu"
 
 #: sources/insnames.cc:208
 msgid "Pedal High Hat"
-msgstr "Charley au pied"
+msgstr "Charleston au pied"
 
 #: sources/insnames.cc:209
 msgid "Low Tom"
@@ -191,7 +192,7 @@ msgstr "Tom médium 4"
 
 #: sources/insnames.cc:210
 msgid "Open High Hat"
-msgstr "Charley ouvert"
+msgstr "Charleston ouvert"
 
 #: sources/insnames.cc:211
 msgid "Low-Mid Tom"
@@ -219,7 +220,7 @@ msgstr "Cymbale china"
 
 #: sources/insnames.cc:217
 msgid "Ride Bell"
-msgstr "Cymbale ride/cup"
+msgstr "Cloche de cymbale ridee"
 
 #: sources/insnames.cc:218
 msgid "Tambourine"
@@ -267,19 +268,19 @@ msgstr "Congas grave"
 
 #: sources/insnames.cc:229
 msgid "High Timbale"
-msgstr "Timbales aigu"
+msgstr "Timbale aigu"
 
 #: sources/insnames.cc:230
 msgid "Low Timbale"
-msgstr "Timbales grave"
+msgstr "Timbale grave"
 
 #: sources/insnames.cc:231
 msgid "High Agogo"
-msgstr "Cloche agogo aiguë"
+msgstr "Agogo aiguë"
 
 #: sources/insnames.cc:232
 msgid "Low Agogo"
-msgstr "Cloche agogo grave"
+msgstr "Agogo grave"
 
 #: sources/insnames.cc:233
 msgid "Cabasa"
@@ -291,11 +292,11 @@ msgstr "Maracas"
 
 #: sources/insnames.cc:235
 msgid "Short Whistle"
-msgstr "Sifflet aigu"
+msgstr "Sifflet court"
 
 #: sources/insnames.cc:236
 msgid "Long Whistle"
-msgstr "Sifflet grave"
+msgstr "Sifflet long"
 
 #: sources/insnames.cc:237
 msgid "Short Guiro"
@@ -327,7 +328,7 @@ msgstr "Cuica ouverte"
 
 #: sources/insnames.cc:244
 msgid "Mute Triangle"
-msgstr "Triangle tenu"
+msgstr "Triangle étouffé"
 
 #: sources/insnames.cc:245
 msgid "Open Triangle"
@@ -347,15 +348,15 @@ msgstr "Arbre à cloches"
 
 #: sources/insnames.cc:249
 msgid "Castanets"
-msgstr ""
+msgstr "Castagnettes"
 
 #: sources/insnames.cc:250
 msgid "Mute Surdu"
-msgstr ""
+msgstr "Surdu étouffé"
 
 #: sources/insnames.cc:251
 msgid "Open Surdu"
-msgstr ""
+msgstr "Surdu ouvert"
 
 #: sources/insnames.cc:252
 msgid "<Reserved 88>"
