@@ -220,7 +220,7 @@ msgstr "Cymbale china"
 
 #: sources/insnames.cc:217
 msgid "Ride Bell"
-msgstr "Cloche de cymbale ridee"
+msgstr "Cloche de cymbale ride"
 
 #: sources/insnames.cc:218
 msgid "Tambourine"
