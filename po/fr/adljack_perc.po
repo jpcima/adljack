@@ -76,7 +76,7 @@ msgstr "Surdo étouffé"
 
 #: sources/insnames.cc:178
 msgid "Surdo Open"
-msgstr "surdo ouvert"
+msgstr "Surdo ouvert"
 
 #: sources/insnames.cc:179 sources/insnames.cc:191
 msgid "High Q"
