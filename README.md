@@ -73,6 +73,7 @@ In the initialization of your shell, try setting a 256-color terminal type: `tes
 ### Version 1.2.0 dev
 
 - support of MIDI portamento
+- support of OPN2 soft panning
 
 ### Version 1.1.0
 
