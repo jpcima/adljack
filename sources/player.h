@@ -49,6 +49,7 @@ public:
     virtual void panic() = 0;
     virtual const char *emulator_name() const = 0;
     virtual bool set_emulator(unsigned emulator) = 0;
+    virtual void set_soft_pan_enabled(bool sp) = 0;
     virtual bool set_embedded_bank(unsigned bank) = 0;
     unsigned emulator() const { return emulator_; }
     virtual unsigned chip_count() const = 0;
@@ -124,6 +125,8 @@ public:
         }
     bool set_embedded_bank(unsigned bank) override
         { return Traits::set_bank(player_.get(), bank) >= 0; }
+    void set_soft_pan_enabled(bool sp) override
+        { return Traits::set_soft_pan_enabled(player_.get(), sp); }
     bool load_bank_file(const char *file) override
         { return Traits::open_bank_file(player_.get(), file) >= 0; }
     bool load_bank_data(const void *data, size_t size) override

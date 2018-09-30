@@ -54,6 +54,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &panic = adl_panic;
     static constexpr auto &emulator_name = adl_chipEmulatorName;
     static constexpr auto &switch_emulator = adl_switchEmulator;
+    static constexpr auto &set_soft_pan_enabled = adl_setSoftPanEnabled;
     static constexpr auto &get_num_chips = adl_getNumChips;
     static constexpr auto &set_num_chips = adl_setNumChips;
     static constexpr auto &set_bank = adl_setBank;
@@ -96,6 +97,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &panic = opn2_panic;
     static constexpr auto &emulator_name = opn2_chipEmulatorName;
     static constexpr auto &switch_emulator = opn2_switchEmulator;
+    static constexpr auto &set_soft_pan_enabled = opn2_setSoftPanEnabled;
     static constexpr auto &get_num_chips = opn2_getNumChips;
     static constexpr auto &set_num_chips = opn2_setNumChips;
     static int set_bank(player *pl, unsigned bank);

@@ -156,6 +156,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         if (!player->set_embedded_bank(0))
             qfprintf(quiet, stderr, "%s\n", _("Error setting default bank."));
 
+        player->set_soft_pan_enabled(1);
+
         std::vector<std::string> emus = Player::enumerate_emulators((Player_Type)i);
         unsigned emu_count = emus.size();
         for (unsigned j = 0; j < emu_count; ++j) {
