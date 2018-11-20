@@ -11,6 +11,7 @@
 #include <chrono>
 #include <stdexcept>
 #include <system_error>
+#include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
