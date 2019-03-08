@@ -76,11 +76,11 @@ void generic_usage(const char *progname, const char *more_options)
     }
 
     for (Player_Type pt : all_player_types) {
-        std::vector<std::string> emus = Player::enumerate_emulators(pt);
+        std::vector<Player::Emulator> emus = Player::enumerate_emulators(pt);
         size_t emu_count = emus.size();
         fprintf(stderr, _("Available emulators for %s:\n"), Player::name(pt));
         for (size_t i = 0; i < emu_count; ++i)
-            fprintf(stderr, "   * %zu: %s\n", i, emus[i].c_str());
+            fprintf(stderr, "   * %zu: %s\n", i, emus[i].name);
     }
 }
 
@@ -147,7 +147,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
     ::fifo_notify.reset(new Ring_Buffer(fifo_notify_size));
 
     for (unsigned i = 0; i < player_type_count; ++i) {
-        Player *player = Player::create((Player_Type)i, sample_rate);
+        Player_Type pt = (Player_Type)i;
+        Player *player = Player::create(pt, sample_rate);
         if (!player) {
             qfprintf(quiet, stderr, "%s\n", _("Error instantiating player."));
             return false;
@@ -159,10 +160,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
         player->set_soft_pan_enabled(1);
 
-        std::vector<std::string> emus = Player::enumerate_emulators((Player_Type)i);
-        unsigned emu_count = emus.size();
-        for (unsigned j = 0; j < emu_count; ++j) {
-            Emulator_Id id { (Player_Type)i, j };
+        for (const Player::Emulator &e : Player::enumerate_emulators(pt)) {
+            Emulator_Id id { pt, e.id };
             emulator_ids.push_back(id);
         }
     }
