@@ -70,10 +70,12 @@ In the initialization of your shell, try setting a 256-color terminal type: `tes
 
 ## Change Log
 
-### Version 1.2.0 dev
+### Version 1.2.0
 
+- support of new emulators
 - support of MIDI portamento
 - support of OPN2 soft panning
+- resolved a possible crash occurring on the PDCurses build
 
 ### Version 1.1.0
 
