@@ -67,20 +67,29 @@ double Player::output_gain(Player_Type pt)
     }
 }
 
-std::vector<std::string> Player::enumerate_emulators(Player_Type pt)
+auto Player::enumerate_emulators(Player_Type pt) -> std::vector<Emulator>
 {
+    std::vector<Emulator> emus;
+    emus.reserve(32);
+
     std::unique_ptr<Player> player(create(pt, 44100));
-    std::vector<std::string> names;
-    for (unsigned i = 0; player->set_emulator(i); ++i)
-        names.push_back(player->emulator_name());
-    return names;
+    for (unsigned i = 0; i < 32; ++i) {
+        if (player->set_emulator(i)) {
+            Emulator emu;
+            emu.id = i;
+            emu.name = player->emulator_name();
+            emus.push_back(emu);
+        }
+    }
+
+    return emus;
 }
 
 unsigned Player::emulator_by_name(Player_Type pt, const char *name)
 {
-    std::vector<std::string> names = enumerate_emulators(pt);
-    for (unsigned i = 0, n = names.size(); i < n; ++i)
-        if (names[i] == name)
+    std::vector<Emulator> emus = enumerate_emulators(pt);
+    for (unsigned i = 0, n = emus.size(); i < n; ++i)
+        if (!strcmp(emus[i].name, name))
             return i;
     return (unsigned)-1;
 }
