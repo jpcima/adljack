@@ -62,7 +62,7 @@ static unsigned channels_update_left;
 void generic_usage(const char *progname, const char *more_options)
 {
     std::string usage_string =
-        _("Usage:\n    %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-a]");
+        _("Usage:\n    %s [-p player] [-n num-chips] [-b bank.wopl] [-e emulator] [-v volume percent] [-a]");
 #if defined(ADLJACK_USE_CURSES)
     usage_string += " [-t]";
 #endif
@@ -86,7 +86,7 @@ void generic_usage(const char *progname, const char *more_options)
 
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)())
 {
-    const char *basic_optstr = "hp:n:b:e:a"
+    const char *basic_optstr = "hp:n:b:e:v:a"
 #if defined(ADLJACK_USE_CURSES)
         "t"
 #endif
@@ -118,6 +118,9 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
             break;
         case 'a':
             arg_autoconnect = true;
+            break;
+        case 'v':
+            player_volume = std::stoi(optarg);
             break;
         case 'h':
             usagefn();
