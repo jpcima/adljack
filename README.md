@@ -70,6 +70,10 @@ In the initialization of your shell, try setting a 256-color terminal type: `tes
 
 ## Change Log
 
+### Dev
+
+- ability to set initial volume using the option `-v`
+
 ### Version 1.2.0
 
 - support of new emulators
