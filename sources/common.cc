@@ -121,6 +121,10 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
             break;
         case 'v':
             player_volume = std::stoi(optarg);
+            if (player_volume < 0 || player_volume > volume_max) {
+                fprintf(stderr, _("Invalid volume (0-%d).\n"), volume_max);
+                exit(1);
+            }
             break;
         case 'h':
             usagefn();
