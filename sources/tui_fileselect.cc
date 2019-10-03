@@ -30,6 +30,29 @@ struct File_Entry {
     std::string name;
 };
 
+///
+static char ascii_to_lower(char x)
+{
+    return (x >= 'A' && x <= 'Z') ? (x - 'A' + 'a') : x;
+}
+
+static int ascii_case_cmp(const char *a, const char *b)
+{
+    for (;;) {
+        char ca = *a++;
+        char cb = *b++;
+        if (ca == '\0')
+            return cb ? -1 : 0;
+        if (cb == '\0')
+            return +1;
+        ca = ascii_to_lower(ca);
+        cb = ascii_to_lower(cb);
+        if (ca != cb)
+            return (ca < cb) ? -1 : +1;
+    }
+}
+
+///
 bool operator<(const File_Entry &a, const File_Entry &b)
 {
     if (a.name == "..")
@@ -42,7 +65,7 @@ bool operator<(const File_Entry &a, const File_Entry &b)
         if (b.type == File_Type::Directory)
             return false;
     }
-    return a.name < b.name;
+    return ascii_case_cmp(a.name.c_str(), b.name.c_str()) < 0;
 }
 
 struct File_Selector::Impl
