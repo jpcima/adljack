@@ -72,6 +72,7 @@ struct Player_Traits<Player_Type::OPL3>
     static constexpr auto &rt_pitchbend = adl_rt_pitchBend;
     static constexpr auto &rt_bank_change_msb = adl_rt_bankChangeMSB;
     static constexpr auto &rt_bank_change_lsb = adl_rt_bankChangeLSB;
+    static constexpr auto &rt_system_exclusive = adl_rt_systemExclusive;
 };
 
 #include <opnmidi.h>
@@ -115,4 +116,5 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &rt_pitchbend = opn2_rt_pitchBend;
     static constexpr auto &rt_bank_change_msb = opn2_rt_bankChangeMSB;
     static constexpr auto &rt_bank_change_lsb = opn2_rt_bankChangeLSB;
+    static constexpr auto &rt_system_exclusive = opn2_rt_systemExclusive;
 };

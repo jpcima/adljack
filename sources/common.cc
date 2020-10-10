@@ -326,8 +326,12 @@ void play_sysex(const uint8_t *msg, unsigned len)
         (msg[2] != sysex_device_id && msg[2] != sysex_broadcast_id))
         return;
 
+    Player &player = active_player();
     uint8_t manufacturer = msg[1];
     switch (manufacturer) {
+        case 0x7f: // Universal realtime
+            player.rt_system_exclusive(msg, len);
+            break;
         case 0x41:  // Roland
             if (len < 10)
                 break;
