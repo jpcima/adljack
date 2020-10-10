@@ -5,6 +5,7 @@
 
 #include "tui_channels.h"
 #include "tui.h"
+#include <string>
 
 struct Channel_Monitor::Impl
 {
