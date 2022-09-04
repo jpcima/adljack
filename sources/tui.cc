@@ -17,6 +17,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#if defined(ADLJACK_GTK3)
+#   include <gtk/gtk.h>
+#endif
 #if defined(PDCURSES)
 #include <SDL.h>
 #endif
@@ -142,6 +145,10 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
         }
 
         update_display(ctx);
+
+#ifdef ADLJACK_GTK3
+        gtk_main_iteration_do(false);
+#endif
 
         int key = getch();
         if (!handle_anylevel_key(ctx, key))
@@ -613,6 +620,64 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
     }
     case 'b':
     case 'B': {
+#ifdef ADLJACK_GTK3
+        GtkWidget *dialog;
+        GtkFileChooser *chooser;
+        GtkFileFilter *filter;
+        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+        gint res;
+
+        gtk_main_iteration_do(false);
+
+        dialog = gtk_file_chooser_dialog_new("Load bank file",
+                                             NULL,
+                                             action,
+                                             _("_Cancel"),
+                                             GTK_RESPONSE_CANCEL,
+                                             _("_OPEN"),
+                                             GTK_RESPONSE_ACCEPT,
+                                             NULL);
+        chooser = GTK_FILE_CHOOSER(dialog);
+
+        filter = gtk_file_filter_new();
+        if (active_player().type() == Player_Type::OPL3) {
+            gtk_file_filter_set_name(filter, "WOPL bank files");
+            gtk_file_filter_add_pattern(filter, "*.wopl");
+        } else {
+            gtk_file_filter_set_name(filter, "WOPN bank files");
+            gtk_file_filter_add_pattern(filter, "*.wopn");
+        }
+        gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+        gtk_file_chooser_set_current_folder(chooser, ctx.bank_directory.c_str());
+        gtk_file_chooser_set_filename(chooser, active_bank_file().c_str());
+
+        gtk_widget_show_all(dialog);
+
+        res = gtk_dialog_run(GTK_DIALOG(dialog));
+
+        if (res == GTK_RESPONSE_ACCEPT) {
+            char *filename;
+            char *dirname;
+
+            filename = gtk_file_chooser_get_filename(chooser);
+            dirname = gtk_file_chooser_get_current_folder(chooser);
+
+            if (player->dynamic_load_bank(filename)) {
+                show_status(ctx, _("Bank loaded!"));
+                active_bank_file() = filename;
+                update_bank_mtime(ctx);
+            }
+            else
+                show_status(ctx, _("Error loading the bank file."));
+
+            ctx.bank_directory = dirname;
+            g_free(filename);
+            g_free(dirname);
+        }
+
+        gtk_widget_destroy(dialog);
+#else
         erase();
 
         File_Selection_Options fopts;
@@ -659,6 +724,7 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         }
 
         erase();
+#endif
         return true;
     }
     case 'p':

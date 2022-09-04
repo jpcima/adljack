@@ -19,6 +19,9 @@
 #if defined(ADLJACK_HAVE_MLOCKALL)
 #    include <sys/mman.h>
 #endif
+#if defined(ADLJACK_GTK3)
+#   include <gtk/gtk.h>
+#endif
 #if defined(_WIN32)
 #    include <windows.h>
 #else
@@ -510,6 +513,10 @@ static void simple_interface_exec(void(*idle_proc)(void *), void *idle_data)
 
         fprintf(stderr, "\r");
         fflush(stderr);
+
+#ifdef ADLJACK_GTK3
+        gtk_main_iteration_do(false);
+#endif
 
         std::this_thread::sleep_for(stc::milliseconds(50));
     }

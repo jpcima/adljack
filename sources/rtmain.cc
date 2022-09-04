@@ -9,6 +9,9 @@
 #include "common.h"
 #include "winmm_dialog.h"
 #include <stdio.h>
+#if defined(ADLJACK_GTK3)
+#    include <gtk/gtk.h>
+#endif
 #if !defined(_WIN32)
 #    include <syslog.h>
 #endif
@@ -326,6 +329,10 @@ int main(int argc, char *argv[])
 
     if (argc != optind)
         return 1;
+
+#ifdef ADLJACK_GTK3
+    gtk_init(&argc, &argv);
+#endif
 
 #if !defined(_WIN32)
     openlog("ADLrt", 0, LOG_USER);
