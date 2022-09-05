@@ -19,6 +19,10 @@
 #include <unistd.h>
 #if defined(ADLJACK_GTK3)
 #   include <gtk/gtk.h>
+#   include <asm/ioctls.h>
+#   include <sys/select.h>
+#   include <sys/ioctl.h>
+#   include <termios.h>
 #endif
 #if defined(PDCURSES)
 #include <SDL.h>
@@ -83,6 +87,330 @@ static bool handle_toplevel_key(TUI_context &ctx, int key);
 static void handle_notifications(TUI_context &ctx);
 static bool update_bank_mtime(TUI_context &ctx);
 
+#ifdef ADLJACK_GTK3
+static GtkStatusIcon *s_tray_icon = nullptr;
+
+static void updateIconIfNeeded(int newEmu);
+
+//void tray_icon_on_click(GtkStatusIcon *status_icon, gpointer user_data)
+//{
+//    //
+//}
+
+static void tray_icon_open_bank(TUI_context *ctx)
+{
+    handle_toplevel_key(*ctx, (int)'b');
+}
+
+static void tray_icon_quit(TUI_context *ctx)
+{
+    handle_anylevel_key(*ctx, (int)'q');
+}
+
+static void tray_icon_quickVolume(int volume)
+{
+    ::player_volume = std::min(volume_max, std::max(volume_min, volume));
+    configFile.beginGroup("synth");
+    configFile.setValue("volume", ::player_volume);
+    configFile.endGroup();
+    configFile.writeIniFile();
+}
+
+static void tray_icon_quickVolume50(void *)
+{
+    tray_icon_quickVolume(50);
+}
+
+static void tray_icon_quickVolume100(void *)
+{
+    tray_icon_quickVolume(100);
+}
+
+static void tray_icon_quickVolume150(void *)
+{
+    tray_icon_quickVolume(150);
+}
+
+static void tray_icon_quickVolume200(void *)
+{
+    tray_icon_quickVolume(200);
+}
+
+static void tray_icon_quickVolume250(void *)
+{
+    tray_icon_quickVolume(250);
+}
+
+static void tray_icon_quickVolume300(void *)
+{
+    tray_icon_quickVolume(300);
+}
+
+static void tray_icon_quickVolume350(void *)
+{
+    tray_icon_quickVolume(350);
+}
+
+static void tray_icon_quickVolume400(void *)
+{
+    tray_icon_quickVolume(400);
+}
+
+static void tray_icon_quickVolume450(void *)
+{
+    tray_icon_quickVolume(450);
+}
+
+static void tray_icon_quickVolume500(void *)
+{
+    tray_icon_quickVolume(500);
+}
+
+
+static void tray_icon_chanAlloc(int mode)
+{
+    active_player().dynamic_set_channel_alloc(mode);
+    configFile.beginGroup("synth");
+    configFile.setValue("chanalloc", mode);
+    configFile.endGroup();
+    configFile.writeIniFile();
+}
+
+static void tray_icon_chanAllocAuto(void *)
+{
+    tray_icon_chanAlloc(-1);
+}
+
+static void tray_icon_chanOffDelay(void *)
+{
+    tray_icon_chanAlloc(0);
+}
+
+static void tray_icon_chanSameInst(void *)
+{
+    tray_icon_chanAlloc(1);
+}
+
+static void tray_icon_chanAnyFree(void *)
+{
+    tray_icon_chanAlloc(2);
+}
+
+static void tray_icon_switchEmulator(Emulator_Id *e)
+{
+    auto emulator_id_pos = std::find(emulator_ids.begin(), emulator_ids.end(), *e);
+    if (emulator_id_pos == emulator_ids.end()) {
+        return;
+    }
+
+    int newId = std::distance(emulator_ids.begin(), emulator_id_pos);
+
+    updateIconIfNeeded(newId);
+    dynamic_switch_emulator_id(newId);
+    configFile.beginGroup("synth");
+    configFile.setValue("emulator", e->emulator);
+    configFile.setValue("pt", (int)e->player);
+    configFile.endGroup();
+    configFile.writeIniFile();
+}
+
+static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data)
+{
+    // TUI_context *ctx = (TUI_context*)user_data;
+    // GdkEventButton *event_button;
+
+    // g_return_val_if_fail (status_icon != NULL, FALSE);
+    // g_return_val_if_fail (GTK_IS_MENU (widget), FALSE);
+    // g_return_val_if_fail (event != NULL, FALSE);
+
+    // The "widget" is the menu that was supplied when
+    // `g_signal_connect_swapped()` was called.
+    // menu = GTK_MENU(status_icon);
+
+    GtkWidget *menu = gtk_menu_new();
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *itemSelectBank = gtk_menu_item_new_with_label("Select bank...");
+        gtk_widget_show(itemSelectBank);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), itemSelectBank);
+        g_signal_connect_swapped(G_OBJECT(itemSelectBank), "activate",
+                                 G_CALLBACK(tray_icon_open_bank), user_data);
+    }
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *sep1 = gtk_separator_menu_item_new();
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), sep1);
+    }
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *quickVolume = gtk_menu_item_new_with_label("Set volume to");
+        GtkWidget *quickVolumeSubMenu = gtk_menu_new();
+        auto *quickVolumeCur = gtk_menu_item_new_with_label(("Current volume: " + std::to_string(player_volume) + "%").c_str());
+        auto *quickVolume50 = gtk_menu_item_new_with_label("50%");
+        auto *quickVolume100 = gtk_menu_item_new_with_label("100%");
+        auto *quickVolume150 = gtk_menu_item_new_with_label("150%");
+        auto *quickVolume200 = gtk_menu_item_new_with_label("200%");
+        auto *quickVolume250 = gtk_menu_item_new_with_label("250%");
+        auto *quickVolume300 = gtk_menu_item_new_with_label("300%");
+        auto *quickVolume350 = gtk_menu_item_new_with_label("350%");
+        auto *quickVolume400 = gtk_menu_item_new_with_label("400%");
+        auto *quickVolume450 = gtk_menu_item_new_with_label("450%");
+        auto *quickVolume500 = gtk_menu_item_new_with_label("500%");
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(quickVolume), quickVolumeSubMenu);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolumeCur);
+        gtk_widget_set_sensitive(quickVolumeCur, FALSE);
+        GtkWidget *volSep2 = gtk_separator_menu_item_new();
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), volSep2);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume50);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume100);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume150);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume200);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume250);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume300);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume350);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume400);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume450);
+        gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume500);
+        g_signal_connect_swapped(G_OBJECT(quickVolume50), "activate", G_CALLBACK(tray_icon_quickVolume50), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume100), "activate", G_CALLBACK(tray_icon_quickVolume100), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume150), "activate", G_CALLBACK(tray_icon_quickVolume150), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume200), "activate", G_CALLBACK(tray_icon_quickVolume200), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume250), "activate", G_CALLBACK(tray_icon_quickVolume250), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume300), "activate", G_CALLBACK(tray_icon_quickVolume300), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume350), "activate", G_CALLBACK(tray_icon_quickVolume350), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume400), "activate", G_CALLBACK(tray_icon_quickVolume400), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume450), "activate", G_CALLBACK(tray_icon_quickVolume450), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume500), "activate", G_CALLBACK(tray_icon_quickVolume500), NULL);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), quickVolume);
+    }
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *emulatorType = gtk_menu_item_new_with_label("Emulator type");
+        GtkWidget *emulatorTypeSubMenu = gtk_menu_new();
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(emulatorType), emulatorTypeSubMenu);
+
+        int ppt = -1;
+
+        for (size_t i = 0; i < emulator_ids.size(); ++i) {
+            auto &e = emulator_ids[i];
+            if ((int)e.player != ppt) {
+                GtkWidget *sep2 = gtk_separator_menu_item_new();
+                gtk_menu_shell_append(GTK_MENU_SHELL(emulatorTypeSubMenu), sep2);
+
+                ppt = (int)e.player;
+                GtkWidget *label;
+                switch(e.player)
+                {
+                default:
+                case Player_Type::OPL3:
+                    label = gtk_menu_item_new_with_label("libADLMIDI:");
+                    break;
+                case Player_Type::OPN2:
+                    label = gtk_menu_item_new_with_label("libOPNMIDI:");
+                    break;
+                }
+                gtk_menu_shell_append(GTK_MENU_SHELL(emulatorTypeSubMenu), label);
+                gtk_widget_set_sensitive(label, FALSE);
+
+                GtkWidget *sep3 = gtk_separator_menu_item_new();
+                gtk_menu_shell_append(GTK_MENU_SHELL(emulatorTypeSubMenu), sep3);
+            }
+
+            auto *emuItem = gtk_check_menu_item_new_with_label(e.name.c_str());
+            gtk_menu_shell_append(GTK_MENU_SHELL(emulatorTypeSubMenu), emuItem);
+            g_signal_connect_swapped(G_OBJECT(emuItem), "activate",
+                                     G_CALLBACK(tray_icon_switchEmulator), &e);
+            if (i == active_emulator_id) {
+                gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(emuItem), TRUE);
+            }
+        }
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), emulatorType);
+    }
+
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *chanAlloc = gtk_menu_item_new_with_label("Channel allocation mode");
+        GtkWidget *chanAllocSubMenu = gtk_menu_new();
+        auto *chanAllocAuto = gtk_check_menu_item_new_with_label("[Auto]");
+        auto *chanAllocOffDelay = gtk_check_menu_item_new_with_label("Off delay based");
+        auto *chanAllocSameInst = gtk_check_menu_item_new_with_label("Re-use same instrument");
+        auto *chanAllocAnyFree = gtk_check_menu_item_new_with_label("Re-use any free");
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(chanAlloc), chanAllocSubMenu);
+        gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocAuto);
+        gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocOffDelay);
+        gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocSameInst);
+        gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocAnyFree);
+        g_signal_connect_swapped(G_OBJECT(chanAllocAuto), "activate", G_CALLBACK(tray_icon_chanAllocAuto), NULL);
+        g_signal_connect_swapped(G_OBJECT(chanAllocOffDelay), "activate", G_CALLBACK(tray_icon_chanOffDelay), NULL);
+        g_signal_connect_swapped(G_OBJECT(chanAllocSameInst), "activate", G_CALLBACK(tray_icon_chanSameInst), NULL);
+        g_signal_connect_swapped(G_OBJECT(chanAllocAnyFree), "activate", G_CALLBACK(tray_icon_chanAnyFree), NULL);
+        int chanAllocMode = active_player().get_channel_alloc_mode_val();
+        switch(chanAllocMode)
+        {
+        case ADLMIDI_ChanAlloc_AUTO:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(chanAllocAuto), TRUE);
+            break;
+        case ADLMIDI_ChanAlloc_OffDelay:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(chanAllocOffDelay), TRUE);
+            break;
+        case ADLMIDI_ChanAlloc_SameInst:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(chanAllocSameInst), TRUE);
+            break;
+        case ADLMIDI_ChanAlloc_AnyReleased:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(chanAllocAnyFree), TRUE);
+            break;
+        }
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), chanAlloc);
+    }
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *sep2 = gtk_separator_menu_item_new();
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), sep2);
+    }
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *itemQuit = gtk_menu_item_new_with_label("Quit");
+        gtk_widget_show(itemQuit);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), itemQuit);
+        g_signal_connect_swapped(G_OBJECT(itemQuit), "activate",
+                                 G_CALLBACK(tray_icon_quit), user_data);
+    }
+    // ------------------------------------------------------------------------------------------
+    gtk_widget_show_all(menu);
+
+    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, activate_time);
+}
+
+static GtkStatusIcon *create_tray_icon()
+{
+    GtkStatusIcon *tray_icon;
+
+    tray_icon = gtk_status_icon_new();
+    // g_signal_connect(G_OBJECT(tray_icon), "activate", G_CALLBACK(tray_icon_on_click), NULL);
+    gtk_status_icon_set_from_icon_name(tray_icon, "adljack");
+    gtk_status_icon_set_tooltip_text(tray_icon, "ADLJack is running");
+    gtk_status_icon_set_visible(tray_icon, TRUE);
+
+    return tray_icon;
+}
+
+static void updateIconIfNeeded(int newEmu)
+{
+    Emulator_Id old_id = emulator_ids[active_emulator_id];
+    Emulator_Id new_id  = emulator_ids[newEmu];
+
+    if (old_id.player != new_id.player) {
+        if (new_id.player == Player_Type::OPL3) {
+            gtk_status_icon_set_from_icon_name(s_tray_icon, "adljack");
+        } else {
+            gtk_status_icon_set_from_icon_name(s_tray_icon, "opnjack");
+        }
+        gtk_main_iteration_do(false);
+    }
+}
+#endif
+
 void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
 {
     Screen screen;
@@ -100,7 +428,11 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     raw();
     keypad(stdscr, true);
     noecho();
+#ifdef ADLJACK_GTK3
+    const unsigned timeout_ms = 1;
+#else
     const unsigned timeout_ms = 50;
+#endif
     timeout(timeout_ms);
     curs_set(0);
 #if !defined(PDCURSES)
@@ -120,6 +452,18 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     configFile.beginGroup("tui");
     ctx.bank_directory = configFile.value("bank_directory", ctx.bank_directory).toString();
     configFile.endGroup();
+
+#ifdef ADLJACK_GTK3
+    s_tray_icon = create_tray_icon();
+
+    if (active_player().type() == Player_Type::OPL3) {
+        gtk_status_icon_set_from_icon_name(s_tray_icon, "adljack");
+    } else {
+        gtk_status_icon_set_from_icon_name(s_tray_icon, "opnjack");
+    }
+
+    g_signal_connect(G_OBJECT(s_tray_icon), "popup-menu", G_CALLBACK(tray_icon_on_menu),  &ctx);
+#endif
 
     setup_display(ctx);
     show_status(ctx, _("Ready!"));
@@ -155,7 +499,6 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
 #ifdef ADLJACK_GTK3
         gtk_main_iteration_do(false);
 #endif
-
         int key = getch();
         if (!handle_anylevel_key(ctx, key))
             handle_toplevel_key(ctx, key);
@@ -163,6 +506,10 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
     }
     ctx.win = TUI_windows();
     screen.end();
+
+#ifdef ADLJACK_GTK3
+    gtk_status_icon_set_visible(s_tray_icon, FALSE);
+#endif
 
     if (interface_interrupted())
         fprintf(stderr, "Interrupted.\n");
@@ -629,6 +976,9 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
     case '<': {
         if (active_emulator_id > 0)
         {
+#ifdef ADLJACK_GTK3
+            updateIconIfNeeded(active_emulator_id - 1);
+#endif
             dynamic_switch_emulator_id(active_emulator_id - 1);
             configFile.beginGroup("synth");
             configFile.setValue("emulator", player->emulator());
@@ -640,6 +990,9 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
     }
     case '>': {
         if (active_emulator_id + 1 < emulator_ids.size()) {
+#ifdef ADLJACK_GTK3
+            updateIconIfNeeded(active_emulator_id + 1);
+#endif
             dynamic_switch_emulator_id(active_emulator_id + 1);
             configFile.beginGroup("synth");
             configFile.setValue("emulator", player->emulator());
@@ -854,6 +1207,9 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
                 cm.update(state.data.get(), state.size, state.serial);
             }
             doupdate();
+#ifdef ADLJACK_GTK3
+            gtk_main_iteration_do(false);
+#endif
         }
 
         erase();

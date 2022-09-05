@@ -84,6 +84,7 @@ public:
     void dynamic_panic();
     void dynamic_set_channel_alloc(int chanalloc);
     const char *get_channel_alloc_mode_name() const;
+    int get_channel_alloc_mode_val() const;
 
     std::unique_lock<std::mutex> take_lock()
         { return std::unique_lock<std::mutex>(mutex_); }

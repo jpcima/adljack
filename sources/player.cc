@@ -74,6 +74,9 @@ auto Player::enumerate_emulators(Player_Type pt) -> std::vector<Emulator>
 
     std::unique_ptr<Player> player(create(pt, 44100));
     for (unsigned i = 0; i < 32; ++i) {
+        if (pt == Player_Type::OPN2 && i == OPNMIDI_VGM_DUMPER) {
+            continue; // Always skip the VGM dumper
+        }
         if (player->set_emulator(i)) {
             Emulator emu;
             emu.id = i;
@@ -152,4 +155,9 @@ const char *Player::get_channel_alloc_mode_name() const
     default:
         return "<Unknown>";
     }
+}
+
+int Player::get_channel_alloc_mode_val() const
+{
+    return chanalloc_;
 }

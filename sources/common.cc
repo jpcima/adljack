@@ -198,7 +198,7 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         player->set_soft_pan_enabled(1);
 
         for (const Player::Emulator &e : Player::enumerate_emulators(pt)) {
-            Emulator_Id id { pt, e.id };
+            Emulator_Id id { pt, e.id, std::string(e.name) };
             emulator_ids.push_back(id);
         }
 
@@ -213,7 +213,7 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
     auto emulator_id_pos = std::find(
         emulator_ids.begin(), emulator_ids.end(),
-        Emulator_Id{ pt, emulator });
+        Emulator_Id{ pt, emulator, "" });
     if (emulator_id_pos == emulator_ids.end()) {
         qfprintf(quiet, stderr, "%s\n", _("The given emulator does not exist."));
         return 1;

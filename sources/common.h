@@ -27,12 +27,13 @@ extern IniProcessing configFile;
 struct Emulator_Id {
     Emulator_Id()
         {}
-    Emulator_Id(Player_Type player, unsigned emulator)
-        : player(player), emulator(emulator) {}
+    Emulator_Id(Player_Type player, unsigned emulator, const std::string &name)
+        : player(player), emulator(emulator), name(name) {}
     explicit operator bool() const
         { return player != (Player_Type)-1; }
     Player_Type player = (Player_Type)-1;
     unsigned emulator = 0;
+    std::string name;
 };
 
 inline bool operator==(const Emulator_Id &a, const Emulator_Id &b)
