@@ -36,12 +36,14 @@ struct TUI_windows
     WINDOW_u chipcount;
     WINDOW_u cpuratio;
     WINDOW_u banktitle;
+    WINDOW_u chanalloc;
     WINDOW_u volumeratio;
     WINDOW_u volume[2];
     WINDOW_u instrument[16];
     WINDOW_u status;
     WINDOW_u keydesc1;
     WINDOW_u keydesc2;
+    WINDOW_u keydesc3;
 };
 
 struct TUI_context
@@ -254,6 +256,7 @@ static void setup_display(TUI_context &ctx)
     ctx.win.chipcount.reset(linewin(inner, row++, 0));
     ctx.win.cpuratio.reset(linewin(inner, row++, 0));
     ctx.win.banktitle.reset(linewin(inner, row++, 0));
+    ctx.win.chanalloc.reset(linewin(inner, row++, 0));
     ctx.win.volumeratio.reset(linewin(inner, row++, 0));
 
     for (unsigned channel = 0; channel < 2; ++channel)
@@ -268,9 +271,10 @@ static void setup_display(TUI_context &ctx)
     }
     row += 8;
 
-    ctx.win.status.reset(derwin_s(inner, 1, cols, rows - 4, 0));
-    ctx.win.keydesc1.reset(derwin_s(inner, 1, cols, rows - 2, 0));
-    ctx.win.keydesc2.reset(derwin_s(inner, 1, cols, rows - 1, 0));
+    ctx.win.status.reset(derwin_s(inner, 1, cols, rows - 5, 0));
+    ctx.win.keydesc1.reset(derwin_s(inner, 1, cols, rows - 3, 0));
+    ctx.win.keydesc2.reset(derwin_s(inner, 1, cols, rows - 2, 0));
+    ctx.win.keydesc3.reset(derwin_s(inner, 1, cols, rows - 1, 0));
 }
 
 static int print_bar(
@@ -375,6 +379,16 @@ static void update_display(TUI_context &ctx)
             }
             wattron(w, COLOR_PAIR(Colors_Highlight));
             mvwaddstr(w, 0, 15, title.c_str());
+            wattroff(w, COLOR_PAIR(Colors_Highlight));
+        }
+        wclrtoeol(w);
+        wnoutrefresh(w);
+    }
+    if (WINDOW *w = ctx.win.chanalloc.get()) {
+        mvwaddstr(w, 0, 0, _("Alloc mode"));
+        if (player) {
+            wattron(w, COLOR_PAIR(Colors_Highlight));
+            mvwaddstr(w, 0, 15, player->get_channel_alloc_mode_name());
             wattroff(w, COLOR_PAIR(Colors_Highlight));
         }
         wclrtoeol(w);
@@ -539,6 +553,25 @@ static void update_display(TUI_context &ctx)
             { "p", _("panic") },
             { "c", _("channels") },
             { "q", _("quit") },
+        };
+        unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
+
+        for (unsigned i = 0; i < nkeydesc; ++i) {
+            wmove(w, 0, i * key_spacing);
+            wattron(w, COLOR_PAIR(Colors_KeyDescription));
+            waddstr(w, keydesc[i].key);
+            wattroff(w, COLOR_PAIR(Colors_KeyDescription));
+            waddstr(w, " ");
+            waddstr(w, keydesc[i].desc);
+        }
+
+        wclrtoeol(w);
+        wnoutrefresh(w);
+    }
+
+    if (WINDOW *w = ctx.win.keydesc3.get()) {
+        static const Key_Description keydesc[] = {
+            { "a", _("next chanalloc") },
         };
         unsigned nkeydesc = sizeof(keydesc) / sizeof(*keydesc);
 
@@ -740,6 +773,7 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         WINDOW_u w(derwin(stdscr, LINES, COLS, 0, 0));
         Channel_Monitor cm;
         cm.setup_display(w.get());
+        cm.setup_player(player);
 
         TUI_context::Channel_State &state = ctx.channel_state;
         cm.update(state.data.get(), state.size, state.serial);
@@ -769,6 +803,16 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         }
 
         erase();
+        return true;
+    }
+
+    case 'a':
+    case 'A': {
+        int mode = player->get_channel_alloc_mode();
+        mode++;
+        if (mode >= ADLMIDI_ChanAlloc_Count)
+            mode = -1;
+        player->dynamic_set_channel_alloc(mode);
         return true;
     }
     }

@@ -130,3 +130,26 @@ void Player::dynamic_panic()
     auto lock = take_lock();
     panic();
 }
+
+void Player::dynamic_set_channel_alloc(int chanalloc)
+{
+    auto lock = take_lock();
+    set_channel_alloc_mode(chanalloc);
+}
+
+const char *Player::get_channel_alloc_mode_name() const
+{
+    switch(chanalloc_)
+    {
+    case -1:
+        return "<Auto>";
+    case 0:
+        return "Off delay based";
+    case 1:
+        return "Re-use same instrument";
+    case 2:
+        return "Re-use any released";
+    default:
+        return "<Unknown>";
+    }
+}

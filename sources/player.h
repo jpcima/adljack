@@ -63,6 +63,8 @@ public:
     virtual bool set_chip_count(unsigned count) = 0;
     virtual bool load_bank_file(const char *file) = 0;
     virtual bool load_bank_data(const void *data, size_t size) = 0;
+    virtual void set_channel_alloc_mode(int chanalloc) = 0;
+    virtual int get_channel_alloc_mode() = 0;
     virtual void generate(unsigned nframes, void *left, void *right, const Audio_Format &format) = 0;
     virtual void describe_channels(char *text, char *attr, size_t size) = 0;
     virtual void rt_note_on(unsigned chan, unsigned note, unsigned vel) = 0;
@@ -80,6 +82,8 @@ public:
     bool dynamic_set_emulator(unsigned emulator);
     bool dynamic_load_bank(const char *bankfile);
     void dynamic_panic();
+    void dynamic_set_channel_alloc(int chanalloc);
+    const char *get_channel_alloc_mode_name() const;
 
     std::unique_lock<std::mutex> take_lock()
         { return std::unique_lock<std::mutex>(mutex_); }
@@ -89,6 +93,7 @@ public:
 protected:
     unsigned sample_rate_ = 0;
     unsigned emulator_ = 0;
+    int chanalloc_ = 0;
     std::mutex mutex_;
 };
 
@@ -139,6 +144,13 @@ public:
         { return Traits::open_bank_file(player_.get(), file) >= 0; }
     bool load_bank_data(const void *data, size_t size) override
         { return Traits::open_bank_data(player_.get(), data, size) >= 0; }
+    void set_channel_alloc_mode(int chanalloc) override
+        {
+            Traits::set_channel_alloc_mode(player_.get(), chanalloc);
+            chanalloc_ = chanalloc;
+        }
+    int get_channel_alloc_mode() override
+        { return Traits::get_channel_alloc_mode(player_.get()); }
     void generate(unsigned nframes, void *left, void *right, const Audio_Format &format) override
         { Traits::generate_format(player_.get(), 2 * nframes, (ADL_UInt8 *)left, (ADL_UInt8 *)right, &(typename Traits::audio_format &)format); }
     void describe_channels(char *text, char *attr, size_t size) override

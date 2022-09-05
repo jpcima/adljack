@@ -4,6 +4,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "tui_channels.h"
+#include "common.h"
+#include "player.h"
 #include "tui.h"
 #include <string>
 
@@ -22,6 +24,7 @@ struct Channel_Monitor::Impl
         WINDOW_u inner;
     };
     Windows win;
+    Player*player = nullptr;
     //
     void update_display();
 };
@@ -58,6 +61,11 @@ void Channel_Monitor::setup_display(WINDOW *outer)
     }
 }
 
+void Channel_Monitor::setup_player(Player *plr)
+{
+    P->player = plr;
+}
+
 void Channel_Monitor::update(char *data, unsigned size, unsigned serial)
 {
     if (P->serial_valid && P->serial == serial)
@@ -86,6 +94,15 @@ int Channel_Monitor::key(int key)
     case 'C':
     case 27:  // escape
         return 0;
+    case 'a':
+    case 'A': {
+        int mode = P->player->get_channel_alloc_mode();
+        mode++;
+        if (mode >= ADLMIDI_ChanAlloc_Count)
+            mode = -1;
+        P->player->dynamic_set_channel_alloc(mode);
+        return 1;
+    }
     }
 
     return 1;
