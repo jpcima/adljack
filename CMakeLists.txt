@@ -170,7 +170,8 @@ set(adl_sources
   "sources/player_traits.cc"
   "sources/player.cc"
   "sources/i18n.cc"
-  "sources/common.cc")
+  "sources/common.cc"
+  "thirdparty/ini-processing/src/ini_processing.cpp")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND adl_sources
     "sources/winmm_dialog.cc"
@@ -184,6 +185,7 @@ if(NOT JACK_FOUND)
 else()
   add_executable(adljack WIN32 "sources/jackmain.cc" ${adl_sources})
   target_compile_definitions(adljack PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
+  target_include_directories(adljack PRIVATE "thirdparty/ini-processing/src")
   target_include_directories(adljack PRIVATE ${JACK_INCLUDE_DIRS})
   link_directories(${JACK_LIBRARY_DIRS})
   target_link_libraries(adljack PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer ${JACK_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
@@ -250,6 +252,7 @@ target_include_directories(ring_buffer PUBLIC "thirdparty/ring-buffer/include")
 
 ## Cross platform version
 add_executable(adlrt WIN32 "sources/rtmain.cc" ${adl_sources})
+target_include_directories(adlrt PRIVATE "thirdparty/ini-processing/src")
 target_compile_definitions(adlrt PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 target_link_libraries(adlrt PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer RtAudio RtMidi ${CMAKE_THREAD_LIBS_INIT})
 if(CURSES_FOUND)

@@ -7,6 +7,7 @@
 #include "player.h"
 #include "dcfilter.h"
 #include "vumonitor.h"
+#include "ini_processing.h"
 #include <ring_buffer/ring_buffer.h>
 #include <getopt.h>
 #include <string>
@@ -20,6 +21,8 @@
 
 extern std::unique_ptr<Player> player[player_type_count];
 extern std::string player_bank_file[player_type_count];
+
+extern IniProcessing configFile;
 
 struct Emulator_Id {
     Emulator_Id()
@@ -94,6 +97,7 @@ static constexpr unsigned midi_buffer_size = 64 * 1024;
 extern Player_Type arg_player_type;
 extern unsigned arg_nchip;
 extern const char *arg_bankfile;
+extern std::string arg_config_file;
 extern unsigned arg_emulator;
 extern bool arg_autoconnect;
 #if defined(ADLJACK_USE_CURSES)
@@ -102,6 +106,7 @@ extern bool arg_simple_interface;
 
 void generic_usage(const char *progname, const char *more_options);
 int generic_getopt(int argc, char *argv[], const char *more_options, void(&usagefn)());
+void load_config();
 
 bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet = false);
 void player_ready(bool quiet = false);

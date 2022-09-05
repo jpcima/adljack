@@ -270,6 +270,9 @@ static void usage()
 
     std::string usage_extra;
     usage_extra += "\n          ";
+    usage_extra += _("[-C <config file path>]");
+
+    usage_extra += "\n          ";
     usage_extra += _("[-L latency-ms]");
 
     usage_extra += "\n          ";
@@ -295,8 +298,17 @@ int main(int argc, char *argv[])
     i18n_setup();
     midi_db.init();
 
-    for (int c; (c = generic_getopt(argc, argv, "L:A:M:", usage)) != -1;) {
+    char *home_dir = getenv("HOME");
+    if (home_dir) {
+        arg_config_file = std::string(home_dir) + "/.config/adlrt.conf";
+    }
+
+    for (int c; (c = generic_getopt(argc, argv, "L:A:M:C", usage)) != -1;) {
         switch (c) {
+        case 'C' : {
+            ::arg_config_file = optarg;
+            break;
+        }
         case 'L': {
             double latency = ::arg_latency = std::stod(optarg) * 1e-3;
             if (latency <= 0) {
@@ -329,6 +341,8 @@ int main(int argc, char *argv[])
 
     if (argc != optind)
         return 1;
+
+    load_config();
 
 #ifdef ADLJACK_GTK3
     gtk_init(&argc, &argv);

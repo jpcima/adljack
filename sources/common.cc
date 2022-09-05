@@ -32,6 +32,8 @@ namespace stc = std::chrono;
 std::unique_ptr<Player> player[player_type_count];
 std::string player_bank_file[player_type_count];
 
+IniProcessing configFile;
+
 std::vector<Emulator_Id> emulator_ids;
 unsigned active_emulator_id = (unsigned)-1;
 
@@ -52,11 +54,17 @@ std::unique_ptr<Ring_Buffer> fifo_notify;
 Player_Type arg_player_type = Player_Type::OPL3;
 unsigned arg_nchip = default_nchip;
 const char *arg_bankfile = nullptr;
+std::string arg_config_file;
 unsigned arg_emulator = 0;
 bool arg_autoconnect = false;
 #if defined(ADLJACK_USE_CURSES)
 bool arg_simple_interface = false;
 #endif
+
+static bool has_nchip_arg = false;
+static bool has_emulator_arg = false;
+static bool has_volume_arg = false;
+static bool has_playertype_arg = false;
 
 static double channels_update_delay = 50e-3;
 static unsigned channels_update_frames;
@@ -105,6 +113,7 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
                 fprintf(stderr, "%s\n", _("Invalid player name."));
                 exit(1);
             }
+            has_playertype_arg = true;
             break;
         case 'n':
             arg_nchip = std::stoi(optarg);
@@ -112,12 +121,14 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
                 fprintf(stderr, "%s\n", _("Invalid number of chips."));
                 exit(1);
             }
+            has_nchip_arg = true;
             break;
         case 'b':
             arg_bankfile = optarg;
             break;
         case 'e':
             arg_emulator = std::stoi(optarg);
+            has_emulator_arg = true;
             break;
         case 'a':
             arg_autoconnect = true;
@@ -128,6 +139,7 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
                 fprintf(stderr, _("Invalid volume (0-%d).\n"), volume_max);
                 exit(1);
             }
+            has_volume_arg = true;
             break;
         case 'h':
             usagefn();
@@ -145,8 +157,23 @@ int generic_getopt(int argc, char *argv[], const char *more_options, void(&usage
     return -1;
 }
 
+void load_config()
+{
+    if (arg_config_file.empty()) {
+        return; // Load nothing
+    }
+
+    configFile.open(arg_config_file);
+}
+
 bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, const char *bankfile, unsigned emulator, bool quiet)
 {
+    configFile.beginGroup("synth");
+    if (!has_emulator_arg) emulator = configFile.value("emulator", emulator).toUInt();
+    if (!has_volume_arg) player_volume = configFile.value("volume", player_volume).toInt();
+    if (!has_nchip_arg) nchip = configFile.value("nchip", nchip).toUInt();
+    if (!has_playertype_arg) pt = (Player_Type)configFile.value("pt", (int)pt).toUInt();
+
     qfprintf(quiet, stderr, _("%s version %s\n"), Player::name(pt), Player::version(pt));
 
 #if defined(ADLJACK_HAVE_MLOCKALL)
@@ -173,6 +200,14 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         for (const Player::Emulator &e : Player::enumerate_emulators(pt)) {
             Emulator_Id id { pt, e.id };
             emulator_ids.push_back(id);
+        }
+
+        std::string bankname_field = "bankfile-" + std::to_string(i);
+        player_bank_file[i] = configFile.value(bankname_field.c_str(), player_bank_file[i]).toString();
+        if (!player_bank_file[i].empty() && !::player[i]->load_bank_file(player_bank_file[i].c_str()))
+        {
+            qfprintf(quiet, stderr, "%s\n", _("Error loading saved bank file for player."));
+            return 1;
         }
     }
 
@@ -210,6 +245,10 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
         return 1;
     }
 
+    if (configFile.hasKey("chanalloc")) {
+        player.set_channel_alloc_mode(configFile.value("chanalloc", -1).toInt());
+    }
+
     qfprintf(quiet, stderr, _("DC filter @ %f Hz, LV monitor @ %f ms\n"), dccutoff, lvrelease * 1e3);
     for (unsigned i = 0; i < 2; ++i) {
         dcfilter[i].cutoff(dccutoff / sample_rate);
@@ -218,6 +257,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
     ::channels_update_frames = std::ceil(channels_update_delay * sample_rate);
     ::channels_update_left = ::channels_update_frames;
+
+    configFile.endGroup();
 
     return true;
 }
@@ -456,6 +497,7 @@ void dynamic_switch_emulator_id(unsigned index)
         Player &new_player = *::player[(unsigned)new_id.player];
         new_player.set_emulator(new_id.emulator);
         new_player.set_chip_count(player.chip_count());
+        new_player.set_channel_alloc_mode(player.get_channel_alloc_mode());
         // transmit bank change and program change events
         for (unsigned channel = 0; channel < 16; ++channel) {
             new_player.rt_bank_change_msb(channel, channel_map[channel].bank_msb);

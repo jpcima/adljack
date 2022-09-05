@@ -117,6 +117,10 @@ void curses_interface_exec(void (*idle_proc)(void *), void *idle_data)
             ctx.bank_directory.assign(path);
     }
 
+    configFile.beginGroup("tui");
+    ctx.bank_directory = configFile.value("bank_directory", ctx.bank_directory).toString();
+    configFile.endGroup();
+
     setup_display(ctx);
     show_status(ctx, _("Ready!"));
 
@@ -624,31 +628,61 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         return false;
     case '<': {
         if (active_emulator_id > 0)
+        {
             dynamic_switch_emulator_id(active_emulator_id - 1);
+            configFile.beginGroup("synth");
+            configFile.setValue("emulator", player->emulator());
+            configFile.setValue("pt", active_player_index());
+            configFile.endGroup();
+            configFile.writeIniFile();
+        }
         return true;
     }
     case '>': {
-        if (active_emulator_id + 1 < emulator_ids.size())
+        if (active_emulator_id + 1 < emulator_ids.size()) {
             dynamic_switch_emulator_id(active_emulator_id + 1);
+            configFile.beginGroup("synth");
+            configFile.setValue("emulator", player->emulator());
+            configFile.setValue("pt", active_player_index());
+            configFile.endGroup();
+            configFile.writeIniFile();
+        }
         return true;
     }
     case '[': {
         unsigned nchips = player->chip_count();
-        if (nchips > 1)
+        if (nchips > 1) {
             player->dynamic_set_chip_count(nchips - 1);
+            configFile.beginGroup("synth");
+            configFile.setValue("nchip", player->chip_count());
+            configFile.endGroup();
+            configFile.writeIniFile();
+        }
         return true;
     }
     case ']': {
         unsigned nchips = player->chip_count();
         player->dynamic_set_chip_count(nchips + 1);
+        configFile.beginGroup("synth");
+        configFile.setValue("nchip", player->chip_count());
+        configFile.endGroup();
+        configFile.writeIniFile();
         return true;
     }
     case '/': {
         ::player_volume = std::max(volume_min, ::player_volume - 1);
+        configFile.beginGroup("synth");
+        configFile.setValue("volume", ::player_volume);
+        configFile.endGroup();
+        configFile.writeIniFile();
         return true;
     }
     case '*': {
         ::player_volume = std::min(volume_max, ::player_volume + 1);
+        ::configFile.beginGroup("synth");
+        ::configFile.setValue("volume", ::player_volume);
+        ::configFile.endGroup();
+        ::configFile.writeIniFile();
         return true;
     }
     case 'b':
@@ -707,6 +741,17 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
             ctx.bank_directory = dirname;
             g_free(filename);
             g_free(dirname);
+
+            configFile.beginGroup("tui");
+            configFile.setValue("bank_directory", ctx.bank_directory);
+            configFile.endGroup();
+            configFile.beginGroup("synth");
+            for (unsigned i = 0; i < player_type_count; ++i) {
+                std::string bankname_field = "bankfile-" + std::to_string(i);
+                configFile.setValue(bankname_field.c_str(), player_bank_file[i]);
+            }
+            configFile.endGroup();
+            configFile.writeIniFile();
         }
 
         gtk_widget_destroy(dialog);
@@ -755,6 +800,15 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
                 show_status(ctx, _("Error loading the bank file."));
             ctx.bank_directory = fopts.directory;
         }
+
+        configFile.beginGroup("tui");
+        configFile.setValue("bank_directory", ctx.bank_directory);
+        for (unsigned i = 0; i < player_type_count; ++i) {
+            std::string bankname_field = "bankfile-" + std::to_string(i);
+            configFile.setValue(bankname_field.c_str(), player_bank_file[i]);
+        }
+        configFile.endGroup();
+        configFile.writeIniFile();
 
         erase();
 #endif
@@ -813,6 +867,10 @@ static bool handle_toplevel_key(TUI_context &ctx, int key)
         if (mode >= ADLMIDI_ChanAlloc_Count)
             mode = -1;
         player->dynamic_set_channel_alloc(mode);
+        configFile.beginGroup("synth");
+        configFile.setValue("chanalloc", mode);
+        configFile.endGroup();
+        configFile.writeIniFile();
         return true;
     }
     }

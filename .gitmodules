@@ -16,3 +16,6 @@
 [submodule "thirdparty/flatbuffers"]
 	path = thirdparty/flatbuffers
 	url = https://github.com/google/flatbuffers.git
+[submodule "thirdparty/ini-processing"]
+	path = thirdparty/ini-processing
+	url = https://github.com/WohlSoft/IniProcessing.git
