@@ -86,7 +86,7 @@ static int process(void *outputbuffer, void *, unsigned nframes, double, RtAudio
 static void generic_midi_event(const uint8_t *data, unsigned size, double timestamp, Audio_Context &ctx)
 {
     if (size > midi_message_max_size) {
-        ctx.midi_timestamp_accum += timestamp;
+        // ctx.midi_timestamp_accum += timestamp;
         return;
     }
     Ring_Buffer &midi_rb = *ctx.midi_rb;
@@ -120,7 +120,7 @@ static void generic_midi_event(const uint8_t *data, unsigned size, double timest
 static void rtmidi_event(double timestamp, std::vector<uint8_t> *message, void *user_data)
 {
     Audio_Context &ctx = *(Audio_Context *)user_data;
-    generic_midi_event(message->data(), message->size(), timestamp, ctx);
+    generic_midi_event(message->data(), message->size(), timestamp * 0.2, ctx);
 }
 
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
