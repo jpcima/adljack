@@ -130,7 +130,7 @@ void audio_error_callback(RtAudioErrorType type, const std::string &text)
         debug_printf("%s", text.c_str());
     }
 
-    debug_printf(_("Error has occured: %s"), text.c_str());
+    debug_printf(_("Error has occurred: %s"), text.c_str());
 }
 #else
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
