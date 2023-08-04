@@ -17,6 +17,10 @@
 #endif
 namespace stc = std::chrono;
 
+#if defined(RTAUDIO_VERSION_MAJOR) && RTAUDIO_VERSION_MAJOR >= 6
+#   define RTAUDIO_VERSION_6
+#endif
+
 #if defined(ADLJACK_ENABLE_VIRTUALMIDI)
 struct VM_MIDI_PORT_Deleter {
     void operator()(VM_MIDI_PORT *x) { virtualMIDI::Shutdown(x); }
@@ -41,6 +45,23 @@ struct Audio_Context
 #endif
 };
 
+#if defined(RTAUDIO_VERSION_6)
+static const char *audio_api_ids[] = { // Since version 6 the order of APIs got been changed
+    "unspecified",
+    "core",
+    "alsa",
+    "jack",
+    "pulse",
+    "oss",
+    "asio",
+    "wasapi",
+    "ds",
+    "dummy"
+};
+
+static constexpr size_t audio_api_count = (size_t)RtAudio::NUM_APIS;
+
+#else
 static const char *audio_api_ids[] = {
     "unspecified",
     "alsa",
@@ -56,7 +77,24 @@ static const char *audio_api_ids[] = {
 
 static constexpr size_t audio_api_count =
     sizeof(audio_api_ids) / sizeof(audio_api_ids[0]);
+#endif
 
+
+#if defined(RTAUDIO_VERSION_6)
+static const char *midi_api_ids[] = {
+    "unspecified",
+    "core",
+    "alsa",
+    "jack",
+    "mm",
+    "dummy",
+    "uwp",
+    "amidi"
+};
+
+static constexpr size_t midi_api_count = (size_t)RtMidi::NUM_APIS;
+
+#else
 static const char *midi_api_ids[] = {
     "unspecified",
     "core",
@@ -68,6 +106,8 @@ static const char *midi_api_ids[] = {
 
 static constexpr size_t midi_api_count =
     sizeof(midi_api_ids) / sizeof(midi_api_ids[0]);
+#endif
+
 
 inline const char *audio_api_id(RtAudio::Api api)
 {

@@ -123,6 +123,16 @@ static void rtmidi_event(double timestamp, std::vector<uint8_t> *message, void *
     generic_midi_event(message->data(), message->size(), timestamp * 0.2, ctx);
 }
 
+#if defined(RTAUDIO_VERSION_6)
+void audio_error_callback(RtAudioErrorType type, const std::string &text)
+{
+    if (type == RTAUDIO_WARNING) {
+        debug_printf("%s", text.c_str());
+    }
+
+    debug_printf(_("Error has occured: %s"), text.c_str());
+}
+#else
 void audio_error_callback(RtAudioError::Type type, const std::string &text)
 {
     if (type == RtAudioError::WARNING) {
@@ -131,6 +141,7 @@ void audio_error_callback(RtAudioError::Type type, const std::string &text)
     }
     throw RtAudioError(text, type);
 }
+#endif
 
 void midi_error_callback(RtMidiError::Type type, const std::string &text, void *)
 {
@@ -147,7 +158,11 @@ int audio_main()
     Ring_Buffer midi_rb(midi_buffer_size);
     ctx.midi_rb = &midi_rb;
 
+#if defined(RTAUDIO_VERSION_6)
+    RtAudio audio_client(::arg_audio_api, &audio_error_callback);
+#else
     RtAudio audio_client(::arg_audio_api);
+#endif
     ctx.audio_client = &audio_client;
     RtMidiIn midi_client(::arg_midi_api, "ADLrt", midi_buffer_size);
     ctx.midi_client = &midi_client;
@@ -178,9 +193,18 @@ int audio_main()
     fprintf(stderr, _("Desired latency %f ms = buffer size %u\n"),
             latency * 1e3, buffer_size);
 
+#if defined(RTAUDIO_VERSION_6)
+    RtAudioErrorType err = audio_client.openStream(&stream_param, nullptr, RTAUDIO_FLOAT32,
+                                                   sample_rate, &buffer_size, &process,
+                                                   &ctx, &stream_opts);
+
+    if(err != RTAUDIO_NO_ERROR && err != RTAUDIO_WARNING)
+        return 1;
+#else
     audio_client.openStream(
         &stream_param, nullptr, RTAUDIO_FLOAT32, sample_rate, &buffer_size,
         &process, &ctx, &stream_opts, &audio_error_callback);
+#endif
 
     midi_client.setCallback(&rtmidi_event, &ctx);
     midi_client.setErrorCallback(&midi_error_callback);
