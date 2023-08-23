@@ -74,6 +74,15 @@ In the initialization of your shell, try setting a 256-color terminal type: `tes
 
 - ability to set initial volume using the option `-v`
 
+### Version 1.3.0
+
+- support for different channel allocation modes
+- support of YMFM OPN2 and YMFM OPNA emulators at libOPNMIDI
+- updated versions of libADLMIDI and libOPNMIDI
+- support for newer RtAudio 6.x
+- configuration will be saved in the config file and reloaded if not overriden by command-line arguments
+- experimental support for GTK system tray icon with context menu and file dialogues
+
 ### Version 1.2.0
 
 - support of new emulators
