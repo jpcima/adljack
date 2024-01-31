@@ -7,7 +7,7 @@
 #include "player.h"
 #include "dcfilter.h"
 #include "vumonitor.h"
-#include "ini_processing.h"
+#include "IniProcessor/ini_processing.h"
 #include <ring_buffer/ring_buffer.h>
 #include <getopt.h>
 #include <string>

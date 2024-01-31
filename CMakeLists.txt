@@ -162,6 +162,8 @@ print_feature("RtMidi system library" USE_SYSTEM_RTMIDI)
 print_feature("gettext" ENABLE_GETTEXT)
 print_feature("POSIX mlockall" HAVE_MLOCKALL)
 
+include(thirdparty/ini-processing/IniProcessor.cmake)
+
 set(adl_sources
   "sources/tui.cc"
   "sources/tui_channels.cc"
@@ -171,7 +173,7 @@ set(adl_sources
   "sources/player.cc"
   "sources/i18n.cc"
   "sources/common.cc"
-  "thirdparty/ini-processing/src/ini_processing.cpp")
+  ${INIPROCESSOR_SRCS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND adl_sources
     "sources/winmm_dialog.cc"
@@ -253,7 +255,7 @@ target_include_directories(ring_buffer PUBLIC "thirdparty/ring-buffer/include")
 
 ## Cross platform version
 add_executable(adlrt WIN32 "sources/rtmain.cc" ${adl_sources})
-target_include_directories(adlrt PRIVATE "thirdparty/ini-processing/src")
+target_include_directories(adlrt PRIVATE "thirdparty/ini-processing/include")
 target_compile_definitions(adlrt PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 target_link_libraries(adlrt PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer RtAudio RtMidi ${CMAKE_THREAD_LIBS_INIT})
 add_dependencies(adlrt flatbuffers)
