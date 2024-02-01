@@ -83,6 +83,10 @@ which forces it to select ALSA as a sound system instead of PulseAudio.
 
 - ability to set initial volume using the option `-v`
 
+### Version 1.3.1
+- fixed build on Arch Linux
+- updated libADLMIDI, libOPNMIDI, and other modules
+
 ### Version 1.3.0
 
 - support for different channel allocation modes
