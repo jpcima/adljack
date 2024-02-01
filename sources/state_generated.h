@@ -6,6 +6,13 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+// Ensure the included flatbuffers.h is the same version as when this file was
+// generated, otherwise it may not be compatible.
+static_assert(FLATBUFFERS_VERSION_MAJOR == 23 &&
+              FLATBUFFERS_VERSION_MINOR == 5 &&
+              FLATBUFFERS_VERSION_REVISION == 26,
+             "Non-compatible flatbuffers version included");
+
 namespace fb {
 namespace state {
 
@@ -21,7 +28,7 @@ struct Player_IdBuilder;
 struct Player_State;
 struct Player_StateBuilder;
 
-struct State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef StateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_CHANNEL = 4,
@@ -30,11 +37,11 @@ struct State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_VOLUME = 10,
     VT_ACTIVE_ID = 12
   };
-  const flatbuffers::Vector<flatbuffers::Offset<fb::state::Channel_State>> *channel() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<fb::state::Channel_State>> *>(VT_CHANNEL);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Channel_State>> *channel() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Channel_State>> *>(VT_CHANNEL);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<fb::state::Player_State>> *player() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<fb::state::Player_State>> *>(VT_PLAYER);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Player_State>> *player() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Player_State>> *>(VT_PLAYER);
   }
   uint8_t chip_count() const {
     return GetField<uint8_t>(VT_CHIP_COUNT, 1);
@@ -45,7 +52,7 @@ struct State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const fb::state::Player_Id *active_id() const {
     return GetPointer<const fb::state::Player_Id *>(VT_ACTIVE_ID);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_CHANNEL) &&
            verifier.VerifyVector(channel()) &&
@@ -53,8 +60,8 @@ struct State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffsetRequired(verifier, VT_PLAYER) &&
            verifier.VerifyVector(player()) &&
            verifier.VerifyVectorOfTables(player()) &&
-           VerifyField<uint8_t>(verifier, VT_CHIP_COUNT) &&
-           VerifyField<uint16_t>(verifier, VT_VOLUME) &&
+           VerifyField<uint8_t>(verifier, VT_CHIP_COUNT, 1) &&
+           VerifyField<uint16_t>(verifier, VT_VOLUME, 2) &&
            VerifyOffsetRequired(verifier, VT_ACTIVE_ID) &&
            verifier.VerifyTable(active_id()) &&
            verifier.EndTable();
@@ -63,12 +70,12 @@ struct State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct StateBuilder {
   typedef State Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_channel(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<fb::state::Channel_State>>> channel) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_channel(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Channel_State>>> channel) {
     fbb_.AddOffset(State::VT_CHANNEL, channel);
   }
-  void add_player(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<fb::state::Player_State>>> player) {
+  void add_player(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Player_State>>> player) {
     fbb_.AddOffset(State::VT_PLAYER, player);
   }
   void add_chip_count(uint8_t chip_count) {
@@ -77,16 +84,16 @@ struct StateBuilder {
   void add_volume(uint16_t volume) {
     fbb_.AddElement<uint16_t>(State::VT_VOLUME, volume, 100);
   }
-  void add_active_id(flatbuffers::Offset<fb::state::Player_Id> active_id) {
+  void add_active_id(::flatbuffers::Offset<fb::state::Player_Id> active_id) {
     fbb_.AddOffset(State::VT_ACTIVE_ID, active_id);
   }
-  explicit StateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit StateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<State> Finish() {
+  ::flatbuffers::Offset<State> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<State>(end);
+    auto o = ::flatbuffers::Offset<State>(end);
     fbb_.Required(o, State::VT_CHANNEL);
     fbb_.Required(o, State::VT_PLAYER);
     fbb_.Required(o, State::VT_ACTIVE_ID);
@@ -94,13 +101,13 @@ struct StateBuilder {
   }
 };
 
-inline flatbuffers::Offset<State> CreateState(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<fb::state::Channel_State>>> channel = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<fb::state::Player_State>>> player = 0,
+inline ::flatbuffers::Offset<State> CreateState(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Channel_State>>> channel = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<fb::state::Player_State>>> player = 0,
     uint8_t chip_count = 1,
     uint16_t volume = 100,
-    flatbuffers::Offset<fb::state::Player_Id> active_id = 0) {
+    ::flatbuffers::Offset<fb::state::Player_Id> active_id = 0) {
   StateBuilder builder_(_fbb);
   builder_.add_active_id(active_id);
   builder_.add_player(player);
@@ -110,15 +117,15 @@ inline flatbuffers::Offset<State> CreateState(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<State> CreateStateDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<fb::state::Channel_State>> *channel = nullptr,
-    const std::vector<flatbuffers::Offset<fb::state::Player_State>> *player = nullptr,
+inline ::flatbuffers::Offset<State> CreateStateDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<::flatbuffers::Offset<fb::state::Channel_State>> *channel = nullptr,
+    const std::vector<::flatbuffers::Offset<fb::state::Player_State>> *player = nullptr,
     uint8_t chip_count = 1,
     uint16_t volume = 100,
-    flatbuffers::Offset<fb::state::Player_Id> active_id = 0) {
-  auto channel__ = channel ? _fbb.CreateVector<flatbuffers::Offset<fb::state::Channel_State>>(*channel) : 0;
-  auto player__ = player ? _fbb.CreateVector<flatbuffers::Offset<fb::state::Player_State>>(*player) : 0;
+    ::flatbuffers::Offset<fb::state::Player_Id> active_id = 0) {
+  auto channel__ = channel ? _fbb.CreateVector<::flatbuffers::Offset<fb::state::Channel_State>>(*channel) : 0;
+  auto player__ = player ? _fbb.CreateVector<::flatbuffers::Offset<fb::state::Player_State>>(*player) : 0;
   return fb::state::CreateState(
       _fbb,
       channel__,
@@ -128,7 +135,7 @@ inline flatbuffers::Offset<State> CreateStateDirect(
       active_id);
 }
 
-struct Channel_State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Channel_State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef Channel_StateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_PROGRAM = 4,
@@ -140,37 +147,37 @@ struct Channel_State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint16_t bank() const {
     return GetField<uint16_t>(VT_BANK, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint8_t>(verifier, VT_PROGRAM) &&
-           VerifyField<uint16_t>(verifier, VT_BANK) &&
+           VerifyField<uint8_t>(verifier, VT_PROGRAM, 1) &&
+           VerifyField<uint16_t>(verifier, VT_BANK, 2) &&
            verifier.EndTable();
   }
 };
 
 struct Channel_StateBuilder {
   typedef Channel_State Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_program(uint8_t program) {
     fbb_.AddElement<uint8_t>(Channel_State::VT_PROGRAM, program, 0);
   }
   void add_bank(uint16_t bank) {
     fbb_.AddElement<uint16_t>(Channel_State::VT_BANK, bank, 0);
   }
-  explicit Channel_StateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit Channel_StateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Channel_State> Finish() {
+  ::flatbuffers::Offset<Channel_State> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Channel_State>(end);
+    auto o = ::flatbuffers::Offset<Channel_State>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Channel_State> CreateChannel_State(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Channel_State> CreateChannel_State(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint8_t program = 0,
     uint16_t bank = 0) {
   Channel_StateBuilder builder_(_fbb);
@@ -179,19 +186,19 @@ inline flatbuffers::Offset<Channel_State> CreateChannel_State(
   return builder_.Finish();
 }
 
-struct Player_Id FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Player_Id FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef Player_IdBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_PLAYER = 4,
     VT_EMULATOR = 6
   };
-  const flatbuffers::String *player() const {
-    return GetPointer<const flatbuffers::String *>(VT_PLAYER);
+  const ::flatbuffers::String *player() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_PLAYER);
   }
-  const flatbuffers::String *emulator() const {
-    return GetPointer<const flatbuffers::String *>(VT_EMULATOR);
+  const ::flatbuffers::String *emulator() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_EMULATOR);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_PLAYER) &&
            verifier.VerifyString(player()) &&
@@ -203,39 +210,39 @@ struct Player_Id FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct Player_IdBuilder {
   typedef Player_Id Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_player(flatbuffers::Offset<flatbuffers::String> player) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_player(::flatbuffers::Offset<::flatbuffers::String> player) {
     fbb_.AddOffset(Player_Id::VT_PLAYER, player);
   }
-  void add_emulator(flatbuffers::Offset<flatbuffers::String> emulator) {
+  void add_emulator(::flatbuffers::Offset<::flatbuffers::String> emulator) {
     fbb_.AddOffset(Player_Id::VT_EMULATOR, emulator);
   }
-  explicit Player_IdBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit Player_IdBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Player_Id> Finish() {
+  ::flatbuffers::Offset<Player_Id> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Player_Id>(end);
+    auto o = ::flatbuffers::Offset<Player_Id>(end);
     fbb_.Required(o, Player_Id::VT_PLAYER);
     fbb_.Required(o, Player_Id::VT_EMULATOR);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Player_Id> CreatePlayer_Id(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> player = 0,
-    flatbuffers::Offset<flatbuffers::String> emulator = 0) {
+inline ::flatbuffers::Offset<Player_Id> CreatePlayer_Id(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> player = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> emulator = 0) {
   Player_IdBuilder builder_(_fbb);
   builder_.add_emulator(emulator);
   builder_.add_player(player);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Player_Id> CreatePlayer_IdDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Player_Id> CreatePlayer_IdDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *player = nullptr,
     const char *emulator = nullptr) {
   auto player__ = player ? _fbb.CreateString(player) : 0;
@@ -246,7 +253,7 @@ inline flatbuffers::Offset<Player_Id> CreatePlayer_IdDirect(
       emulator__);
 }
 
-struct Player_State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Player_State FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef Player_StateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4,
@@ -255,10 +262,10 @@ struct Player_State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const fb::state::Player_Id *id() const {
     return GetPointer<const fb::state::Player_Id *>(VT_ID);
   }
-  const flatbuffers::String *bank_file() const {
-    return GetPointer<const flatbuffers::String *>(VT_BANK_FILE);
+  const ::flatbuffers::String *bank_file() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_BANK_FILE);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_ID) &&
            verifier.VerifyTable(id()) &&
@@ -270,39 +277,39 @@ struct Player_State FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct Player_StateBuilder {
   typedef Player_State Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_id(flatbuffers::Offset<fb::state::Player_Id> id) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_id(::flatbuffers::Offset<fb::state::Player_Id> id) {
     fbb_.AddOffset(Player_State::VT_ID, id);
   }
-  void add_bank_file(flatbuffers::Offset<flatbuffers::String> bank_file) {
+  void add_bank_file(::flatbuffers::Offset<::flatbuffers::String> bank_file) {
     fbb_.AddOffset(Player_State::VT_BANK_FILE, bank_file);
   }
-  explicit Player_StateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit Player_StateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Player_State> Finish() {
+  ::flatbuffers::Offset<Player_State> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Player_State>(end);
+    auto o = ::flatbuffers::Offset<Player_State>(end);
     fbb_.Required(o, Player_State::VT_ID);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Player_State> CreatePlayer_State(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<fb::state::Player_Id> id = 0,
-    flatbuffers::Offset<flatbuffers::String> bank_file = 0) {
+inline ::flatbuffers::Offset<Player_State> CreatePlayer_State(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<fb::state::Player_Id> id = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> bank_file = 0) {
   Player_StateBuilder builder_(_fbb);
   builder_.add_bank_file(bank_file);
   builder_.add_id(id);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Player_State> CreatePlayer_StateDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<fb::state::Player_Id> id = 0,
+inline ::flatbuffers::Offset<Player_State> CreatePlayer_StateDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<fb::state::Player_Id> id = 0,
     const char *bank_file = nullptr) {
   auto bank_file__ = bank_file ? _fbb.CreateString(bank_file) : 0;
   return fb::state::CreatePlayer_State(
@@ -312,32 +319,32 @@ inline flatbuffers::Offset<Player_State> CreatePlayer_StateDirect(
 }
 
 inline const fb::state::State *GetState(const void *buf) {
-  return flatbuffers::GetRoot<fb::state::State>(buf);
+  return ::flatbuffers::GetRoot<fb::state::State>(buf);
 }
 
 inline const fb::state::State *GetSizePrefixedState(const void *buf) {
-  return flatbuffers::GetSizePrefixedRoot<fb::state::State>(buf);
+  return ::flatbuffers::GetSizePrefixedRoot<fb::state::State>(buf);
 }
 
 inline bool VerifyStateBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifyBuffer<fb::state::State>(nullptr);
 }
 
 inline bool VerifySizePrefixedStateBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifySizePrefixedBuffer<fb::state::State>(nullptr);
 }
 
 inline void FinishStateBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<fb::state::State> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<fb::state::State> root) {
   fbb.Finish(root);
 }
 
 inline void FinishSizePrefixedStateBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<fb::state::State> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<fb::state::State> root) {
   fbb.FinishSizePrefixed(root);
 }
 
