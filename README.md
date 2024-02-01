@@ -68,6 +68,15 @@ sudo cmake --build . --target install
 The default terminal setting may prevent the program from being able to define its own colors.
 In the initialization of your shell, try setting a 256-color terminal type: `test "$TERM" = "xterm" && export TERM=xterm-256color`
 
+### How to force the AdlRt to work with ALSA?
+
+You can run the AdlRt with the `-A alsa` command-line argument:
+```bash
+adlrt -A alsa
+```
+which forces it to select ALSA as a sound system instead of PulseAudio.
+
+
 ## Change Log
 
 ### Dev
