@@ -12,6 +12,7 @@
 #include "common.h"
 #include <chrono>
 #include <cmath>
+#include <algorithm>
 #include <limits.h>
 #include <assert.h>
 #include <sys/stat.h>
