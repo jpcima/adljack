@@ -16,12 +16,12 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   target_link_libraries(RtAudio PUBLIC "dsound")
   target_compile_definitions(RtAudio PUBLIC "__WINDOWS_WASAPI__")
   target_link_libraries(RtAudio PUBLIC "ksguid")
-  target_compile_definitions(RtAudio PUBLIC "__WINDOWS_ASIO__")
-  target_sources(RtAudio PRIVATE
-    "thirdparty/rtaudio/include/asio.cpp"
-    "thirdparty/rtaudio/include/asiodrivers.cpp"
-    "thirdparty/rtaudio/include/asiolist.cpp"
-    "thirdparty/rtaudio/include/iasiothiscallresolver.cpp")
+# target_compile_definitions(RtAudio PUBLIC "__WINDOWS_ASIO__")
+# target_sources(RtAudio PRIVATE
+#   "thirdparty/rtaudio/include/asio.cpp"
+#   "thirdparty/rtaudio/include/asiodrivers.cpp"
+#   "thirdparty/rtaudio/include/asiolist.cpp"
+#   "thirdparty/rtaudio/include/iasiothiscallresolver.cpp")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   target_compile_definitions(RtAudio PUBLIC "__MACOSX_CORE__")
   find_library(COREAUDIO_LIBRARY "CoreAudio")
