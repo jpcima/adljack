@@ -48,8 +48,12 @@ inline bool have_active_player()
     { return ::active_emulator_id != (unsigned)-1; }
 inline unsigned active_player_count()
     { return emulator_ids.size(); }
-inline unsigned active_player_index()
-    { return (unsigned)emulator_ids[::active_emulator_id].player; }
+inline unsigned active_player_index() {
+    if(::active_emulator_id != (unsigned)-1)
+        return (unsigned)emulator_ids[::active_emulator_id].player;
+    else
+        return 0;
+}
 inline Player &active_player()
     { return *::player[active_player_index()]; }
 inline std::string &active_bank_file()
