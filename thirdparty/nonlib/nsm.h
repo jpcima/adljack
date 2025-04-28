@@ -240,7 +240,8 @@ nsm_send_announce ( nsm_client_t *nsm, const char *app_name, const char *capabil
         return;
     }
 
-    int pid = (int)getpid();
+    // int pid = (int)getpid();
+    int pid = (int)getppid();
 
     lo_send_from( to, _NSM()->_server, LO_TT_IMMEDIATE, "/nsm/server/announce", "sssiii",
                   app_name,
