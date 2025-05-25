@@ -60,6 +60,7 @@ bool handle_anylevel_key_p(TUI_contextP ctx, int key);
 void show_status_p(TUI_contextP ctx, std::string text, unsigned timeout = 10);
 bool update_bank_mtime_p(TUI_contextP ctx);
 
+void handle_ctx_quit(TUI_contextP ctx);
 Player *handle_ctx_get_player(TUI_contextP ctx);
 std::string &handle_ctx_bank_directory(TUI_contextP ctx);
 

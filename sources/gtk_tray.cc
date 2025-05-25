@@ -22,6 +22,34 @@ static GMutex mutex_interface;
 static GtkStatusIcon *create_tray_icon();
 static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
 static std::atomic<bool> s_running(false);
+static std::string s_volumeMenuIndicator;
+static std::string s_customBankMenuIndicator;
+static const char *const c_chipNumbers[] =
+{
+    "..",
+    _("1 chip"), _("2 chips"), _("3 chips"), _("4 chips"), _("5 chips"), _("6 chips"),
+    _("7 chips"), _("8 chips"), _("9 chips"), _("10 chips"), _("11 chips"), _("12 chips")
+};
+
+
+static GtkWidget *s_menu = NULL;
+
+static void killMenu()
+{
+    if(!s_menu)
+        return;
+
+    GList *children, *iter;
+
+    children = gtk_container_get_children(GTK_CONTAINER(s_menu));
+    for(iter = children; iter != NULL; iter = g_list_next(iter))
+        gtk_widget_destroy(GTK_WIDGET(iter->data));
+    g_list_free(children);
+
+    gtk_widget_destroy(s_menu);
+
+    s_menu = NULL;
+}
 
 
 void adl_gtk_init(int *argc, char ***argv)
@@ -32,6 +60,7 @@ void adl_gtk_init(int *argc, char ***argv)
 
 void adl_gtk_quit()
 {
+    killMenu();
     s_running = false;
 }
 
@@ -119,7 +148,7 @@ void adl_gtk_bank_select_dialogue(TUI_contextP ctx)
 
     gtk_main_iteration_do(false);
 
-    dialog = gtk_file_chooser_dialog_new("Load bank file",
+    dialog = gtk_file_chooser_dialog_new(_("Load bank file"),
                                          NULL,
                                          action,
                                          _("_Cancel"),
@@ -131,10 +160,10 @@ void adl_gtk_bank_select_dialogue(TUI_contextP ctx)
 
     filter = gtk_file_filter_new();
     if (active_player().type() == Player_Type::OPL3) {
-        gtk_file_filter_set_name(filter, "WOPL bank files");
+        gtk_file_filter_set_name(filter, _("WOPL bank files for OPL3/OPL2"));
         gtk_file_filter_add_pattern(filter, "*.wopl");
     } else {
-        gtk_file_filter_set_name(filter, "WOPN bank files");
+        gtk_file_filter_set_name(filter, _("WOPN bank files for OPN2/OPNA"));
         gtk_file_filter_add_pattern(filter, "*.wopn");
     }
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
@@ -194,6 +223,7 @@ static void tray_icon_open_bank(TUI_context *ctx)
 {
     adl_gtk_bank_select_dialogue(ctx);
     // handle_toplevel_key_p(ctx, (int)'b');
+    killMenu();
 }
 
 static void tray_icon_set_opl_embedded_bank(intptr_t bank_id)
@@ -204,11 +234,14 @@ static void tray_icon_set_opl_embedded_bank(intptr_t bank_id)
     configFile.setValue("opl-embedded-bank", ::player_opl_embedded_bank_id);
     configFile.endGroup();
     configFile.writeIniFile();
+
+    killMenu();
 }
 
 static void tray_icon_quit(TUI_context *ctx)
 {
-    handle_anylevel_key_p(ctx, (int)'q');
+    handle_ctx_quit(ctx);
+    killMenu();
 }
 
 static void tray_icon_quickVolume(intptr_t volume)
@@ -218,6 +251,7 @@ static void tray_icon_quickVolume(intptr_t volume)
     configFile.setValue("volume", ::player_volume);
     configFile.endGroup();
     configFile.writeIniFile();
+    killMenu();
 }
 
 static void tray_icon_chanAlloc(intptr_t mode)
@@ -227,6 +261,7 @@ static void tray_icon_chanAlloc(intptr_t mode)
     configFile.setValue("chanalloc", mode);
     configFile.endGroup();
     configFile.writeIniFile();
+    killMenu();
 }
 
 static void tray_icon_chipsNum(intptr_t chips)
@@ -236,6 +271,7 @@ static void tray_icon_chipsNum(intptr_t chips)
     configFile.setValue("nchip", (unsigned)chips);
     configFile.endGroup();
     configFile.writeIniFile();
+    killMenu();
 }
 
 static void tray_icon_switchEmulator(Emulator_Id *e)
@@ -254,6 +290,7 @@ static void tray_icon_switchEmulator(Emulator_Id *e)
     configFile.setValue("pt", (int)e->player);
     configFile.endGroup();
     configFile.writeIniFile();
+    killMenu();
 }
 
 static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data)
@@ -268,11 +305,12 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     // The "widget" is the menu that was supplied when
     // `g_signal_connect_swapped()` was called.
     // menu = GTK_MENU(status_icon);
+    killMenu();
 
-    GtkWidget *menu = gtk_menu_new();
+    GtkWidget *menu = s_menu = gtk_menu_new();
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *itemSelectBank = gtk_menu_item_new_with_label("Select bank file...");
+        GtkWidget *itemSelectBank = gtk_menu_item_new_with_label(_("Select bank file..."));
         gtk_widget_show(itemSelectBank);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), itemSelectBank);
         g_signal_connect_swapped(G_OBJECT(itemSelectBank), "activate",
@@ -281,10 +319,13 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     // ------------------------------------------------------------------------------------------
     if(active_emulator_id >= 0 && active_emulator_id < emulator_ids.size() && emulator_ids[active_emulator_id].player == Player_Type::OPL3)
     {
-        GtkWidget *embeddedBank = gtk_menu_item_new_with_label("Use embedded OPL bank");
+        GtkWidget *embeddedBank = gtk_menu_item_new_with_label(_("Use embedded OPL3/OPL2 bank"));
         GtkWidget *embeddedBankSubMenu = gtk_menu_new();
 
-        auto *bankUseCustom = gtk_check_menu_item_new_with_label(active_bank_file().empty() ? "<Default bank>" : ("Custom bank: " + active_bank_file()).c_str());
+        s_customBankMenuIndicator = _("Custom bank:");
+        s_customBankMenuIndicator += " " + active_bank_file();
+
+        auto *bankUseCustom = gtk_check_menu_item_new_with_label(active_bank_file().empty() ? _("<Default bank>") : s_customBankMenuIndicator.c_str());
         gtk_menu_shell_append(GTK_MENU_SHELL(embeddedBankSubMenu), bankUseCustom);
 
         if (active_opl_embedded_bank() == -1) {
@@ -317,9 +358,11 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     }
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *quickVolume = gtk_menu_item_new_with_label("Set volume to");
+        GtkWidget *quickVolume = gtk_menu_item_new_with_label(_("Set volume to"));
         GtkWidget *quickVolumeSubMenu = gtk_menu_new();
-        auto *quickVolumeCur = gtk_menu_item_new_with_label(("Current volume: " + std::to_string(player_volume) + "%").c_str());
+        s_volumeMenuIndicator = _("Current volume:");
+        s_volumeMenuIndicator += " " + std::to_string(player_volume) + "%";
+        auto *quickVolumeCur = gtk_menu_item_new_with_label(s_volumeMenuIndicator.c_str());
         auto *quickVolume50 = gtk_menu_item_new_with_label("50%");
         auto *quickVolume100 = gtk_menu_item_new_with_label("100%");
         auto *quickVolume150 = gtk_menu_item_new_with_label("150%");
@@ -359,7 +402,7 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     }
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *emulatorType = gtk_menu_item_new_with_label("Emulator type");
+        GtkWidget *emulatorType = gtk_menu_item_new_with_label(_("Emulator type"));
         GtkWidget *emulatorTypeSubMenu = gtk_menu_new();
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(emulatorType), emulatorTypeSubMenu);
 
@@ -404,12 +447,12 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
 
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *chanAlloc = gtk_menu_item_new_with_label("Channel allocation mode");
+        GtkWidget *chanAlloc = gtk_menu_item_new_with_label(_("Channel allocation mode"));
         GtkWidget *chanAllocSubMenu = gtk_menu_new();
-        auto *chanAllocAuto = gtk_check_menu_item_new_with_label("[Auto]");
-        auto *chanAllocOffDelay = gtk_check_menu_item_new_with_label("Off delay based");
-        auto *chanAllocSameInst = gtk_check_menu_item_new_with_label("Re-use same instrument");
-        auto *chanAllocAnyFree = gtk_check_menu_item_new_with_label("Re-use any free");
+        auto *chanAllocAuto = gtk_check_menu_item_new_with_label(_("[Auto]"));
+        auto *chanAllocOffDelay = gtk_check_menu_item_new_with_label(_("Off delay based"));
+        auto *chanAllocSameInst = gtk_check_menu_item_new_with_label(_("Re-use same instrument"));
+        auto *chanAllocAnyFree = gtk_check_menu_item_new_with_label(_("Re-use any free"));
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(chanAlloc), chanAllocSubMenu);
         gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocAuto);
         gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocOffDelay);
@@ -442,19 +485,15 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     }
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *numChips = gtk_menu_item_new_with_label("Number of chips");
+        GtkWidget *numChips = gtk_menu_item_new_with_label(_("Number of chips"));
         GtkWidget *numChipsSubMenu = gtk_menu_new();
-        static const char *const numbers[] = {
-            "..",
-            "1 chip", "2 chips", "3 chips", "4 chips", "5 chips", "6 chips",
-            "7 chips", "8 chips", "9 chips", "10 chips", "11 chips", "12 chips"
-        };
+
 
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(numChips), numChipsSubMenu);
 
         for(int i = 1; i <= 12; ++i)
         {
-            auto *chipsItem = gtk_check_menu_item_new_with_label(numbers[i]);
+            auto *chipsItem = gtk_check_menu_item_new_with_label(c_chipNumbers[i]);
             gtk_menu_shell_append(GTK_MENU_SHELL(numChipsSubMenu), chipsItem);
             if(active_player().chip_count() == i) {
                 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(chipsItem), TRUE);
@@ -471,7 +510,7 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     }
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *itemQuit = gtk_menu_item_new_with_label("Quit");
+        GtkWidget *itemQuit = gtk_menu_item_new_with_label(_("Quit"));
         gtk_widget_show(itemQuit);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), itemQuit);
         g_signal_connect_swapped(G_OBJECT(itemQuit), "activate",
@@ -482,4 +521,3 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
 
     gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, activate_time);
 }
-

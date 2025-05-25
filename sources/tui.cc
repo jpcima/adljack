@@ -99,6 +99,11 @@ void show_status_p(TUI_contextP ctx, std::string text, unsigned timeout)
     show_status(*ctx, text, timeout);
 }
 
+void handle_ctx_quit(TUI_contextP ctx)
+{
+    ctx->quit = true;
+}
+
 Player *handle_ctx_get_player(TUI_contextP ctx)
 {
     return ctx->player;
