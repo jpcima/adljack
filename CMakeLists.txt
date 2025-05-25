@@ -165,18 +165,18 @@ print_feature("POSIX mlockall" HAVE_MLOCKALL)
 include(thirdparty/ini-processing/IniProcessor.cmake)
 
 set(adl_sources
-  "sources/tui.cc"
-  "sources/tui_channels.cc"
-  "sources/tui_fileselect.cc"
-  "sources/insnames.cc"
-  "sources/player_traits.cc"
-  "sources/player.cc"
-  "sources/i18n.cc"
-  "sources/common.cc"
+  "sources/tui.cc"              "sources/tui.h"
+  "sources/tui_channels.cc"     "sources/tui_channels.h"
+  "sources/tui_fileselect.cc"   "sources/tui_fileselect.h"
+  "sources/insnames.cc"         "sources/insnames.h"
+  "sources/player_traits.cc"    "sources/player_traits.h"
+  "sources/player.cc"           "sources/player.h"
+  "sources/i18n.cc"             "sources/i18n.h" "sources/i18n_util.h"
+  "sources/common.cc"           "sources/common.h"
   ${INIPROCESSOR_SRCS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND adl_sources
-    "sources/winmm_dialog.cc"
+    "sources/winmm_dialog.cc"   "sources/winmm_dialog.h"
     "sources/winmm_dialog.rc"
     "sources/win_application.rc")
 endif()
@@ -185,7 +185,7 @@ endif()
 if(NOT JACK_FOUND)
   message(WARNING "Jack not found. Not building ADL-jack.")
 else()
-  add_executable(adljack WIN32 "sources/jackmain.cc" ${adl_sources})
+  add_executable(adljack WIN32 "sources/jackmain.cc" "sources/jackmain.h" ${adl_sources})
   target_compile_definitions(adljack PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
   target_include_directories(adljack PRIVATE "thirdparty/ini-processing/src")
   target_include_directories(adljack PRIVATE ${JACK_INCLUDE_DIRS})
@@ -250,11 +250,15 @@ else()
 endif()
 
 ## Ring buffer
-add_library(ring_buffer STATIC "thirdparty/ring-buffer/sources/ring_buffer.cc")
+add_library(ring_buffer STATIC
+  "thirdparty/ring-buffer/sources/ring_buffer.cc"
+  "thirdparty/ring-buffer/include/ring_buffer/ring_buffer.h"
+  "thirdparty/ring-buffer/include/ring_buffer/ring_buffer.tcc"
+)
 target_include_directories(ring_buffer PUBLIC "thirdparty/ring-buffer/include")
 
 ## Cross platform version
-add_executable(adlrt WIN32 "sources/rtmain.cc" ${adl_sources})
+add_executable(adlrt WIN32 "sources/rtmain.cc" "sources/rtmain.h" ${adl_sources})
 target_include_directories(adlrt PRIVATE "thirdparty/ini-processing/include")
 target_compile_definitions(adlrt PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 target_link_libraries(adlrt PRIVATE ADLMIDI_static OPNMIDI_static ring_buffer RtAudio RtMidi ${CMAKE_THREAD_LIBS_INIT})
@@ -292,7 +296,7 @@ endif()
 
 ## Haiku version
 if(CMAKE_SYSTEM_NAME STREQUAL "Haiku")
-  add_executable(adlhaiku WIN32 "sources/haikumain.cc" ${adl_sources})
+  add_executable(adlhaiku WIN32 "sources/haikumain.cc" "sources/haikumain.h" ${adl_sources})
   target_compile_definitions(adlhaiku PRIVATE "ADLJACK_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
   find_library(MEDIA_KIT_LIBRARY "media")
   find_library(MIDI2_KIT_LIBRARY "midi2")
