@@ -8,6 +8,7 @@
     F(OPN2, ##__VA_ARGS__)
 
 enum class Player_Type {
+    INVALID = -1,
     #define ENUMVAL(x) x,
     EACH_PLAYER_TYPE(ENUMVAL)
     #undef ENUMVAL

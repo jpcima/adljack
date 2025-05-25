@@ -72,6 +72,7 @@ bool load_state(const std::vector<uint8_t> &data)
     if (!have_active_player())
         return false;
     auto lock = active_player().take_lock();
+    auto lock2 = active_player().setBusy();
 
     bool success = true;
 
@@ -111,7 +112,7 @@ bool load_state(const std::vector<uint8_t> &data)
 
     for (const auto *player : *state->player()) {
         Player_Type pt = Player::type_by_name(player->id()->player()->c_str());
-        if (pt == (Player_Type)-1) {
+        if (pt == Player_Type::INVALID) {
             success = false;
             continue;
         }

@@ -52,4 +52,15 @@ int init_color_rgb24(short id, uint32_t value);
 //------------------------------------------------------------------------------
 bool interface_interrupted();
 
+typedef struct TUI_context* TUI_contextP;
+class Player;
+
+bool handle_toplevel_key_p(TUI_contextP ctx, int key);
+bool handle_anylevel_key_p(TUI_contextP ctx, int key);
+void show_status_p(TUI_contextP ctx, std::string text, unsigned timeout = 10);
+bool update_bank_mtime_p(TUI_contextP ctx);
+
+Player *handle_ctx_get_player(TUI_contextP ctx);
+std::string &handle_ctx_bank_directory(TUI_contextP ctx);
+
 #endif  // defined(ADLJACK_USE_CURSES)

@@ -103,15 +103,19 @@ unsigned Player::emulator_by_name(Player_Type pt, const char *name)
 
 Player_Type Player::type_by_name(const char *nam)
 {
-    for (Player_Type pt : all_player_types)
-        if (!strcmp(nam, name(pt)))
+    for (Player_Type pt : all_player_types) {
+        if (!strcmp(nam, name(pt))) {
             return pt;
-    return (Player_Type)-1;
+        }
+    }
+
+    return Player_Type::INVALID;
 }
 
 bool Player::dynamic_set_chip_count(unsigned nchip)
 {
     auto lock = take_lock();
+    auto lock2 = setBusy();
     panic();
     return set_chip_count(nchip);
 }
@@ -119,6 +123,7 @@ bool Player::dynamic_set_chip_count(unsigned nchip)
 bool Player::dynamic_set_emulator(unsigned emulator)
 {
     auto lock = take_lock();
+    auto lock2 = setBusy();
     panic();
     return set_emulator(emulator);
 }
@@ -126,6 +131,7 @@ bool Player::dynamic_set_emulator(unsigned emulator)
 bool Player::dynamic_set_embedded_bank(const char *curBankFile, int bank)
 {
     auto lock = take_lock();
+    auto lock2 = setBusy();
     panic();
     bool ret = bank >= 0 ? set_embedded_bank(bank) : load_bank_file(curBankFile);
     return ret;
@@ -134,6 +140,7 @@ bool Player::dynamic_set_embedded_bank(const char *curBankFile, int bank)
 bool Player::dynamic_load_bank(const char *bankfile)
 {
     auto lock = take_lock();
+    auto lock2 = setBusy();
     panic();
     if (!load_bank_file(bankfile))
         return false;
@@ -143,12 +150,14 @@ bool Player::dynamic_load_bank(const char *bankfile)
 void Player::dynamic_panic()
 {
     auto lock = take_lock();
+    auto lock2 = setBusy();
     panic();
 }
 
 void Player::dynamic_set_channel_alloc(int chanalloc)
 {
     auto lock = take_lock();
+    auto lock2 = setBusy();
     set_channel_alloc_mode(chanalloc);
 }
 

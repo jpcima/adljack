@@ -6,13 +6,14 @@
 #pragma once
 #include "player_traits.h"
 #include <string>
+#include <atomic>
 #include <vector>
 #include <memory>
 #include <mutex>
 
 class Player {
 protected:
-    Player() {}
+    Player() : is_busy(false) {}
     virtual bool init(unsigned sample_rate) = 0;
 
 public:
@@ -92,11 +93,30 @@ public:
     std::unique_lock<std::mutex> take_lock(std::try_to_lock_t)
         { return std::unique_lock<std::mutex>(mutex_, std::try_to_lock); }
 
+    class BusyHolder
+    {
+        Player *m_p;
+    public:
+        explicit BusyHolder(Player *p) : m_p(p)
+        {
+            m_p->is_busy = true;
+        }
+
+        ~BusyHolder()
+        {
+            m_p->is_busy = false;
+        }
+    };
+
+    BusyHolder setBusy() { return BusyHolder(this); }
+    bool isBusy() const { return is_busy; };
+
 protected:
     unsigned sample_rate_ = 0;
     unsigned emulator_ = 0;
     int chanalloc_ = 0;
     std::mutex mutex_;
+    std::atomic<bool> is_busy;
 };
 
 template <Player_Type Pt>

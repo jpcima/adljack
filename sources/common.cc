@@ -20,7 +20,7 @@
 #    include <sys/mman.h>
 #endif
 #if defined(ADLJACK_GTK3)
-#   include <gtk/gtk.h>
+#   include "gtk_tray.h"
 #endif
 #if defined(_WIN32)
 #    include <windows.h>
@@ -504,6 +504,7 @@ void dynamic_switch_emulator_id(unsigned index)
 
     Player &player = active_player();
     auto lock = player.take_lock();
+    auto lock2 = player.setBusy();
 
     player.panic();
     if (old_id.player == new_id.player) {
@@ -571,11 +572,6 @@ static void simple_interface_exec(void(*idle_proc)(void *), void *idle_data)
 
         fprintf(stderr, "\r");
         fflush(stderr);
-
-#ifdef ADLJACK_GTK3
-        gtk_main_iteration_do(false);
-#endif
-
         std::this_thread::sleep_for(stc::milliseconds(50));
     }
 }

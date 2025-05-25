@@ -174,6 +174,9 @@ set(adl_sources
   "sources/i18n.cc"             "sources/i18n.h" "sources/i18n_util.h"
   "sources/common.cc"           "sources/common.h"
   ${INIPROCESSOR_SRCS})
+if(ENABLE_GTK)
+  list(APPEND adl_sources "sources/gtk_tray.cc" "sources/gtk_tray.h")
+endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND adl_sources
     "sources/winmm_dialog.cc"   "sources/winmm_dialog.h"

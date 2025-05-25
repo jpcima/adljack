@@ -10,7 +10,7 @@
 #include "winmm_dialog.h"
 #include <stdio.h>
 #if defined(ADLJACK_GTK3)
-#    include <gtk/gtk.h>
+#    include "gtk_tray.h"
 #endif
 #if !defined(_WIN32)
 #    include <syslog.h>
@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
     load_config();
 
 #ifdef ADLJACK_GTK3
-    gtk_init(&argc, &argv);
+    adl_gtk_init(&argc, &argv);
 #endif
 
 #if !defined(_WIN32)
