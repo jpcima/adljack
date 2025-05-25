@@ -127,33 +127,22 @@ static void tray_icon_quickVolume(intptr_t volume)
     configFile.writeIniFile();
 }
 
-static void tray_icon_chanAlloc(int mode)
+static void tray_icon_chanAlloc(intptr_t mode)
 {
-    active_player().dynamic_set_channel_alloc(mode);
+    active_player().dynamic_set_channel_alloc((int)mode);
     configFile.beginGroup("synth");
     configFile.setValue("chanalloc", mode);
     configFile.endGroup();
     configFile.writeIniFile();
 }
 
-static void tray_icon_chanAllocAuto(void *)
+static void tray_icon_chipsNum(intptr_t chips)
 {
-    tray_icon_chanAlloc(-1);
-}
-
-static void tray_icon_chanOffDelay(void *)
-{
-    tray_icon_chanAlloc(0);
-}
-
-static void tray_icon_chanSameInst(void *)
-{
-    tray_icon_chanAlloc(1);
-}
-
-static void tray_icon_chanAnyFree(void *)
-{
-    tray_icon_chanAlloc(2);
+    active_player().dynamic_set_chip_count((unsigned)chips);
+    configFile.beginGroup("synth");
+    configFile.setValue("nchip", (unsigned)chips);
+    configFile.endGroup();
+    configFile.writeIniFile();
 }
 
 static void tray_icon_switchEmulator(Emulator_Id *e)
@@ -331,10 +320,10 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
         gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocOffDelay);
         gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocSameInst);
         gtk_menu_shell_append(GTK_MENU_SHELL(chanAllocSubMenu), chanAllocAnyFree);
-        g_signal_connect_swapped(G_OBJECT(chanAllocAuto), "activate", G_CALLBACK(tray_icon_chanAllocAuto), NULL);
-        g_signal_connect_swapped(G_OBJECT(chanAllocOffDelay), "activate", G_CALLBACK(tray_icon_chanOffDelay), NULL);
-        g_signal_connect_swapped(G_OBJECT(chanAllocSameInst), "activate", G_CALLBACK(tray_icon_chanSameInst), NULL);
-        g_signal_connect_swapped(G_OBJECT(chanAllocAnyFree), "activate", G_CALLBACK(tray_icon_chanAnyFree), NULL);
+        g_signal_connect_swapped(G_OBJECT(chanAllocAuto), "activate", G_CALLBACK(tray_icon_chanAlloc), (void*)(intptr_t)-1);
+        g_signal_connect_swapped(G_OBJECT(chanAllocOffDelay), "activate", G_CALLBACK(tray_icon_chanAlloc), (void*)(intptr_t)0);
+        g_signal_connect_swapped(G_OBJECT(chanAllocSameInst), "activate", G_CALLBACK(tray_icon_chanAlloc), (void*)(intptr_t)1);
+        g_signal_connect_swapped(G_OBJECT(chanAllocAnyFree), "activate", G_CALLBACK(tray_icon_chanAlloc), (void*)(intptr_t)2);
         int chanAllocMode = active_player().get_channel_alloc_mode_val();
         switch(chanAllocMode)
         {
@@ -353,6 +342,30 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
         }
 
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), chanAlloc);
+    }
+    // ------------------------------------------------------------------------------------------
+    {
+        GtkWidget *numChips = gtk_menu_item_new_with_label("Number of chips");
+        GtkWidget *numChipsSubMenu = gtk_menu_new();
+        static const char *const numbers[] = {
+            "..",
+            "1 chip", "2 chips", "3 chips", "4 chips", "5 chips", "6 chips",
+            "7 chips", "8 chips", "9 chips", "10 chips", "11 chips", "12 chips"
+        };
+
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(numChips), numChipsSubMenu);
+
+        for(int i = 1; i <= 12; ++i)
+        {
+            auto *chipsItem = gtk_check_menu_item_new_with_label(numbers[i]);
+            gtk_menu_shell_append(GTK_MENU_SHELL(numChipsSubMenu), chipsItem);
+            g_signal_connect_swapped(G_OBJECT(chipsItem), "activate", G_CALLBACK(tray_icon_chipsNum), (void*)(intptr_t)i);
+            if(active_player().chip_count() == i) {
+                gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(chipsItem), TRUE);
+            }
+        }
+
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), numChips);
     }
     // ------------------------------------------------------------------------------------------
     {
