@@ -57,7 +57,7 @@ public:
     virtual const char *emulator_name() const = 0;
     virtual bool set_emulator(unsigned emulator) = 0;
     virtual void set_soft_pan_enabled(bool sp) = 0;
-    virtual bool set_embedded_bank(unsigned bank) = 0;
+    virtual bool set_embedded_bank(int bank) = 0;
     unsigned emulator() const { return emulator_; }
     virtual unsigned chip_count() const = 0;
     virtual bool set_chip_count(unsigned count) = 0;
@@ -80,6 +80,7 @@ public:
 
     bool dynamic_set_chip_count(unsigned nchip);
     bool dynamic_set_emulator(unsigned emulator);
+    bool dynamic_set_embedded_bank(const char *curBankFile, int bank);
     bool dynamic_load_bank(const char *bankfile);
     void dynamic_panic();
     void dynamic_set_channel_alloc(int chanalloc);
@@ -137,7 +138,7 @@ public:
         {
             return Traits::set_num_chips(player_.get(), count) >= 0 && chip_count() == count;
         }
-    bool set_embedded_bank(unsigned bank) override
+    bool set_embedded_bank(int bank) override
         { return Traits::set_bank(player_.get(), bank) >= 0; }
     void set_soft_pan_enabled(bool sp) override
         { return Traits::set_soft_pan_enabled(player_.get(), sp); }

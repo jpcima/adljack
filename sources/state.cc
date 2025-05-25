@@ -119,7 +119,12 @@ bool load_state(const std::vector<uint8_t> &data)
         if (!pl.set_chip_count(chip_count))
             success = false;
         const auto *bank_file = player->bank_file();
-        if (bank_file && bank_file->size() > 0) {
+
+        if(pt == Player_Type::OPL3 && ::player_opl_embedded_bank_id >= 0) {
+            if (!pl.set_embedded_bank(::player_opl_embedded_bank_id))
+                success = false;
+        }
+        else if (bank_file && bank_file->size() > 0) {
             if (!pl.load_bank_file(bank_file->c_str()))
                 success = false;
             else

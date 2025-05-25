@@ -21,6 +21,7 @@
 
 extern std::unique_ptr<Player> player[player_type_count];
 extern std::string player_bank_file[player_type_count];
+extern int player_opl_embedded_bank_id;
 
 extern IniProcessing configFile;
 
@@ -58,6 +59,9 @@ inline Player &active_player()
     { return *::player[active_player_index()]; }
 inline std::string &active_bank_file()
     { return ::player_bank_file[active_player_index()]; }
+
+inline int &active_opl_embedded_bank()
+    { return ::player_opl_embedded_bank_id; };
 
 extern int player_volume;
 extern DcFilter dcfilter[2];

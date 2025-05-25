@@ -31,6 +31,7 @@ namespace stc = std::chrono;
 
 std::unique_ptr<Player> player[player_type_count];
 std::string player_bank_file[player_type_count];
+int player_opl_embedded_bank_id = -1;
 
 IniProcessing configFile;
 
@@ -176,6 +177,8 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
     qfprintf(quiet, stderr, _("%s version %s\n"), Player::name(pt), Player::version(pt));
 
+    ::player_opl_embedded_bank_id = configFile.value("opl-embedded-bank", -1).toInt();
+
 #if defined(ADLJACK_HAVE_MLOCKALL)
     if(mlockall(MCL_CURRENT|MCL_FUTURE) == -1)
         qfprintf(quiet, stderr, _("Error locking memory."));
@@ -204,7 +207,14 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
         std::string bankname_field = "bankfile-" + std::to_string(i);
         player_bank_file[i] = configFile.value(bankname_field.c_str(), player_bank_file[i]).toString();
-        if (!player_bank_file[i].empty() && !::player[i]->load_bank_file(player_bank_file[i].c_str()))
+
+        if(pt == Player_Type::OPL3 && ::player_opl_embedded_bank_id >= 0) {
+            if (!::player[i]->set_embedded_bank(::player_opl_embedded_bank_id)) {
+                qfprintf(quiet, stderr, "%s\n", _("Error setting saved embedded bank id for player."));
+                return 1;
+            }
+        }
+        else if (!player_bank_file[i].empty() && !::player[i]->load_bank_file(player_bank_file[i].c_str()))
         {
             qfprintf(quiet, stderr, "%s\n", _("Error loading saved bank file for player."));
             return 1;
@@ -228,7 +238,13 @@ bool initialize_player(Player_Type pt, unsigned sample_rate, unsigned nchip, con
 
     qfprintf(quiet, stderr, _("Using emulator \"%s\"\n"), player.emulator_name());
 
-    if (!bankfile) {
+    if (pt == Player_Type::OPL3 && ::player_opl_embedded_bank_id >= 0) {
+        if (!player.set_embedded_bank(::player_opl_embedded_bank_id)) {
+            qfprintf(quiet, stderr, "%s\n", _("Error setting embedded bank."));
+            return 1;
+        }
+    }
+    else if (!bankfile) {
         qfprintf(quiet, stderr, "%s\n", _("Using default banks."));
     }
     else {

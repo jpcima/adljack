@@ -9,12 +9,12 @@
 
 const double Player_Traits<Player_Type::OPL3>::output_gain = pow(10.0, 3.0 / 20.0);
 
-int Player_Traits<Player_Type::OPN2>::set_bank(player *pl, unsigned bank)
+int player_opnmidi_set_bank(OPN2_MIDIPlayer *pl, int bank)
 {
-    #pragma message("Using my own bank embed for OPN2. Remove this in the future.")
+#pragma message("Using my own bank embed for OPN2. Remove this in the future.")
     static const uint8_t bankdata[] = {
         #include "embedded-banks/opn2.h"
     };
     return (bank != 0) ? -1 :
-        open_bank_data(pl, bankdata, sizeof(bankdata));
+        Player_Traits<Player_Type::OPN2>::open_bank_data(pl, bankdata, sizeof(bankdata));
 }

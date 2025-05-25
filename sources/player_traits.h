@@ -79,6 +79,8 @@ struct Player_Traits<Player_Type::OPL3>
 
 #include <opnmidi.h>
 
+extern int player_opnmidi_set_bank(OPN2_MIDIPlayer *pl, int bank);
+
 template <>
 struct Player_Traits<Player_Type::OPN2>
 {
@@ -103,7 +105,7 @@ struct Player_Traits<Player_Type::OPN2>
     static constexpr auto &set_soft_pan_enabled = opn2_setSoftPanEnabled;
     static constexpr auto &get_num_chips = opn2_getNumChips;
     static constexpr auto &set_num_chips = opn2_setNumChips;
-    static int set_bank(player *pl, unsigned bank);
+    static constexpr auto &set_bank = player_opnmidi_set_bank;
     static constexpr auto &open_bank_file = opn2_openBankFile;
     static constexpr auto &open_bank_data = opn2_openBankData;
     static constexpr auto &set_channel_alloc_mode = opn2_setChannelAllocMode;

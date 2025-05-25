@@ -119,6 +119,14 @@ bool Player::dynamic_set_emulator(unsigned emulator)
     return set_emulator(emulator);
 }
 
+bool Player::dynamic_set_embedded_bank(const char *curBankFile, int bank)
+{
+    auto lock = take_lock();
+    panic();
+    bool ret = bank >= 0 ? set_embedded_bank(bank) : load_bank_file(curBankFile);
+    return ret;
+}
+
 bool Player::dynamic_load_bank(const char *bankfile)
 {
     auto lock = take_lock();

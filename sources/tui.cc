@@ -103,70 +103,29 @@ static void tray_icon_open_bank(TUI_context *ctx)
     handle_toplevel_key(*ctx, (int)'b');
 }
 
+static void tray_icon_set_opl_embedded_bank(intptr_t bank_id)
+{
+    ::player_opl_embedded_bank_id = bank_id;
+    active_player().dynamic_set_embedded_bank(active_bank_file().c_str(), ::player_opl_embedded_bank_id);
+    configFile.beginGroup("synth");
+    configFile.setValue("opl-embedded-bank", ::player_opl_embedded_bank_id);
+    configFile.endGroup();
+    configFile.writeIniFile();
+}
+
 static void tray_icon_quit(TUI_context *ctx)
 {
     handle_anylevel_key(*ctx, (int)'q');
 }
 
-static void tray_icon_quickVolume(int volume)
+static void tray_icon_quickVolume(intptr_t volume)
 {
-    ::player_volume = std::min(volume_max, std::max(volume_min, volume));
+    ::player_volume = std::min(volume_max, std::max(volume_min, (int)volume));
     configFile.beginGroup("synth");
     configFile.setValue("volume", ::player_volume);
     configFile.endGroup();
     configFile.writeIniFile();
 }
-
-static void tray_icon_quickVolume50(void *)
-{
-    tray_icon_quickVolume(50);
-}
-
-static void tray_icon_quickVolume100(void *)
-{
-    tray_icon_quickVolume(100);
-}
-
-static void tray_icon_quickVolume150(void *)
-{
-    tray_icon_quickVolume(150);
-}
-
-static void tray_icon_quickVolume200(void *)
-{
-    tray_icon_quickVolume(200);
-}
-
-static void tray_icon_quickVolume250(void *)
-{
-    tray_icon_quickVolume(250);
-}
-
-static void tray_icon_quickVolume300(void *)
-{
-    tray_icon_quickVolume(300);
-}
-
-static void tray_icon_quickVolume350(void *)
-{
-    tray_icon_quickVolume(350);
-}
-
-static void tray_icon_quickVolume400(void *)
-{
-    tray_icon_quickVolume(400);
-}
-
-static void tray_icon_quickVolume450(void *)
-{
-    tray_icon_quickVolume(450);
-}
-
-static void tray_icon_quickVolume500(void *)
-{
-    tray_icon_quickVolume(500);
-}
-
 
 static void tray_icon_chanAlloc(int mode)
 {
@@ -231,11 +190,42 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
     GtkWidget *menu = gtk_menu_new();
     // ------------------------------------------------------------------------------------------
     {
-        GtkWidget *itemSelectBank = gtk_menu_item_new_with_label("Select bank...");
+        GtkWidget *itemSelectBank = gtk_menu_item_new_with_label("Select bank file...");
         gtk_widget_show(itemSelectBank);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), itemSelectBank);
         g_signal_connect_swapped(G_OBJECT(itemSelectBank), "activate",
                                  G_CALLBACK(tray_icon_open_bank), user_data);
+    }
+    // ------------------------------------------------------------------------------------------
+    if(active_emulator_id >= 0 && active_emulator_id < emulator_ids.size() && emulator_ids[active_emulator_id].player == Player_Type::OPL3)
+    {
+        GtkWidget *embeddedBank = gtk_menu_item_new_with_label("Use embedded OPL bank");
+        GtkWidget *embeddedBankSubMenu = gtk_menu_new();
+
+        auto *bankUseCustom = gtk_check_menu_item_new_with_label("<Custom bank>");
+        gtk_menu_shell_append(GTK_MENU_SHELL(embeddedBankSubMenu), bankUseCustom);
+        g_signal_connect_swapped(G_OBJECT(bankUseCustom), "activate", G_CALLBACK(tray_icon_set_opl_embedded_bank), (void*)(intptr_t)-1);
+
+        if (active_opl_embedded_bank() == -1) {
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(bankUseCustom), TRUE);
+        }
+
+        GtkWidget *volSep2 = gtk_separator_menu_item_new();
+        gtk_menu_shell_append(GTK_MENU_SHELL(embeddedBankSubMenu), volSep2);
+
+        for(int i = 0; i < adl_getBanksCount(); ++i)
+        {
+            const char *bankName = adl_getBankNames()[i];
+            auto *bankNameItem = gtk_check_menu_item_new_with_label(bankName);
+            gtk_menu_shell_append(GTK_MENU_SHELL(embeddedBankSubMenu), bankNameItem);
+            g_signal_connect_swapped(G_OBJECT(bankNameItem), "activate", G_CALLBACK(tray_icon_set_opl_embedded_bank), (void*)(intptr_t)i);
+            if (active_opl_embedded_bank() == i) {
+                gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(bankNameItem), TRUE);
+            }
+        }
+
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(embeddedBank), embeddedBankSubMenu);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), embeddedBank);
     }
     // ------------------------------------------------------------------------------------------
     {
@@ -272,16 +262,16 @@ static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint ac
         gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume400);
         gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume450);
         gtk_menu_shell_append(GTK_MENU_SHELL(quickVolumeSubMenu), quickVolume500);
-        g_signal_connect_swapped(G_OBJECT(quickVolume50), "activate", G_CALLBACK(tray_icon_quickVolume50), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume100), "activate", G_CALLBACK(tray_icon_quickVolume100), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume150), "activate", G_CALLBACK(tray_icon_quickVolume150), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume200), "activate", G_CALLBACK(tray_icon_quickVolume200), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume250), "activate", G_CALLBACK(tray_icon_quickVolume250), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume300), "activate", G_CALLBACK(tray_icon_quickVolume300), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume350), "activate", G_CALLBACK(tray_icon_quickVolume350), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume400), "activate", G_CALLBACK(tray_icon_quickVolume400), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume450), "activate", G_CALLBACK(tray_icon_quickVolume450), NULL);
-        g_signal_connect_swapped(G_OBJECT(quickVolume500), "activate", G_CALLBACK(tray_icon_quickVolume500), NULL);
+        g_signal_connect_swapped(G_OBJECT(quickVolume50), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)50);
+        g_signal_connect_swapped(G_OBJECT(quickVolume100), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)100);
+        g_signal_connect_swapped(G_OBJECT(quickVolume150), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)150);
+        g_signal_connect_swapped(G_OBJECT(quickVolume200), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)200);
+        g_signal_connect_swapped(G_OBJECT(quickVolume250), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)250);
+        g_signal_connect_swapped(G_OBJECT(quickVolume300), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)300);
+        g_signal_connect_swapped(G_OBJECT(quickVolume350), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)350);
+        g_signal_connect_swapped(G_OBJECT(quickVolume400), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)400);
+        g_signal_connect_swapped(G_OBJECT(quickVolume450), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)450);
+        g_signal_connect_swapped(G_OBJECT(quickVolume500), "activate", G_CALLBACK(tray_icon_quickVolume), (void*)(intptr_t)500);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), quickVolume);
     }
     // ------------------------------------------------------------------------------------------
