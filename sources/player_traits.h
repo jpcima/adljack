@@ -36,7 +36,7 @@ struct Player_Traits;
 template <>
 struct Player_Traits<Player_Type::OPL3>
 {
-    typedef ADL_MIDIPlayer player;
+    typedef struct ADL_MIDIPlayer player;
     typedef ADLMIDI_AudioFormat audio_format;
     typedef ADLMIDI_SampleType sample_type;
 
@@ -79,12 +79,14 @@ struct Player_Traits<Player_Type::OPL3>
 
 #include <opnmidi.h>
 
-extern int player_opnmidi_set_bank(OPN2_MIDIPlayer *pl, int bank);
+extern "C" {
+extern int player_opnmidi_set_bank(struct OPN2_MIDIPlayer *pl, int bank);
+}
 
 template <>
 struct Player_Traits<Player_Type::OPN2>
 {
-    typedef OPN2_MIDIPlayer player;
+    typedef struct OPN2_MIDIPlayer player;
     typedef OPNMIDI_AudioFormat audio_format;
     typedef OPNMIDI_SampleType sample_type;
 

@@ -73,10 +73,14 @@ auto Player::enumerate_emulators(Player_Type pt) -> std::vector<Emulator>
     emus.reserve(32);
 
     std::unique_ptr<Player> player(create(pt, 44100));
+
+    player->set_chip_count(1);
+
     for (unsigned i = 0; i < 32; ++i) {
         if (pt == Player_Type::OPN2 && i == OPNMIDI_VGM_DUMPER) {
             continue; // Always skip the VGM dumper
         }
+
         if (player->set_emulator(i)) {
             Emulator emu;
             emu.id = i;
