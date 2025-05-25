@@ -21,6 +21,7 @@ static GtkStatusIcon *s_tray_icon = nullptr;
 static GMutex mutex_interface;
 static GtkStatusIcon *create_tray_icon();
 static void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
+static void adl_gtk_bank_select_dialogue_real(TUI_contextP ctx);
 static std::atomic<bool> s_running(false);
 static std::string s_volumeMenuIndicator;
 static std::string s_customBankMenuIndicator;
@@ -134,7 +135,20 @@ void adl_gtk_updateIconIfNeeded(int newEmu)
     g_mutex_unlock(&mutex_interface);
 }
 
+static gboolean adl_gtk_bank_select_dialogue_2(gpointer data)
+{
+    adl_gtk_bank_select_dialogue_real((TUI_contextP)data);
+    return FALSE;
+}
+
 void adl_gtk_bank_select_dialogue(TUI_contextP ctx)
+{
+    g_mutex_lock(&mutex_interface);
+    g_idle_add(&adl_gtk_bank_select_dialogue_2, (void*)ctx);
+    g_mutex_unlock(&mutex_interface);
+}
+
+static void adl_gtk_bank_select_dialogue_real(TUI_contextP ctx)
 {
     GtkWidget *dialog;
     GtkFileChooser *chooser;
@@ -223,7 +237,7 @@ void adl_gtk_bank_select_dialogue(TUI_contextP ctx)
 
 static void tray_icon_open_bank(TUI_context *ctx)
 {
-    adl_gtk_bank_select_dialogue(ctx);
+    adl_gtk_bank_select_dialogue_real(ctx);
     // handle_toplevel_key_p(ctx, (int)'b');
     killMenu();
 }
