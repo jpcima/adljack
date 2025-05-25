@@ -55,12 +55,14 @@ static void killMenu()
 void adl_gtk_init(int *argc, char ***argv)
 {
     gtk_init(argc, argv);
+    g_mutex_init(&mutex_interface);
     s_running = true;
 }
 
 void adl_gtk_quit()
 {
     killMenu();
+    g_mutex_clear(&mutex_interface);
     s_running = false;
 }
 
@@ -173,6 +175,8 @@ void adl_gtk_bank_select_dialogue(TUI_contextP ctx)
 
     gtk_widget_show_all(dialog);
 
+    g_mutex_unlock(&mutex_interface);
+
     res = gtk_dialog_run(GTK_DIALOG(dialog));
 
     if (res == GTK_RESPONSE_ACCEPT) {
@@ -210,8 +214,6 @@ void adl_gtk_bank_select_dialogue(TUI_contextP ctx)
     }
 
     gtk_widget_destroy(dialog);
-
-    g_mutex_unlock(&mutex_interface);
 }
 
 //void tray_icon_on_click(GtkStatusIcon *status_icon, gpointer user_data)
