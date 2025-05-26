@@ -1,3 +1,11 @@
+# ⚠️REPOSIRORY HAS BEEN MOVED⚠️
+Hello!
+-----------
+Since the owner of this repository is absent for more than two years, it's reasonable for me to take the repository
+to my end as I still maintain this repository for my own needs.
+**NEW REPOSITORY LOCATION:** https://github.com/Wohlstand/adljack
+-----------
+
 # adljack
 OPL3/OPN2 synthesizer using ADLMIDI and OPNMIDI
 
