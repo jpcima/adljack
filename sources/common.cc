@@ -599,7 +599,7 @@ void handle_signals()
     int nsignal = 0;
 
     sigemptyset(&sigs);
-    for (int signo : {SIGINT, SIGTERM}) {
+    for (int signo : {SIGINT, SIGTERM, SIGHUP}) {
         sigaddset(&sigs, signo);
         nsignal = signo + 1;
     }
